@@ -1,0 +1,27 @@
+@font-face {
+    font-family: Minitel;
+    src: url(font/Minitel.ttf);
+}
+
+html {
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+.containers { display: flex; }
+
+.container {
+    border: 1pt solid gray;
+    margin: 0.5em;
+    padding: 0.5em;
+}
+
+.container>h2 {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1pt;
+    height: 1pt;
+    overflow: hidden;
+}
+
