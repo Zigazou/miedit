@@ -12,7 +12,7 @@ function mitree(container) {
 
     for(var i = 0; i < children.length; i++) {
         var child = children[i];
-        widgetTypes[child] = { 'icon': '/icon/miicon-' + child + '.png' };
+        widgetTypes[child] = { 'icon': './icon/miicon-' + child + '.png' };
         if(child != 'group') widgetTypes[child]['valid_children'] = [];
     }
 
@@ -48,27 +48,6 @@ function mitree(container) {
         }
     });
 
-    jQuery.fn.extend({
-        unserialize: function(serialized) {
-            if(serialized === undefined) return;
-            var form = $(this);
-
-            $.each(serialized.split('&'), function (index, elem) {
-                var pairs = elem.split('=')
-                    key = pairs[0]
-                    value = decodeURIComponent(pairs[1]);
-
-                form.find("[name=" + key + "]").each(function() {
-                    switch($(this).attr('type')) {
-                        case 'checkbox': $(this).prop('checked', true); break;
-                        case 'radio': $(this).val([value]); break;
-                        default: $(this).val(value);
-                    }
-                });
-            });
-        }
-    });
-
     // Select event
     treeWidget.on('select_node.jstree', function(event, data) {
         var selected = data.instance.get_node(data.selected[0])
@@ -88,3 +67,4 @@ function mitree(container) {
         $(currents[0]).data('miedit-value', $(this).serialize());
     });
 }
+

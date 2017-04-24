@@ -1,0 +1,93 @@
+<!-- Block of text widget -->
+<form class="miform-block">
+  <div class="miedit-field">
+    <label for="miform-block-value">Value:</label>
+    <textarea
+      id="miform-block-value"
+      name="value"
+      cols="41"
+      rows="10"
+    ></textarea>
+  </div>
+  
+  <div class="miedit-field">
+    <label for="miform-block-x">X:</label>
+    <input
+      id="miform-block-x"
+      type="number"
+      name="x"
+      min="1"
+      max="40"
+      value="1"
+      size="2"
+      maxlength="2"
+    />
+  </div>
+
+  <div class="miedit-field">
+    <label for="miform-block-y">Y:</label>
+    <input
+      id="miform-block-y"
+      type="number"
+      name="y"
+      min="0"
+      max="24"
+      value="1"
+      size="2"
+      maxlength="2"
+    />
+  </div>
+
+  <div class="miedit-field">
+    <label for="miform-block-width">Width:</label>
+    <input
+      id="miform-block-width"
+      type="number"
+      name="width"
+      min="1"
+      max="40"
+      value="1"
+      size="2"
+      maxlength="2"
+    />
+  </div>
+
+  <div class="miedit-field">
+    <label for="miform-block-height">Height:</label>
+    <input
+      id="miform-block-height"
+      type="number"
+      name="height"
+      min="0"
+      max="24"
+      value="1"
+      size="2"
+      maxlength="2"
+    />
+  </div>
+
+  <div class="miedit-field">
+    <label for="miform-block-hyphen">Hyphenation:</label>
+    <input
+      id="miform-block-hyphen"
+      type="checkbox"
+      name="hyphen"
+      value=""
+    />
+  </div>
+
+  <div class="miedit-field">
+    <label for="miform-block-align">Align:</label>
+    <select id="miform-block-align" name="align">
+      <option value="left" selected="selected">Left</option>
+      <option value="center">Center</option>
+      <option value="right">Right</option>
+      <option value="justify">Justify</option>
+    </select>
+  </div>
+
+  <div class="miedit-action">
+    <input type="submit" value="Apply"/>
+  </div>
+</form>
+

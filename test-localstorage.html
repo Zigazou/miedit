@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Test LocalStorage</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="jstree/dist/themes/default/style.css" />
@@ -21,147 +21,22 @@
       <div class="mitree-container container">
         <h2>Tree</h2>
         <form class="miedit-actions">
-          <select class="tidget-type">
-            <option value="string">String</value>
-            <option value="block">Block of text</value>
-            <option value="smgraph">Semigraphic zone</value>
-            <option value="group">Group</value>
-            <option value="delay">Delay</value>
-          </select>
-          <button class="tidget-create">Create</button>
-          <button class="tidget-delete">Delete</button>
+          <import src="import/form-actions.html"></import>
         </form>
         <div class="miedit-tree"></div>
         <div class="miedit-forms">
-          <form class="miform-string">
-            <div class="miedit-field">
-              <label for="miform-string-value">Value:</label>
-              <input id="miform-string-value" name="value" type="text" length="40" />
-            </div>
-            
-            <div class="miedit-field">
-              <label for="miform-string-x">X:</label>
-              <input id="miform-string-x" type="number" name="x" min="1" max="40" value="1" />
-            </div>
-
-            <div class="miedit-field">
-              <label for="miform-string-y">Y:</label>
-              <input id="miform-string-y" type="number" name="y" min="0" max="24" value="1" />
-            </div>
-
-            <div class="miedit-action">
-              <input type="submit" value="Apply"/>
-            </div>
-          </form>
-
-          <form class="miform-block">
-            <div class="miedit-field">
-              <label for="miform-block-value">Value:</label>
-              <textarea id="miform-block-value" name="value" cols="41" rows="10"></textarea>
-            </div>
-            
-            <div class="miedit-field">
-              <label for="miform-block-x">X:</label>
-              <input id="miform-block-x" type="number" name="x" min="1" max="40" value="1" />
-            </div>
-
-            <div class="miedit-field">
-              <label for="miform-block-y">Y:</label>
-              <input id="miform-block-y" type="number" name="y" min="0" max="24" value="1" />
-            </div>
-
-            <div class="miedit-field">
-              <label for="miform-block-width">Width:</label>
-              <input id="miform-block-width" type="number" name="width" min="1" max="40" value="1" />
-            </div>
-
-            <div class="miedit-field">
-              <label for="miform-block-height">Height:</label>
-              <input id="miform-block-height" type="number" name="height" min="0" max="24" value="1" />
-            </div>
-
-            <div class="miedit-field">
-              <label for="miform-block-hyphen">Hyphenation:</label>
-              <input id="miform-block-hyphen" type="checkbox" name="hyphen" value="" />
-            </div>
-
-            <div class="miedit-field">
-              <label for="miform-block-align">Align:</label>
-              <select id="miform-block-align" name="align">
-                <option value="left" selected="selected">Left</value>
-                <option value="center">Center</value>
-                <option value="right">Right</value>
-                <option value="justify">Justify</value>
-              </select>
-            </div>
-
-            <div class="miedit-action">
-              <input type="submit" value="Apply"/>
-            </div>
-          </form>
-
-          <form class="miform-smgraph">
-            <div class="miedit-field">
-              <label for="miform-smgraph-x">X:</label>
-              <input id="miform-smgraph-x" type="number" name="x" min="1" max="40" value="1" />
-            </div>
-
-            <div class="miedit-field">
-              <label for="miform-smgraph-y">Y:</label>
-              <input id="miform-smgraph-y" type="number" name="y" min="0" max="24" value="1" />
-            </div>
-
-            <div class="miedit-field">
-              <label for="miform-smgraph-width">Width:</label>
-              <input id="miform-smgraph-width" type="number" name="width" min="1" max="40" value="1" />
-            </div>
-
-            <div class="miedit-field">
-              <label for="miform-smgraph-height">Height:</label>
-              <input id="miform-smgraph-height" type="number" name="height" min="0" max="24" value="1" />
-            </div>
-
-            <div class="miedit-action">
-              <input type="submit" value="Apply"/>
-            </div>
-          </form>
-
-          <form class="miform-group">
-            <div class="miedit-field">
-              <label for="miform-group-x">X:</label>
-              <input id="miform-group-x" type="number" name="x" min="1" max="40" value="1" />
-            </div>
-
-            <div class="miedit-field">
-              <label for="miform-group-y">Y:</label>
-              <input id="miform-group-y" type="number" name="y" min="0" max="24" value="1" />
-            </div>
-
-            <div class="miedit-field">
-              <label for="miform-group-visible">Visible:</label>
-              <input id="miform-group-visible" type="checkbox" name="visible" value="checked"/>
-            </div>
-
-            <div class="miedit-action">
-              <input type="submit" value="Apply"/>
-            </div>
-          </form>
-
-          <form class="miform-delay">
-            <div class="miedit-field">
-              <label for="miform-delay-value">Delay (ticks):</label>
-              <input id="miform-delay-value" type="number" name="value" min="1" max="100" value="1" />
-            </div>
-
-            <div class="miedit-action">
-              <input type="submit" value="Apply"/>
-            </div>
-          </form>
+          <import src="import/form-string.html"></import>
+          <import src="import/form-block.html"></import>
+          <import src="import/form-smgraph.html"></import>
+          <import src="import/form-group.html"></import>
+          <import src="import/form-delay.html"></import>
         </div>
       </div>
     </div>
 
     <script src="jquery/jquery.js"></script>
+    <script src="library/jquery.unserialize/jquery.unserialize.js"></script>
+    <script src="library/importHTML/importHTML.js"></script>
     <script src="jstree/dist/jstree.js"></script>
     <script src="mitree/mitree.js"></script>
     <script src="migrid/migrid.js"></script>
