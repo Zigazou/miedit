@@ -1,3 +1,4 @@
+/*
 localStorage.clear();
 test = {
     'core' : {
@@ -12,4 +13,4 @@ test = {
 
 localStorage.setItem("test", test);
 alert(localStorage.getItem("test"));
-
+*/

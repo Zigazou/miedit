@@ -1,3 +1,10 @@
+@font-face {
+    font-family: Minitel;
+    src: url(font/Minitel.ttf);
+}
+
+body { padding-top: 6em; }
+
 .miedit-forms form { display: none; text-align: right; }
 .miedit-field, .miedit-action { clear: both; }
 .miedit-forms input[type="text"], .miedit-forms textarea {
@@ -18,3 +25,10 @@
     width: 60%;
 }
 
+.migrid {
+    font-family: monospace;
+    width: 40em;
+    height: 25em;
+    line-height: 1em;
+    background-color: gray;
+}
