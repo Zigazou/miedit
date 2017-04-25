@@ -6,18 +6,15 @@
 }
 
 .mitree-container {
-    display: grid;
-    grid-template-columns: 40% 60%;
-    grid-template-rows: max-content max-content;
     min-width: 60em;
 }
 
-.miedit-actions { grid-column: 1; }
-.miedit-tree { grid-column: 1; }
+.miedit-treeactions {
+    float: left;
+    width: 40%;
+}
+
 .miedit-forms {
-    grid-column: 2;
-    border-left: 1pt solid black;
-    padding-left: 0.5em;
-    margin-left: 0.5em;
+    width: 60%;
 }
 

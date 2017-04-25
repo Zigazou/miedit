@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Test LocalStorage</title>
+    <link rel="stylesheet" href="library/bootstrap/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="library/bootstrap/css/bootstrap.theme.min.css"
+    />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="jstree/dist/themes/default/style.css" />
     <link rel="stylesheet" href="migrid/style.css" />
@@ -10,26 +16,28 @@
     <link rel="stylesheet" href="mitree/style.css" />
   </head>
   <body>
-    <h1>MiEdit</h1>
+    <import src="import/main-menu.html"></import>
 
-    <div id="miedit" class="containers">
-      <div class="migrid-container container">
-        <h2>Grid</h2>
-        <div class="migrid"></div>
-      </div>
+    <div class="container theme-showcase" role="main">
+      <div id="miedit" class="containers">
+        <div class="migrid-container">
+          <div class="migrid center-block"></div>
+        </div>
 
-      <div class="mitree-container container">
-        <h2>Tree</h2>
-        <form class="miedit-actions">
-          <import src="import/form-actions.html"></import>
-        </form>
-        <div class="miedit-tree"></div>
-        <div class="miedit-forms">
-          <import src="import/form-string.html"></import>
-          <import src="import/form-block.html"></import>
-          <import src="import/form-smgraph.html"></import>
-          <import src="import/form-group.html"></import>
-          <import src="import/form-delay.html"></import>
+        <div class="mitree-container">
+          <div class="miedit-treeactions col-md-4">
+            <form class="miedit-actions">
+              <import src="import/form-actions.html"></import>
+            </form>
+            <div class="miedit-tree"></div>
+          </div>
+          <div class="miedit-forms col-md-8">
+            <import src="import/form-string.html"></import>
+            <import src="import/form-block.html"></import>
+            <import src="import/form-smgraph.html"></import>
+            <import src="import/form-group.html"></import>
+            <import src="import/form-delay.html"></import>
+          </div>
         </div>
       </div>
     </div>
@@ -37,6 +45,7 @@
     <script src="jquery/jquery.js"></script>
     <script src="library/jquery.unserialize/jquery.unserialize.js"></script>
     <script src="library/importHTML/importHTML.js"></script>
+    <script src="library/bootstrap/bootstrap.min.js"></script>
     <script src="jstree/dist/jstree.js"></script>
     <script src="mitree/mitree.js"></script>
     <script src="migrid/migrid.js"></script>
