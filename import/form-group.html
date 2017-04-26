@@ -1,45 +1,48 @@
 <!-- Group widget -->
-<form class="miform-group" data-call="onSubmit">
-  <div class="miedit-field">
-    <label for="miform-group-x">X:</label>
-    <input
-      id="miform-group-x"
-      type="number"
-      name="x"
-      min="1"
-      max="40"
-      value="1"
-      size="2"
-      maxlength="2"
-    />
+<form class="miform-group card" data-call="onSubmit">
+  <div class="card-header">
+    Group
+    <input type="submit" class="btn btn-primary pull-right" value="Apply"/>
   </div>
 
-  <div class="miedit-field">
-    <label for="miform-group-y">Y:</label>
-    <input
-      id="miform-group-y"
-      type="number"
-      name="y"
-      min="0"
-      max="24"
-      value="1"
-      size="2"
-      maxlength="2"
-    />
-  </div>
+  <div class="card-block">
+    <div class="miedit-field">
+      <label for="miform-group-x">X:</label>
+      <input
+        id="miform-group-x"
+        type="number"
+        name="x"
+        min="1"
+        max="40"
+        value="1"
+        size="2"
+        maxlength="2"
+      />
+    </div>
 
-  <div class="miedit-field">
-    <label for="miform-group-visible">Visible:</label>
-    <input
-      id="miform-group-visible"
-      type="checkbox"
-      name="visible"
-      value="checked"
-    />
-  </div>
+    <div class="miedit-field">
+      <label for="miform-group-y">Y:</label>
+      <input
+        id="miform-group-y"
+        type="number"
+        name="y"
+        min="0"
+        max="24"
+        value="1"
+        size="2"
+        maxlength="2"
+      />
+    </div>
 
-  <div class="miedit-action">
-    <input type="submit" class="btn btn-primary" value="Apply"/>
+    <div class="miedit-field">
+      <label for="miform-group-invisible">Invisible:</label>
+      <input
+        id="miform-group-invisible"
+        type="checkbox"
+        name="invisible"
+        value="checked"
+      />
+    </div>
   </div>
 </form>
 

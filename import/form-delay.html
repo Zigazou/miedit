@@ -1,21 +1,22 @@
 <!-- Delay widget -->
-<form class="miform-delay" data-call="onSubmit">
-  <div class="miedit-field">
-    <label for="miform-delay-value">Delay (ticks):</label>
-    <input
-      id="miform-delay-value"
-      type="number"
-      name="value"
-      min="1"
-      max="100"
-      value="1"
-      size="4"
-      maxlength="4"
-    />
+<form class="miform-delay card" data-call="onSubmit">
+  <div class="card-header">
+    Block of text
+    <input type="submit" class="btn btn-primary pull-right" value="Apply"/>
   </div>
-
-  <div class="miedit-action">
-    <input type="submit" class="btn btn-primary" value="Apply"/>
-  </div>
+  <div class="card-block">
+    <div class="miedit-field">
+      <label for="miform-delay-value">Delay (ticks):</label>
+      <input
+        id="miform-delay-value"
+        type="number"
+        name="value"
+        min="1"
+        max="100"
+        value="1"
+        size="4"
+        maxlength="4"
+      />
+    </div>
 </form>
 

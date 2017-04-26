@@ -5,10 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>MiEdit</title>
     <link rel="stylesheet" href="library/bootstrap4/css/bootstrap.min.css" />
-    <link
-      rel="stylesheet"
-      href="library/bootstrap4/css/bootstrap-reboot.min.css"
-    />
+    <link rel="stylesheet" href="library/FontAwesome/css/font-awesome.min.css"/>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="library/jstree/dist/themes/default/style.css"/>
     <link rel="stylesheet" href="library/jquery.inputnumber/style.css"/>
@@ -16,25 +13,46 @@
   <body>
     <import src="import/main-menu.html"></import>
 
-    <div class="container theme-showcase" role="main">
+    <div class="col-lg-12" role="main">
       <div id="miedit" class="containers">
-        <div class="migrid-container">
-          <div class="migrid center-block"></div>
+        <div class="row">
+          <div class="migrid-container col-lg-6">
+            <div class="card">
+              <div class="card-header">Preview</div>
+              <div class="card-block">
+                <div class="migrid mx-auto"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="card">
+              <div class="card-header">Info</div>
+              <div class="card-block">
+                info info info
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="mitree-container">
-          <div class="miedit-treeactions col-md-4">
-            <import src="import/form-actions.html"></import>
-            <div class="miedit-tree"></div>
+        <div class="mitree-container row">
+          <div class="col-lg-5 miedit-treeactions">
+            <div class="card">
+              <div class="card-header">
+                <import src="import/form-actions.html"></import>
+              </div>
+              <div class="card-block">
+                <div class="miedit-tree"></div>
+              </div>
+            </div>
           </div>
-          <div class="miedit-forms col-md-8 card">
-            <div class="card-header">aaa</div>
-            <div class="card-block">
-            <import src="import/form-string.html"></import>
-            <import src="import/form-block.html"></import>
-            <import src="import/form-smgraph.html"></import>
-            <import src="import/form-group.html"></import>
-            <import src="import/form-delay.html"></import>
+          <div class="col-lg-7">
+            <div class="miedit-forms">
+              <import src="import/form-string.html"></import>
+              <import src="import/form-block.html"></import>
+              <import src="import/form-smgraph.html"></import>
+              <import src="import/form-group.html"></import>
+              <import src="import/form-delay.html"></import>
             </div>
           </div>
         </div>
