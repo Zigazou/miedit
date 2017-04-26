@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>MiEdit</title>
-    <link rel="stylesheet" href="library/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="library/bootstrap4/css/bootstrap.min.css" />
     <link
       rel="stylesheet"
-      href="library/bootstrap/css/bootstrap.theme.min.css"
+      href="library/bootstrap4/css/bootstrap-reboot.min.css"
     />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="library/jstree/dist/themes/default/style.css"/>
@@ -27,12 +27,15 @@
             <import src="import/form-actions.html"></import>
             <div class="miedit-tree"></div>
           </div>
-          <div class="miedit-forms col-md-8">
+          <div class="miedit-forms col-md-8 card">
+            <div class="card-header">aaa</div>
+            <div class="card-block">
             <import src="import/form-string.html"></import>
             <import src="import/form-block.html"></import>
             <import src="import/form-smgraph.html"></import>
             <import src="import/form-group.html"></import>
             <import src="import/form-delay.html"></import>
+            </div>
           </div>
         </div>
       </div>
@@ -40,6 +43,7 @@
 
     <script src="library/jquery/jquery.js"></script>
     <script src="library/jquery.unserialize/jquery.unserialize.js"></script>
+    <script src="library/jquery.autocallback/jquery.autocallback.js"></script>
     <script src="library/importHTML/importHTML.js"></script>
     <script src="library/jquery.inputnumber/jquery.inputnumber.js"></script>
     <script src="library/bootstrap/bootstrap.min.js"></script>
@@ -49,6 +53,6 @@
     <script src="app/migrid.js"></script>
     <script src="app/miform.js"></script>
     <script src="app/mistorage.js"></script>
-    <script src="app/miedit.js"></script>
+    <script src="app/miedit-page.js"></script>
   </body>
 </html>

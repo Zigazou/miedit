@@ -1,4 +1,4 @@
-<form class="miedit-actions">
+<form class="miedit-actions" data-call="onSubmit">
   <select class="tidget-type">
     <option value="string">String</option>
     <option value="block">Block of text</option>
@@ -6,6 +6,7 @@
     <option value="group">Group</option>
     <option value="delay">Delay</option>
   </select>
-  <button class="tidget-create">Create</button>
-  <button class="tidget-delete">Delete</button>
+  <button class="tidget-create btn btn-primary" data-call="onCreate">Create</button>
+  <button class="tidget-delete btn btn-danger" data-call="onDelete">Delete</button>
+  <button class="tidget-save btn btn-success" data-call="onSerialize">Save</button>
 </form>

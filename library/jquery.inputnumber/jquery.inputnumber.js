@@ -5,11 +5,13 @@ $('input[type=number]').each(function(index, element) {
     bPlus.insertAfter(element);
     bMinus.insertAfter(element);
 
-    bPlus.on('click', function() {
+    bPlus.on('click', function(event) {
         element.stepUp();
+        return false;
     });
-    bMinus.on('click', function() {
+    bMinus.on('click', function(event) {
         element.stepDown();
+        return false;
     });
 });
 

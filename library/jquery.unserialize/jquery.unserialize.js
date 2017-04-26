@@ -1,7 +1,7 @@
 // Unserialize previously serialized form values into a form
 jQuery.fn.extend({
     unserialize: function(serialized) {
-        if(serialized === undefined) return;
+        if(serialized === undefined || serialized === "") return;
         var form = $(this);
 
         $.each(serialized.split('&'), function (index, elem) {
