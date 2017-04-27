@@ -3,7 +3,7 @@ function MiTree(container, nodes) {
 
     // Properties
     this.container = container;
-    this.treeWidget = $(container).find('.miedit-tree');
+    this.treeWidget = container.find('.miedit-tree');
     this.tree = undefined;
 
     // Initialize the tree widget
@@ -22,30 +22,30 @@ function MiTree(container, nodes) {
     });
 
     this.treeWidget.jstree({
-        'core': { 'check_callback': true, 'animation': 0, 'data': nodes },
+        'core': { 'check_callback': true, 'data': nodes },
         'types': widgetTypes,
         'plugins': [ "dnd" , "types" ],
     });
     this.tree = $.jstree.reference(this.treeWidget);
 
     // Disable default behaviour of forms
-    $(container).find('form').submit(function(e) { e.preventDefault(); });
+    container.find('form').submit(function(e) { e.preventDefault(); });
 
-    $(container).autocallback(this);
+    container.autocallback(this);
     this.treeWidget.on('select_node.jstree', this, this.onSelect);
     
-    $(container).find('.info-block').each(function() {
+    container.find('.info-block').each(function() {
         $(this).text(this.pageName);
     });
 }
 
 MiTree.prototype.hideForms = function() {
-    $(this.container).find(".miedit-forms form").hide();
+    this.container.find(".miedit-forms form").hide();
 };
 
 MiTree.prototype.showForm = function(selector, selected) {
     // Load form with node values
-    const form = $(this.container).find(selector);
+    const form = this.container.find(selector);
     form[0].reset();
     form.unserialize(selected.data['miedit-value']);
 
@@ -54,7 +54,7 @@ MiTree.prototype.showForm = function(selector, selected) {
 };
 
 MiTree.prototype.serialize = function() {
-    return JSON.stringify(this.tree.get_json());
+    return this.tree.get_json();
 };
 
 MiTree.prototype.unserialize = function(nodes) {
@@ -73,12 +73,12 @@ MiTree.prototype.onCreate = function(event) {
 
     const that = event.data;
     const newNode = {
-        'text': $(that.container).find('.tidget-type option:selected').text(),
-        'type': $(that.container).find('.tidget-type').val(),
+        'text': that.container.find('.tidget-type option:selected').text(),
+        'type': that.container.find('.tidget-type').val(),
         'data': {},
     };
     const currents = that.tree.get_selected(true);
-    const parent = currents.length > 0 ? currents[0] : null;
+    const parent = currents.length > 0 ? currents[0] : '#';
     that.tree.create_node(parent, newNode, 'after');
 
     return false;

@@ -1,4 +1,6 @@
 function MiStorage(context) {
+    "use strict";
+
     this.context = context.replace('/', '-') + '/';
 }
 
@@ -22,7 +24,7 @@ MiStorage.prototype.prepareKey = function(key) {
 
 MiStorage.prototype.save = function(key, value) {
     "use strict";
-    localStorage.setItem(this.prepareKey(key), value);
+    localStorage.setItem(this.prepareKey(key), JSON.stringify(value));
 };
 
 MiStorage.prototype.delete = function(key) {
@@ -32,6 +34,10 @@ MiStorage.prototype.delete = function(key) {
 
 MiStorage.prototype.load = function(key) {
     "use strict";
-    return localStorage.getItem(this.prepareKey(key));
+    try {
+        return JSON.parse(localStorage.getItem(this.prepareKey(key)));
+    } catch(err) {
+        return null;
+    }
 };
 
