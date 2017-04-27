@@ -1,15 +1,16 @@
 $('import').each(function(index, element) {
+    "use strict";
+
     $.ajax({
         url: element.getAttribute('src'),
         success: function(html) {
-            var parent = element.parentElement
-                template = document.createElement('template');
+            const template = document.createElement('template');
 
             template.innerHTML = html;
-            for(var i = 0; i < template.content.childNodes.length; i++) {
-                parent.insertBefore(template.content.childNodes[i], element);
-            }
-            parent.removeChild(element);
+            $(template.content).children().each(function() {
+                element.parentElement.insertBefore(this, element);
+            });
+            element.parentElement.removeChild(element);
         },
         dataType: 'html',
         async: false

@@ -22,3 +22,5 @@ body { padding-top: 6em; }
     line-height: 1em;
     background-color: gray;
 }
+
+select { height: 2.6em; }

@@ -2,14 +2,13 @@
 jQuery.fn.extend({
     unserialize: function(serialized) {
         if(serialized === undefined || serialized === "") return;
-        var form = $(this);
+        const form = $(this);
 
         $.each(serialized.split('&'), function (index, elem) {
-            var pairs = elem.split('=')
-                key = pairs[0]
-                value = decodeURIComponent(pairs[1].replace(/\+/g, '%20'));
+            const pairs = elem.split('=');
+            const value = decodeURIComponent(pairs[1].replace(/\+/g, '%20'));
 
-            form.find("[name=" + key + "]").each(function() {
+            form.find("[name=" + pairs[0] + "]").each(function() {
                 switch($(this).attr('type')) {
                     case 'checkbox': $(this).prop('checked', true); break;
                     case 'radio': $(this).val([value]); break;
