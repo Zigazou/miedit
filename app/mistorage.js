@@ -9,7 +9,8 @@ MiStorage.prototype.keys = function() {
 
     const context = this.context;
     return Object.keys(localStorage)
-                 .filter(function(key) { return key.startsWith(context); });
+                 .filter(function(key) { return key.startsWith(context); })
+                 .map(function(key) { return key.substr(context.length); });
 };
 
 MiStorage.prototype.reset = function() {
