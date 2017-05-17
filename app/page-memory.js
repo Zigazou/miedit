@@ -1,40 +1,3 @@
-function PageCell() {
-    "use strict";
-
-    this.charPage = 'G1'; // G0, G1
-    this.value = 0x40;
-    this.fgColor = 7;
-    this.bgColor = 0;
-    this.mult = { width: 1, height: 1 };
-    this.part = { x: 0, y: 0 };
-    this.invert = undefined;
-    this.blink = false;
-    this.mask = false;
-    this.underline = undefined;
-    this.separated = false;
-    this.delimiter = false;
-}
-
-PageCell.prototype.copy = function() {
-    "use strict";
-    const cell = new PageCell();
-
-    cell.charPage = this.charPage;
-    cell.value = this.value;
-    cell.fgColor = this.fgColor;
-    cell.bgColor = this.bgColor;
-    cell.mult = { width: this.mult.width, height: this.mult.height };
-    cell.part = { x: this.part.x, y: this.part.y };
-    cell.invert = this.invert;
-    cell.blink = this.blink;
-    cell.mask = this.mask;
-    cell.underline = this.underline;
-    cell.separated = this.separated;
-    cell.delimiter = this.delimiter;
-
-    return cell;
-}
-
 /*
 grid = { cols: …, rows: … }
 char = { width: …, height: … }
@@ -66,7 +29,7 @@ function PageMemory(grid, char, zoom, canvas) {
     for(let j = 0; j < this.grid.rows; j++) {
         let row = [];
         for(let i = 0; i < this.grid.cols; i++) {
-            row[i] = new PageCell();
+            row[i] = new MosaicCell();
         }
         this.memory[j] = row;
     }
@@ -107,7 +70,7 @@ PageMemory.prototype.scroll = function(direction) {
 
     const newRow = []
     for(let col = 0; col < this.grid.cols; col++) {
-        newRow[col] = new PageCell();
+        newRow[col] = new MosaicCell();
     }
 
     switch(direction) {
@@ -157,61 +120,67 @@ PageMemory.prototype.render = function() {
     "use strict";
 
     // Add the inverted F on the status line
-    const fCell = new PageCell();
-    fCell.charPage = 'G0';
+    const fCell = new CharCell();
     fCell.value = 0x46;
     fCell.invert = true;
     this.memory[0][38] = fCell;
 
+    const defaultFgColor = 7;
+    const defaultBgColor = 0;
+    const ctx = this.context;
+
+    let page = 'G0';
+    let part = { x: 0, y: 0};
+    let mult = { width: 1, height: 1};
+    let unde = false;
+
     // Draw each cell
     for(let row = 0; row < this.grid.rows; row++) {
         // Zone attributes
-        let bgColor = 0;
+        let bgColor = defaultBgColor;
         let mask = false;
         let underline = false;
-        let charPage = 'G1';
+
+        const y = row * this.char.height;
 
         for(let col = 0; col < this.grid.cols; col++) {
             const cell = this.memory[row][col];
             const x = col * this.char.width;
-            const y = row * this.char.height;
 
-            let finalFgColor = cell.fgColor;
-            let finalBgColor = bgColor;
+            if(cell.type !== 'C') bgColor = cell.bgColor;
 
-            if(cell.charPage == 'G1' || cell.delimiter) {
-                finalBgColor = cell.bgColor;
-            }
-
-            if(cell.invert && cell.charPage == 'G0') {
-                let swap = finalBgColor;
-                finalBgColor = finalFgColor;
-                finalFgColor = swap;
-            }
+            let front = cell.invert ? bgColor : cell.fgColor;
+            let back = cell.invert ? cell.fgColor : bgColor;
 
             // Draw background
-            this.context.fillStyle = this.colors[finalBgColor];
-            this.context.fillRect(
+            ctx.fillStyle = this.colors[back];
+            ctx.fillRect(
                 x, y,
                 this.char.width, this.char.height
             );
 
             // Draw character
             if(!mask) {
-                this.font[cell.charPage].writeChar(
-                    this.context,
-                    cell.value,
-                    x, y,
-                    cell.part,
-                    cell.mult,
-                    finalFgColor,
-                    cell.underline && !cell.delimiter
-                );
+                if(cell.type !== 'M') {
+                    page = this.font['G0'];
+                    part = cell.part;
+                    mult = cell.mult;
+                    unde = underline;
+                } else {
+                    page = this.font['G1'];
+                    part = { x: 0, y: 0 };
+                    mult = { width: 1, height: 1 };
+                    unde = false;
+                }
+
+                page.writeChar(ctx, cell.value, x, y, part, mult, front, unde);
             }
 
-            if(cell.delimiter) {
-                mask = cell.mask;
-                bgColor = cell.bgColor;
+            if(cell.type === 'D') {
+                if(cell.mask !== undefined) mask = cell.mask;
+                if(cell.zoneUnderline !== undefined) underline = cell.zoneUnderline;
+            } else if(cell.type === 'M') {
+                underline = false;
             }
         }
     }

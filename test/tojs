@@ -1,0 +1,17 @@
+#!/bin/bash
+function generateTests() {
+    echo '// Tests VDT'
+    echo 'const tests = []'
+
+    for vdt in *.vdt
+    do
+        index=$(basename "$vdt" .vdt)
+        echo "tests[$index] = ["
+        xxd --include "$vdt" \
+            | head -n -1 \
+            | tail -n +2 \
+            | tr '{}' '[]'
+    done
+}
+
+generateTests > tests.js
