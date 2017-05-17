@@ -148,6 +148,7 @@ PageMemory.prototype.render = function() {
             const x = col * this.char.width;
 
             if(cell.type !== 'C') bgColor = cell.bgColor;
+            if(cell.type === 'M') underline = false;
 
             let front = cell.invert ? bgColor : cell.fgColor;
             let back = cell.invert ? cell.fgColor : bgColor;
@@ -179,8 +180,6 @@ PageMemory.prototype.render = function() {
             if(cell.type === 'D') {
                 if(cell.mask !== undefined) mask = cell.mask;
                 if(cell.zoneUnderline !== undefined) underline = cell.zoneUnderline;
-            } else if(cell.type === 'M') {
-                underline = false;
             }
         }
     }

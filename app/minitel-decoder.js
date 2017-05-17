@@ -63,9 +63,9 @@ MinitelDecoder.prototype.resetCurrent = function() {
 };
 
 MinitelDecoder.prototype.serialAttributesDefined = function() {
-    return this.waiting.bgColor
-        || this.waiting.underline
-        || this.waiting.mask;
+    return this.waiting.bgColor !== undefined
+        || this.waiting.underline !== undefined
+        || this.waiting.mask !== undefined;
 };
 
 MinitelDecoder.prototype.moveCursor = function(direction) {
@@ -277,24 +277,33 @@ MinitelDecoder.prototype.print = function(charCode) {
     const y = this.pm.cursor.y;
 
     let cell = undefined;
-    if((charCode === 0x20) && this.serialAttributesDefined()) {
+    if(charCode === 0x20 && this.serialAttributesDefined()) {
         cell = new DelimiterCell();
         cell.value = charCode;
-        if(this.waiting.bgColor !== undefined) {
-            cell.bgColor = this.waiting.bgColor;
-        } else {
+        cell.fgColor = this.current.fgColor;
+
+        // Background color
+        if(this.waiting.bgColor === undefined) {
             cell.bgColor = this.current.bgColor;
+        } else {
+            cell.bgColor = this.waiting.bgColor;
+            this.waiting.bgColor = undefined;
         }
-        cell.zoneUnderline = this.waiting.underline;
-        cell.mask = this.waiting.mask;
-
         this.current.bgColor = cell.bgColor;
-        this.current.underline = this.waiting.underline;
-        this.current.mask = this.waiting.mask;
 
-        this.waiting.bgColor = undefined;
-        this.waiting.underline = undefined;
-        this.waiting.mask = undefined;
+        // Underline
+        if(this.waiting.underline !== undefined) {
+            cell.zoneUnderline = this.waiting.underline;
+            this.current.underline = this.waiting.underline;
+            this.waiting.underline = undefined;
+        }
+
+        // Mask
+        if(this.waiting.mask !== undefined) {
+            cell.mask = this.waiting.mask;
+            this.current.mask = this.waiting.mask;
+            this.waiting.mask = undefined;
+        }
 
         this.pm.memory[y][x] = cell;
     } else if(this.current.charType === "C") {

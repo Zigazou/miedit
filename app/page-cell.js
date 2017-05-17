@@ -66,12 +66,12 @@ function DelimiterCell() {
     this.type = 'D';
     this.value = 0x20;    
 
-    this.fgColor = 0;
+    this.fgColor = 7;
     this.bgColor = 0;
     this.invert = false;
     this.blink = false;
-    this.zoneUnderline = false;
-    this.mask = false;
+    this.zoneUnderline = undefined;
+    this.mask = undefined;
     this.mult = { width: 1, height: 1 };
     this.part = { x: 0, y: 0 };
 
