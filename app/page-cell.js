@@ -69,7 +69,6 @@ function DelimiterCell() {
     this.fgColor = 7;
     this.bgColor = 0;
     this.invert = false;
-    this.blink = false;
     this.zoneUnderline = undefined;
     this.mask = undefined;
     this.mult = { width: 1, height: 1 };
@@ -78,7 +77,7 @@ function DelimiterCell() {
     Object.preventExtensions(this);
 }
 
-MosaicCell.prototype.copy = function() {
+DelimiterCell.prototype.copy = function() {
     "use strict";
     const cell = new DelimiterCell();
 
@@ -88,7 +87,6 @@ MosaicCell.prototype.copy = function() {
     cell.fgColor = this.fgColor;
     cell.bgColor = this.bgColor;
     cell.invert = this.invert;
-    cell.blink = this.blink;
     cell.mask = false;
     cell.mult = { width: this.mult.width, height: this.mult.height };
     cell.part = { x: this.part.x, y: this.part.y };

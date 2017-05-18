@@ -281,6 +281,7 @@ MinitelDecoder.prototype.print = function(charCode) {
         cell = new DelimiterCell();
         cell.value = charCode;
         cell.fgColor = this.current.fgColor;
+        cell.invert = this.current.invert;
 
         // Background color
         if(this.waiting.bgColor === undefined) {
@@ -329,15 +330,11 @@ MinitelDecoder.prototype.print = function(charCode) {
         cell.blink = this.current.blink;
         cell.separated = this.current.separated;
 
-        if(cell.value >= 0x20 && cell.value <= 0x3F) {
+        if(cell.value >= 0x20 && cell.value <= 0x5F) {
             cell.value += 0x20;
-        } else if(cell.value == 0x5F) {
-            cell.value = 0x7F;
-        } else if(cell.value >= 0x40 && cell.value <= 0x5E) {
-            cell.value = 0x40;
         }
 
-        if(cell.separated) {
+        if(cell.separated === true) {
             cell.value -= 0x40;
         }
 
@@ -580,8 +577,6 @@ MinitelDecoder.prototype.decode = function(char) {
         } else if("dynarg" in action) {
             args = this.previousBytes.lastValues(action.dynarg);
         }
-
-        //console.log(this.state, st, action.func, args);
 
         this[action.func].apply(this, args);
     }

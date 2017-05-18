@@ -134,6 +134,9 @@ PageMemory.prototype.render = function() {
     let mult = { width: 1, height: 1};
     let unde = false;
 
+    let front = 7;
+    let back = 0;
+
     // Draw each cell
     for(let row = 0; row < this.grid.rows; row++) {
         // Zone attributes
@@ -147,11 +150,18 @@ PageMemory.prototype.render = function() {
             const cell = this.memory[row][col];
             const x = col * this.char.width;
 
-            if(cell.type !== 'C') bgColor = cell.bgColor;
-            if(cell.type === 'M') underline = false;
+            if(cell.type !== 'C') {
+                bgColor = cell.bgColor;
+                underline = false;
+            }
 
-            let front = cell.invert ? bgColor : cell.fgColor;
-            let back = cell.invert ? cell.fgColor : bgColor;
+            if(cell.type !== 'M') {
+                front = cell.invert ? bgColor : cell.fgColor;
+                back = cell.invert ? cell.fgColor : bgColor;
+            } else {
+                front = cell.fgColor;
+                back = bgColor;
+            }
 
             // Draw background
             ctx.fillStyle = this.colors[back];
@@ -161,7 +171,7 @@ PageMemory.prototype.render = function() {
             );
 
             // Draw character
-            if(!mask) {
+            if(mask !== true) {
                 if(cell.type !== 'M') {
                     page = this.font['G0'];
                     part = cell.part;
@@ -178,8 +188,13 @@ PageMemory.prototype.render = function() {
             }
 
             if(cell.type === 'D') {
-                if(cell.mask !== undefined) mask = cell.mask;
-                if(cell.zoneUnderline !== undefined) underline = cell.zoneUnderline;
+                if(cell.mask !== undefined) {
+                    mask = cell.mask;
+                }
+
+                if(cell.zoneUnderline !== undefined) {
+                    underline = cell.zoneUnderline;
+                }
             }
         }
     }
