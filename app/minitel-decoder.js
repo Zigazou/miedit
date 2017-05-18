@@ -38,7 +38,7 @@ function MinitelDecoder(pageMemory) {
     this.previousBytes = new FiniteStack(128);
 
     this.resetCurrent();
-    this.current.charCode = 0x20;
+    this.charCode = 0x20;
 
     this.waiting = {
         bgColor: undefined,
@@ -48,9 +48,9 @@ function MinitelDecoder(pageMemory) {
 }
 
 MinitelDecoder.prototype.resetCurrent = function() {
+    "use strict";
     this.current = {
         charType: "C",
-        charCode: 0x20,
         mult: { width: 1, height: 1 },
         fgColor: 7,
         bgColor: 0,
@@ -367,7 +367,7 @@ MinitelDecoder.prototype.print = function(charCode) {
         this.printG1Char(charCode);
     }
 
-    this.current.charCode = charCode;
+    this.charCode = charCode;
     this.moveCursor("char");
 };
 
@@ -376,7 +376,7 @@ MinitelDecoder.prototype.repeat = function(count) {
 
     count -= 0x40;
     for(let i = 0; i < count; i++) {
-        this.print(this.current.charCode);
+        this.print(this.charCode);
     }
 };
 
@@ -583,10 +583,12 @@ MinitelDecoder.prototype.decode = function(char) {
         return;
     }
 
-    const st = c in this.states[this.state] ? c : "*";
-    const action = st in this.states[this.state]
-                 ? this.states[this.state][st]
-                 : null;
+    let action = null;
+    if(c in this.states[this.state]) {
+        action = this.states[this.state][c];
+    } else if('*' in this.states[this.state]) {
+        action = this.states[this.state]['*'];
+    }
 
     if(action === null) {
         console.log("unexpectedChar: " + c);
