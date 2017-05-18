@@ -24,3 +24,7 @@ body { padding-top: 6em; }
 }
 
 select { height: 2.6em; }
+
+canvas {
+    border: 2em solid black;
+}

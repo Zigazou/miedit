@@ -172,9 +172,14 @@ PageMemory.prototype.render = function() {
 
             // Draw character
             if(mask !== true) {
-                if(cell.type !== 'M') {
+                if(cell.type === 'C') {
                     page = this.font['G0'];
                     part = cell.part;
+                    mult = cell.mult;
+                    unde = underline;
+                } else if(cell.type === 'D') {
+                    page = this.font['G0'];
+                    part = { x: 0, y: 0 };
                     mult = cell.mult;
                     unde = underline;
                 } else {

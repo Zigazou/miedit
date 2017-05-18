@@ -271,74 +271,100 @@ MinitelDecoder.prototype.locate = function(y, x) {
     this.resetCurrent();
 };
 
-MinitelDecoder.prototype.print = function(charCode) {
+MinitelDecoder.prototype.printDelimiter = function(charCode) {
     "use strict";
     const x = this.pm.cursor.x;
     const y = this.pm.cursor.y;
 
-    let cell = undefined;
-    if(charCode === 0x20 && this.serialAttributesDefined()) {
-        cell = new DelimiterCell();
-        cell.value = charCode;
-        cell.fgColor = this.current.fgColor;
-        cell.invert = this.current.invert;
+    const cell = new DelimiterCell();
+    cell.value = charCode;
+    cell.fgColor = this.current.fgColor;
+    cell.invert = this.current.invert;
+    cell.mult = this.current.mult;
 
-        // Background color
-        if(this.waiting.bgColor === undefined) {
-            cell.bgColor = this.current.bgColor;
-        } else {
-            cell.bgColor = this.waiting.bgColor;
-            this.waiting.bgColor = undefined;
-        }
-        this.current.bgColor = cell.bgColor;
-
-        // Underline
-        if(this.waiting.underline !== undefined) {
-            cell.zoneUnderline = this.waiting.underline;
-            this.current.underline = this.waiting.underline;
-            this.waiting.underline = undefined;
-        }
-
-        // Mask
-        if(this.waiting.mask !== undefined) {
-            cell.mask = this.waiting.mask;
-            this.current.mask = this.waiting.mask;
-            this.waiting.mask = undefined;
-        }
-
-        this.pm.memory[y][x] = cell;
-    } else if(this.current.charType === "C") {
-        cell = new CharCell();
-        cell.value = charCode;
-        cell.fgColor = this.current.fgColor;
-        cell.blink = this.current.blink;
-        cell.invert = this.current.invert;
-        cell.mult = this.current.mult;
-
-        for(let j = 0; j < cell.mult.height; j++) {
-            for(let i = 0; i < cell.mult.width; i++) {
-                const newCell = cell.copy();
-                newCell.part = { x: i, y: cell.mult.height - j - 1 };
-                this.pm.memory[y - j][x + i] = newCell;
-            }
-        }
-    } else if(this.current.charType === "M") {
-        cell = new MosaicCell();
-        cell.value = charCode;
-        cell.fgColor = this.current.fgColor;
+    // Background color
+    if(this.waiting.bgColor === undefined) {
         cell.bgColor = this.current.bgColor;
-        cell.blink = this.current.blink;
-        cell.separated = this.current.separated;
+    } else {
+        cell.bgColor = this.waiting.bgColor;
+        this.waiting.bgColor = undefined;
+    }
+    this.current.bgColor = cell.bgColor;
 
-        if(cell.value >= 0x20 && cell.value <= 0x5F) {
-            cell.value += 0x20;
+    // Underline
+    if(this.waiting.underline !== undefined) {
+        cell.zoneUnderline = this.waiting.underline;
+        this.current.underline = this.waiting.underline;
+        this.waiting.underline = undefined;
+    }
+
+    // Mask
+    if(this.waiting.mask !== undefined) {
+        cell.mask = this.waiting.mask;
+        this.current.mask = this.waiting.mask;
+        this.waiting.mask = undefined;
+    }
+
+    for(let j = 0; j < cell.mult.height; j++) {
+        for(let i = 0; i < cell.mult.width; i++) {
+            const newCell = cell.copy();
+            this.pm.memory[y - j][x + i] = newCell;
         }
+    }
+};
 
-        if(cell.separated === true) {
-            cell.value -= 0x40;
+MinitelDecoder.prototype.printG0Char = function(charCode) {
+    "use strict";
+    const x = this.pm.cursor.x;
+    const y = this.pm.cursor.y;
+
+    const cell = new CharCell();
+    cell.value = charCode;
+    cell.fgColor = this.current.fgColor;
+    cell.blink = this.current.blink;
+    cell.invert = this.current.invert;
+    cell.mult = this.current.mult;
+
+    for(let j = 0; j < cell.mult.height; j++) {
+        for(let i = 0; i < cell.mult.width; i++) {
+            const newCell = cell.copy();
+            newCell.part = { x: i, y: cell.mult.height - j - 1 };
+            this.pm.memory[y - j][x + i] = newCell;
         }
+    }
+};
 
-        this.pm.memory[y][x] = cell;
+MinitelDecoder.prototype.printG1Char = function(charCode) {
+    "use strict";
+    const x = this.pm.cursor.x;
+    const y = this.pm.cursor.y;
+
+    const cell = new MosaicCell();
+    cell.value = charCode;
+    cell.fgColor = this.current.fgColor;
+    cell.bgColor = this.current.bgColor;
+    cell.blink = this.current.blink;
+    cell.separated = this.current.separated;
+
+    if(cell.value >= 0x20 && cell.value <= 0x5F) {
+        cell.value += 0x20;
+    }
+
+    if(cell.separated === true) {
+        cell.value -= 0x40;
+    }
+
+    this.pm.memory[y][x] = cell;
+};
+
+MinitelDecoder.prototype.print = function(charCode) {
+    "use strict";
+    if(charCode === 0x20 && this.serialAttributesDefined()) {
+        this.printDelimiter(charCode);
+    } else if(this.current.charType === "C") {
+        this.printG0Char(charCode);
+    } else if(this.current.charType === "M") {
+        this.printG1Char(charCode);
     }
 
     this.current.charCode = charCode;

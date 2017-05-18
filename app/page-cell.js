@@ -72,7 +72,6 @@ function DelimiterCell() {
     this.zoneUnderline = undefined;
     this.mask = undefined;
     this.mult = { width: 1, height: 1 };
-    this.part = { x: 0, y: 0 };
 
     Object.preventExtensions(this);
 }
@@ -87,9 +86,9 @@ DelimiterCell.prototype.copy = function() {
     cell.fgColor = this.fgColor;
     cell.bgColor = this.bgColor;
     cell.invert = this.invert;
+    cell.zoneUnderline = this.zoneUnderline;
     cell.mask = false;
     cell.mult = { width: this.mult.width, height: this.mult.height };
-    cell.part = { x: this.part.x, y: this.part.y };
 
     return cell;
 }
