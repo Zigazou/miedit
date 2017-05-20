@@ -171,9 +171,12 @@ MinitelDecoder.prototype.clear = function(range) {
     }
 
     if(range === "eol") {
+        const saveX = this.pm.cursor.x;
+        const saveY = this.pm.cursor.y;
         for(let i = this.pm.cursor.x; i < this.pm.grid.cols; i++) {
-            this.pm.memory[this.pm.cursor.y][i] = new CharCell();
+            this.print(0x20);
         }
+        this.pm.cursor = { x: saveX, y: saveY };
         return;
     }
 };
