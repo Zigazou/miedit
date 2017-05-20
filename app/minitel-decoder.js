@@ -154,7 +154,7 @@ MinitelDecoder.prototype.clear = function(range) {
     if(range === "page") {
         for(let j = 1; j < this.pm.grid.rows; j++) {
             for(let i = 0; i < this.pm.grid.cols; i++) {
-                this.pm.memory[j][i] = new MosaicCell();
+                this.pm.set(i, j, new MosaicCell());
             }
         }
 
@@ -165,7 +165,7 @@ MinitelDecoder.prototype.clear = function(range) {
     if(range === "status") {
         let row = [];
         for(let i = 0; i < this.pm.grid.cols; i++) {
-            this.pm.memory[0][i] = new MosaicCell();
+            this.pm.set(i, 0, new MosaicCell());
         }
         return;
     }
@@ -314,7 +314,7 @@ MinitelDecoder.prototype.printDelimiter = function(charCode) {
     for(let j = 0; j < cell.mult.height; j++) {
         for(let i = 0; i < cell.mult.width; i++) {
             const newCell = cell.copy();
-            this.pm.memory[y - j][x + i] = newCell;
+            this.pm.set(x + i, y - j, newCell);
         }
     }
 };
@@ -335,7 +335,7 @@ MinitelDecoder.prototype.printG0Char = function(charCode) {
         for(let i = 0; i < cell.mult.width; i++) {
             const newCell = cell.copy();
             newCell.part = { x: i, y: cell.mult.height - j - 1 };
-            this.pm.memory[y - j][x + i] = newCell;
+            this.pm.set(x + i, y - j, newCell);
         }
     }
 };
@@ -360,7 +360,7 @@ MinitelDecoder.prototype.printG1Char = function(charCode) {
         cell.value -= 0x40;
     }
 
-    this.pm.memory[y][x] = cell;
+    this.pm.set(x, y, cell);
 };
 
 MinitelDecoder.prototype.print = function(charCode) {

@@ -12,6 +12,7 @@ function PageMemory(grid, char, zoom, canvas) {
     this.canvas = canvas;
     this.context = this.createContext();
     this.colors = this.minitelColors;
+    this.frameRate = 50; // Frame per second
 
     this.font = {
         'G0': this.loadFont('font/ef9345-g0.png'),
@@ -26,6 +27,7 @@ function PageMemory(grid, char, zoom, canvas) {
 
     this.memory = [];
 
+    // Initializes the page memory with default mosaic cells
     for(let j = 0; j < this.grid.rows; j++) {
         let row = [];
         for(let i = 0; i < this.grid.cols; i++) {
@@ -33,6 +35,23 @@ function PageMemory(grid, char, zoom, canvas) {
         }
         this.memory[j] = row;
     }
+
+    // Marks all rows as changed
+    this.changed = [];
+    for(let j = 0; j < this.grid.rows; j++) {
+        this.changed[j] = true;
+    }
+
+    const that = this;
+    this.refresh = window.setInterval(
+        function() { that.render(); },
+        1000 / this.frameRate
+    );
+}
+
+PageMemory.prototype.set = function(x, y, cell) {
+    this.memory[y][x] = cell;
+    this.changed[y] = true;
 }
 
 PageMemory.prototype.createContext = function() {
@@ -77,18 +96,22 @@ PageMemory.prototype.scroll = function(direction) {
         case 'up':
             for(let row = 2; row < this.grid.rows; row++) {
                 this.memory[row] = this.memory[row + 1];
+                this.changed[row] = true;
             }
 
             this.memory[this.grid.rows - 1] = newRow;
+            this.changed[this.grid.rows - 1] = true;
 
             break;
             
         case 'down':
             for(let row = this.grid.rows - 1; row > 1; row--) {
                 this.memory[row] = this.memory[row - 1];
+                this.changed[row] = true;
             }
 
             this.memory[1] = newRow;
+            this.changed[1] = true;
 
             break;
     }
@@ -139,10 +162,13 @@ PageMemory.prototype.render = function() {
 
     // Draw each cell
     for(let row = 0; row < this.grid.rows; row++) {
+        if(!this.changed[row]) continue;
+
         // Zone attributes
         let bgColor = defaultBgColor;
         let mask = false;
         let underline = false;
+        this.changed[row] = false;
 
         const y = row * this.char.height;
 
