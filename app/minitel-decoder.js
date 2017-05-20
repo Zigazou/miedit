@@ -171,6 +171,9 @@ MinitelDecoder.prototype.clear = function(range) {
     }
 
     if(range === "eol") {
+        for(let i = this.pm.cursor.x; i < this.pm.grid.cols; i++) {
+            this.pm.memory[this.pm.cursor.y][i] = new CharCell();
+        }
         return;
     }
 };
