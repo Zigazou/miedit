@@ -72,7 +72,7 @@ FontSprite.prototype.writeChar = function(ctx, ord, x, y, prt, mult, color, u) {
             x,
             y + this.char.height - 1,
             this.char.width,
-            mult.height
+            1
         );
     }
 };
