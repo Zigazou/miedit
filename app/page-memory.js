@@ -36,6 +36,13 @@ function PageMemory(grid, char, zoom, canvas) {
         this.memory[j] = row;
     }
 
+    // Initializes blinking handling
+    this.lastblink = this.getBlink();
+    this.blinking = [];
+    for(let j = 0; j < this.grid.rows; j++) {
+        this.blinking[j] = false;
+    }
+
     // Marks all rows as changed
     this.changed = [];
     for(let j = 0; j < this.grid.rows; j++) {
@@ -52,6 +59,12 @@ function PageMemory(grid, char, zoom, canvas) {
 PageMemory.prototype.set = function(x, y, cell) {
     this.memory[y][x] = cell;
     this.changed[y] = true;
+}
+
+PageMemory.prototype.getBlink = function() {
+    const now = new Date();
+    const msecs = now.getTime();
+    return (msecs % 1500) >= 750;
 }
 
 PageMemory.prototype.createContext = function() {
@@ -151,6 +164,7 @@ PageMemory.prototype.render = function() {
     const defaultFgColor = 7;
     const defaultBgColor = 0;
     const ctx = this.context;
+    const blink = this.getBlink();
 
     let page = 'G0';
     let part = { x: 0, y: 0};
@@ -162,7 +176,11 @@ PageMemory.prototype.render = function() {
 
     // Draw each cell
     for(let row = 0; row < this.grid.rows; row++) {
-        if(!this.changed[row]) continue;
+        // Draw the row only if needed
+        if(!this.changed[row]) {
+            if(!this.blinking[row]) continue;
+            if(this.lastBlink === blink) continue;
+        }
 
         // Zone attributes
         let bgColor = defaultBgColor;
@@ -172,16 +190,21 @@ PageMemory.prototype.render = function() {
 
         const y = row * this.char.height;
 
+        let blinkRow = false;
         for(let col = 0; col < this.grid.cols; col++) {
             const cell = this.memory[row][col];
             const x = col * this.char.width;
 
-            if(cell.type !== 'C') {
+            if(cell.type !== "C") {
                 bgColor = cell.bgColor;
                 underline = false;
             }
+            
+            if(cell.type !== "D" && cell.blink === true) {
+                blinkRow = true;
+            }
 
-            if(cell.type !== 'M') {
+            if(cell.type !== "M") {
                 front = cell.invert ? bgColor : cell.fgColor;
                 back = cell.invert ? cell.fgColor : bgColor;
             } else {
@@ -197,7 +220,10 @@ PageMemory.prototype.render = function() {
             );
 
             // Draw character
-            if(mask !== true) {
+            if(   mask !== true
+               && !(   cell.type !== "D"
+                    && cell.blink === true
+                    && blink === (cell.type === "M" || !cell.invert))) {
                 if(cell.type === 'C') {
                     page = this.font['G0'];
                     part = cell.part;
@@ -228,6 +254,10 @@ PageMemory.prototype.render = function() {
                 }
             }
         }
+
+        this.blinking[row] = blinkRow;
     }
+
+    this.lastBlink = blink;
 }
 

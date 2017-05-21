@@ -238,7 +238,6 @@ MinitelDecoder.prototype.setSize = function(sizeName) {
 
 MinitelDecoder.prototype.setBlink = function(blink) {
     "use strict";
-    if(this.charType !== "C") return;
     this.current.blink = blink;
 };
 
