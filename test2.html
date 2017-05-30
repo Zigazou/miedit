@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Sprite − MiEdit</title>
+    <link rel="stylesheet" href="library/bootstrap4/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <import src="import/main-menu.html"></import>
+
+    <div class="container theme-showcase" role="main">
+      <h1>Test editor</h1>
+      <div class="minitel-editor">
+        <canvas class="minitel-screen"></canvas>
+        <canvas class="minitel-overlay"></canvas>
+      </div>
+      <img id="g0" src="font/ef9345-g0.png"></img>
+      <img id="g1" src="font/ef9345-g1.png"></img>
+    </div>
+
+    <script src="library/jquery/jquery.js"></script>
+    <script src="app/font-sprite.js"></script>
+    <script src="app/page-cell.js"></script>
+    <script src="app/page-memory.js"></script>
+    <script src="app/minitel-decoder.js"></script>
+    <script src="app/minitel-screen.js"></script>
+    <script src="app/minitel-overlay.js"></script>
+
+    <script src="test/attribut.vdt.js"></script>
+
+    <script>
+        const mscreens = []
+        const canvases = document.getElementsByClassName("minitel-screen");
+        mscreens.push(new MinitelScreen(canvases[0]));
+
+        const overlays = document.getElementsByClassName("minitel-overlay");
+
+        mover = new MinitelOverlay(overlays[0], mscreens[0]);
+
+        mscreens[0].send(vdtAttribut);
+    </script>
+  </body>
+</html>

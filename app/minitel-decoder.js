@@ -1,391 +1,452 @@
-function FiniteStack(maxLength) {
-    "use strict";
-    this.maxLength = maxLength;
-    this.stack = [];
-}
-
-FiniteStack.prototype.push = function(value) {
-    "use strict";
-    this.stack.push(value);
-    if(this.stack.length > this.maxLength) {
-        this.stack.shift();
-    }
-};
-
-FiniteStack.prototype.lastValue = function() {
-    "use strict";
-    if(this.stack.length == 0) {
-        return null;
+class FiniteStack {
+    constructor(maxLength) {
+        "use strict"
+        this.maxLength = maxLength
+        this.stack = []
     }
 
-    return this.stack[this.stack.length - 1];
-};
+    push(value) {
+        "use strict"
+        this.stack.push(value)
+        if(this.stack.length > this.maxLength) {
+            this.stack.shift()
+        }
+    }
 
-FiniteStack.prototype.lastValues = function(count) {
-    "use strict";
-    return this.stack.slice(-count);
-};
+    lastValue() {
+        "use strict"
+        if(this.stack.length == 0) {
+            return null
+        }
 
-function MinitelDecoder(pageMemory) {
-    "use strict";
-    this.state = "start";
-    this.pageMode = true;
+        return this.stack[this.stack.length - 1]
+    }
 
-    this.pm = pageMemory;
-    this.clear("page");
-    this.clear("status");
-
-    this.previousBytes = new FiniteStack(128);
-
-    this.resetCurrent();
-    this.charCode = 0x20;
-
-    this.waiting = {
-        bgColor: undefined,
-        mask: undefined,
-        underline: undefined
-    };
+    lastValues(count) {
+        "use strict"
+        return this.stack.slice(-count)
+    }
 }
 
-MinitelDecoder.prototype.resetCurrent = function() {
-    "use strict";
-    this.current = {
-        charType: "C",
-        mult: { width: 1, height: 1 },
-        fgColor: 7,
-        bgColor: 0,
-        underline: false,
-        blink: false,
-        invert: false,
-        mask: false,
-        separated: false
-    };
-};
+class MinitelDecoder{
+    constructor(pageMemory) {
+        "use strict"
+        this.state = "start"
+        this.pageMode = true
 
-MinitelDecoder.prototype.serialAttributesDefined = function() {
-    return this.waiting.bgColor !== undefined
-        || this.waiting.underline !== undefined
-        || this.waiting.mask !== undefined;
-};
+        this.pm = pageMemory
+        this.clear("page")
+        this.clear("status")
 
-MinitelDecoder.prototype.moveCursor = function(direction) {
-    "use strict";
-    switch(direction) {
-        case "char":
-            this.pm.cursor.x += this.current.mult.width;
-            if(this.pm.cursor.x >= this.pm.grid.cols) {
-                if(this.pm.cursor.y == 0) {
-                    // No overflow on status line
-                    this.pm.cursor.x = this.pm.grid.cols - 1;
-                } else {
-                    // Go to start of next row
-                    this.pm.cursor.x = 0;
-                    for(let i = 0; i < this.current.mult.height; i++) {
-                        this.moveCursor("down");
+        this.previousBytes = new FiniteStack(128)
+
+        this.resetCurrent()
+        this.charCode = 0x20
+
+        this.waiting = {
+            bgColor: undefined,
+            mask: undefined,
+            underline: undefined
+        }
+    }
+
+    resetCurrent() {
+        "use strict"
+        this.current = {
+            charType: "C",
+            mult: { width: 1, height: 1 },
+            fgColor: 7,
+            bgColor: 0,
+            underline: false,
+            blink: false,
+            invert: false,
+            mask: false,
+            separated: false
+        }
+    }
+
+    serialAttributesDefined() {
+        "use strict"
+        return this.waiting.bgColor !== undefined
+            || this.waiting.underline !== undefined
+            || this.waiting.mask !== undefined
+    }
+
+    moveCursor(direction) {
+        "use strict"
+        switch(direction) {
+            case "char":
+                this.pm.cursor.x += this.current.mult.width
+                if(this.pm.cursor.x >= this.pm.grid.cols) {
+                    if(this.pm.cursor.y == 0) {
+                        // No overflow on status line
+                        this.pm.cursor.x = this.pm.grid.cols - 1
+                    } else {
+                        // Go to start of next row
+                        this.pm.cursor.x = 0
+                        for(let i = 0; i < this.current.mult.height; i++) {
+                            this.moveCursor("down")
+                        }
                     }
                 }
-            }
 
-            break;
+                break
 
-        case "left":
-            this.pm.cursor.x--;
-            if(this.pm.cursor.x < 0) {
-                this.pm.cursor.x = this.pm.grid.cols - 1;
-                this.moveCursor("up");
-            }
-
-            break;
-
-        case "right":
-            this.pm.cursor.x++;
-            if(this.pm.cursor.x >= this.pm.grid.cols) {
-                this.pm.cursor.x = 0;
-                this.moveCursor("down");
-            }
-
-            break;
-
-        case "up":
-            if(this.pm.cursor.y == 0) break;
-
-            this.pm.cursor.y--;
-
-            if(this.pm.cursor.y == 0) {
-                if(this.pageMode) {
-                    this.pm.cursor.y = this.pm.grid.rows - 1;
-                } else {
-                    this.pm.cursor.y = 1;
-                    this.pm.scroll("down");
+            case "left":
+                this.pm.cursor.x--
+                if(this.pm.cursor.x < 0) {
+                    this.pm.cursor.x = this.pm.grid.cols - 1
+                    this.moveCursor("up")
                 }
-            }
-            break;
 
-        case "down":
-            if(this.pm.cursor.y == 0) break;
+                break
 
-            this.pm.cursor.y++;
-
-            if(this.pm.cursor.y == this.pm.grid.rows) {
-                if(this.pageMode) {
-                    this.pm.cursor.y = 1;
-                } else {
-                    this.pm.cursor.y = this.pm.grid.rows - 1;
-                    this.pm.scroll("up");
+            case "right":
+                this.pm.cursor.x++
+                if(this.pm.cursor.x >= this.pm.grid.cols) {
+                    this.pm.cursor.x = 0
+                    this.moveCursor("down")
                 }
-            }
-            break;
+
+                break
+
+            case "up":
+                if(this.pm.cursor.y == 0) break
+
+                this.pm.cursor.y--
+
+                if(this.pm.cursor.y == 0) {
+                    if(this.pageMode) {
+                        this.pm.cursor.y = this.pm.grid.rows - 1
+                    } else {
+                        this.pm.cursor.y = 1
+                        this.pm.scroll("down")
+                    }
+                }
+                break
+
+            case "down":
+                if(this.pm.cursor.y == 0) break
+
+                this.pm.cursor.y++
+
+                if(this.pm.cursor.y == this.pm.grid.rows) {
+                    if(this.pageMode) {
+                        this.pm.cursor.y = 1
+                    } else {
+                        this.pm.cursor.y = this.pm.grid.rows - 1
+                        this.pm.scroll("up")
+                    }
+                }
+                break
 
 
-        case "firstColumn":
-            this.pm.cursor.x = 0;
-            break;
+            case "firstColumn":
+                this.pm.cursor.x = 0
+                break
 
-        case "home":
-            this.pm.cursor.x = 0;
-            this.pm.cursor.y = 1;
-            this.resetCurrent();
-            break;
+            case "home":
+                this.pm.cursor.x = 0
+                this.pm.cursor.y = 1
+                this.resetCurrent()
+                break
+        }
     }
-};
 
-MinitelDecoder.prototype.clear = function(range) {
-    "use strict";
-    if(range === "page") {
-        for(let j = 1; j < this.pm.grid.rows; j++) {
+    clear(range) {
+        "use strict"
+        if(range === "page") {
+            for(let j = 1; j < this.pm.grid.rows; j++) {
+                for(let i = 0; i < this.pm.grid.cols; i++) {
+                    this.pm.set(i, j, new MosaicCell())
+                }
+            }
+
+            this.resetCurrent()
+            return
+        }
+
+        if(range === "status") {
+            let row = []
             for(let i = 0; i < this.pm.grid.cols; i++) {
-                this.pm.set(i, j, new MosaicCell());
+                this.pm.set(i, 0, new MosaicCell())
+            }
+            return
+        }
+
+        if(range === "eol") {
+            const saveX = this.pm.cursor.x
+            const saveY = this.pm.cursor.y
+            for(let i = this.pm.cursor.x; i < this.pm.grid.cols; i++) {
+                this.print(0x20)
+            }
+            this.pm.cursor = { x: saveX, y: saveY }
+            return
+        }
+    }
+
+    setPageMode(bool) {
+        "use strict"
+        this.pageMode = bool
+    }
+
+    setCharType(charPage) {
+        "use strict"
+        if(charPage === "G0" && this.current.charType === "C") return
+        if(charPage === "G1" && this.current.charType === "M") return
+
+        if(charPage === "G0") {
+            this.current.charType = "C"
+            this.current.separated = false
+        } else if(charPage === "G1") {
+            this.current.charType = "M"
+            this.current.underline = false
+            this.current.invert = false
+            this.current.mult = { width: 1, height: 1 }
+        }
+    }
+
+    showCursor(visibility) {
+        "use strict"
+        this.pm.cursor.visible = visibility
+    }
+
+    setFgColor(color) {
+        "use strict"
+        this.current.fgColor = color
+    }
+
+    setBgColor(color) {
+        "use strict"
+        if(this.current.charType === "C") {
+            this.waiting.bgColor = color
+        } else if(this.current.charType === "M") {
+            this.current.bgColor = color
+        }
+    }
+
+    setSize(sizeName) {
+        "use strict"
+        if(this.current.charType !== "C") return
+
+        const sizes = {
+            "normalSize": { width: 1, height: 1 },
+            "doubleWidth": { width: 2, height: 1 },
+            "doubleHeight": { width: 1, height: 2 },
+            "doubleSize": { width: 2, height: 2 },
+        }
+
+        if(!(sizeName in sizes)) return
+        this.current.mult = sizes[sizeName]
+    }
+
+    setBlink(blink) {
+        "use strict"
+        this.current.blink = blink
+    }
+
+    setMask(mask) {
+        "use strict"
+        this.waiting.mask = mask
+    }
+
+    setUnderline(underline) {
+        "use strict"
+        if(this.current.charType === "C") {
+            this.waiting.underline = underline
+        } else if(this.current.charType === "M") {
+            this.current.separated = underline
+        }
+    }
+
+    setInvert(invert) {
+        "use strict"
+        if(this.current.charType === "M") return
+
+        this.current.invert = invert
+    }
+
+    locate(y, x) {
+        "use strict"
+        x -= 0x40
+        y -= 0x40
+
+        if(x < 1 || x > 40) return
+        if(y < 0 || y > 24) return
+
+        this.pm.cursor.x = x - 1
+        this.pm.cursor.y = y
+
+        this.resetCurrent()
+    }
+
+    printDelimiter(charCode) {
+        "use strict"
+        const x = this.pm.cursor.x
+        const y = this.pm.cursor.y
+
+        const cell = new DelimiterCell()
+        cell.value = charCode
+        cell.fgColor = this.current.fgColor
+        cell.invert = this.current.invert
+        cell.mult = this.current.mult
+
+        // Background color
+        if(this.waiting.bgColor === undefined) {
+            cell.bgColor = this.current.bgColor
+        } else {
+            cell.bgColor = this.waiting.bgColor
+            this.waiting.bgColor = undefined
+        }
+        this.current.bgColor = cell.bgColor
+
+        // Underline
+        if(this.waiting.underline !== undefined) {
+            cell.zoneUnderline = this.waiting.underline
+            this.current.underline = this.waiting.underline
+            this.waiting.underline = undefined
+        }
+
+        // Mask
+        if(this.waiting.mask !== undefined) {
+            cell.mask = this.waiting.mask
+            this.current.mask = this.waiting.mask
+            this.waiting.mask = undefined
+        }
+
+        for(let j = 0; j < cell.mult.height; j++) {
+            for(let i = 0; i < cell.mult.width; i++) {
+                const newCell = cell.copy()
+                this.pm.set(x + i, y - j, newCell)
             }
         }
-
-        this.resetCurrent();
-        return;
     }
 
-    if(range === "status") {
-        let row = [];
-        for(let i = 0; i < this.pm.grid.cols; i++) {
-            this.pm.set(i, 0, new MosaicCell());
-        }
-        return;
-    }
+    printG0Char(charCode) {
+        "use strict"
+        const x = this.pm.cursor.x
+        const y = this.pm.cursor.y
 
-    if(range === "eol") {
-        const saveX = this.pm.cursor.x;
-        const saveY = this.pm.cursor.y;
-        for(let i = this.pm.cursor.x; i < this.pm.grid.cols; i++) {
-            this.print(0x20);
-        }
-        this.pm.cursor = { x: saveX, y: saveY };
-        return;
-    }
-};
+        const cell = new CharCell()
+        cell.value = charCode
+        cell.fgColor = this.current.fgColor
+        cell.blink = this.current.blink
+        cell.invert = this.current.invert
+        cell.mult = this.current.mult
 
-MinitelDecoder.prototype.setPageMode = function(bool) {
-    "use strict";
-    this.pageMode = bool;
-};
-
-MinitelDecoder.prototype.setCharType = function(charPage) {
-    "use strict";
-    if(charPage === "G0" && this.current.charType === "C") return;
-    if(charPage === "G1" && this.current.charType === "M") return;
-
-    if(charPage === "G0") {
-        this.current.charType = "C";
-        this.current.separated = false;
-    } else if(charPage === "G1") {
-        this.current.charType = "M";
-        this.current.underline = false;
-        this.current.invert = false;
-        this.current.mult = { width: 1, height: 1 };
-    }
-};
-
-MinitelDecoder.prototype.showCursor = function(visibility) {
-    "use strict";
-    this.pm.cursor.visible = visibility;
-};
-
-MinitelDecoder.prototype.setFgColor = function(color) {
-    "use strict";
-    this.current.fgColor = color;
-};
-
-MinitelDecoder.prototype.setBgColor = function(color) {
-    "use strict";
-    if(this.current.charType === "C") {
-        this.waiting.bgColor = color;
-    } else if(this.current.charType === "M") {
-        this.current.bgColor = color;
-    }
-};
-
-MinitelDecoder.prototype.setSize = function(sizeName) {
-    "use strict";
-    if(this.current.charType !== "C") return;
-
-    const sizes = {
-        "normalSize": { width: 1, height: 1 },
-        "doubleWidth": { width: 2, height: 1 },
-        "doubleHeight": { width: 1, height: 2 },
-        "doubleSize": { width: 2, height: 2 },
-    };
-
-    if(!(sizeName in sizes)) return;
-    this.current.mult = sizes[sizeName];
-};
-
-MinitelDecoder.prototype.setBlink = function(blink) {
-    "use strict";
-    this.current.blink = blink;
-};
-
-MinitelDecoder.prototype.setMask = function(mask) {
-    "use strict";
-    this.waiting.mask = mask;
-};
-
-MinitelDecoder.prototype.setUnderline = function(underline) {
-    "use strict";
-    if(this.current.charType === "C") {
-        this.waiting.underline = underline;
-    } else if(this.current.charType === "M") {
-        this.current.separated = underline;
-    }
-};
-
-MinitelDecoder.prototype.setInvert = function(invert) {
-    "use strict";
-    if(this.current.charType === "M") return;
-
-    this.current.invert = invert;
-};
-
-MinitelDecoder.prototype.locate = function(y, x) {
-    "use strict";
-    x -= 0x40;
-    y -= 0x40;
-
-    if(x < 1 || x > 40) return;
-    if(y < 0 || y > 24) return;
-
-    this.pm.cursor.x = x - 1;
-    this.pm.cursor.y = y;
-
-    this.resetCurrent();
-};
-
-MinitelDecoder.prototype.printDelimiter = function(charCode) {
-    "use strict";
-    const x = this.pm.cursor.x;
-    const y = this.pm.cursor.y;
-
-    const cell = new DelimiterCell();
-    cell.value = charCode;
-    cell.fgColor = this.current.fgColor;
-    cell.invert = this.current.invert;
-    cell.mult = this.current.mult;
-
-    // Background color
-    if(this.waiting.bgColor === undefined) {
-        cell.bgColor = this.current.bgColor;
-    } else {
-        cell.bgColor = this.waiting.bgColor;
-        this.waiting.bgColor = undefined;
-    }
-    this.current.bgColor = cell.bgColor;
-
-    // Underline
-    if(this.waiting.underline !== undefined) {
-        cell.zoneUnderline = this.waiting.underline;
-        this.current.underline = this.waiting.underline;
-        this.waiting.underline = undefined;
-    }
-
-    // Mask
-    if(this.waiting.mask !== undefined) {
-        cell.mask = this.waiting.mask;
-        this.current.mask = this.waiting.mask;
-        this.waiting.mask = undefined;
-    }
-
-    for(let j = 0; j < cell.mult.height; j++) {
-        for(let i = 0; i < cell.mult.width; i++) {
-            const newCell = cell.copy();
-            this.pm.set(x + i, y - j, newCell);
+        for(let j = 0; j < cell.mult.height; j++) {
+            for(let i = 0; i < cell.mult.width; i++) {
+                const newCell = cell.copy()
+                newCell.part = { x: i, y: cell.mult.height - j - 1 }
+                this.pm.set(x + i, y - j, newCell)
+            }
         }
     }
-};
 
-MinitelDecoder.prototype.printG0Char = function(charCode) {
-    "use strict";
-    const x = this.pm.cursor.x;
-    const y = this.pm.cursor.y;
+    printG1Char(charCode) {
+        "use strict"
+        const x = this.pm.cursor.x
+        const y = this.pm.cursor.y
 
-    const cell = new CharCell();
-    cell.value = charCode;
-    cell.fgColor = this.current.fgColor;
-    cell.blink = this.current.blink;
-    cell.invert = this.current.invert;
-    cell.mult = this.current.mult;
+        const cell = new MosaicCell()
+        cell.value = charCode
+        cell.fgColor = this.current.fgColor
+        cell.bgColor = this.current.bgColor
+        cell.blink = this.current.blink
+        cell.separated = this.current.separated
 
-    for(let j = 0; j < cell.mult.height; j++) {
-        for(let i = 0; i < cell.mult.width; i++) {
-            const newCell = cell.copy();
-            newCell.part = { x: i, y: cell.mult.height - j - 1 };
-            this.pm.set(x + i, y - j, newCell);
+        if(cell.value >= 0x20 && cell.value <= 0x5F) {
+            cell.value += 0x20
+        }
+
+        if(cell.separated === true) {
+            cell.value -= 0x40
+        }
+
+        this.pm.set(x, y, cell)
+    }
+
+    print(charCode) {
+        "use strict"
+        if(charCode === 0x20 && this.serialAttributesDefined()) {
+            this.printDelimiter(charCode)
+        } else if(this.current.charType === "C") {
+            this.printG0Char(charCode)
+        } else if(this.current.charType === "M") {
+            this.printG1Char(charCode)
+        }
+
+        this.charCode = charCode
+        this.moveCursor("char")
+    }
+
+    repeat(count) {
+        "use strict"
+
+        count -= 0x40
+        for(let i = 0; i < count; i++) {
+            this.print(this.charCode)
         }
     }
-};
 
-MinitelDecoder.prototype.printG1Char = function(charCode) {
-    "use strict";
-    const x = this.pm.cursor.x;
-    const y = this.pm.cursor.y;
+    decode(char) {
+        "use strict"
+        const c = char.charCodeAt(0)
 
-    const cell = new MosaicCell();
-    cell.value = charCode;
-    cell.fgColor = this.current.fgColor;
-    cell.bgColor = this.current.bgColor;
-    cell.blink = this.current.blink;
-    cell.separated = this.current.separated;
+        if(c == 0x00) return
 
-    if(cell.value >= 0x20 && cell.value <= 0x5F) {
-        cell.value += 0x20;
+        this.previousBytes.push(c)
+
+        if(!(this.state in minitelStates)) {
+            console.log("Unknown state: " + this.state)
+            this.state = "start"
+            return
+        }
+
+        let action = null
+        if(c in minitelStates[this.state]) {
+            action = minitelStates[this.state][c]
+        } else if('*' in minitelStates[this.state]) {
+            action = minitelStates[this.state]['*']
+        }
+
+        if(action === null) {
+            console.log("unexpectedChar: " + c)
+        } else if("notImplemented" in action) {
+            console.log("Not implemented: " + action.notImplemented)
+        } else if("error" in action) {
+            console.log("Error: " + action.error)
+        } else if("func" in action && !(action.func in this)) {
+            console.log("Error: developer forgot to write " + action.func)
+        } else if("func" in action) {
+            let args = []
+            if("arg" in action) {
+                args = [action.arg]
+            } else if("dynarg" in action) {
+                args = this.previousBytes.lastValues(action.dynarg)
+            }
+
+            this[action.func].apply(this, args)
+        }
+
+        this.state = action && "goto" in action ? action.goto : "start"
     }
 
-    if(cell.separated === true) {
-        cell.value -= 0x40;
+    decodeList(items) {
+        "use strict"
+        if (typeof items === "string" || items instanceof String) {
+            for(let i = 0; i < items.length; i++) {
+                this.decode(items[i])
+            }
+        } else {
+            for(let i = 0; i < items.length; i++) {
+                this.decode(String.fromCharCode(items[i]))
+            }
+        }
     }
+}
 
-    this.pm.set(x, y, cell);
-};
-
-MinitelDecoder.prototype.print = function(charCode) {
-    "use strict";
-    if(charCode === 0x20 && this.serialAttributesDefined()) {
-        this.printDelimiter(charCode);
-    } else if(this.current.charType === "C") {
-        this.printG0Char(charCode);
-    } else if(this.current.charType === "M") {
-        this.printG1Char(charCode);
-    }
-
-    this.charCode = charCode;
-    this.moveCursor("char");
-};
-
-MinitelDecoder.prototype.repeat = function(count) {
-    "use strict";
-
-    count -= 0x40;
-    for(let i = 0; i < count; i++) {
-        this.print(this.charCode);
-    }
-};
-
-MinitelDecoder.prototype.states = {
+const minitelStates = {
     "start": {
         0x01: { error: "unrecognized01" },
         0x02: { error: "unrecognized02" },
@@ -572,60 +633,5 @@ MinitelDecoder.prototype.states = {
     "pro3": { "*": { goto: "pro3-2" } },
     "pro3-2": { "*": { goto: "pro3-3" } },
     "pro3-3": { "*": { notImplemented: "pro3Sequence" } },
-};
-
-MinitelDecoder.prototype.decode = function(char) {
-    "use strict";
-    const c = char.charCodeAt(0);
-
-    if(c == 0x00) return;
-
-    this.previousBytes.push(c);
-
-    if(!(this.state in this.states)) {
-        console.log("Unknown state: " + this.state);
-        this.state = "start";
-        return;
-    }
-
-    let action = null;
-    if(c in this.states[this.state]) {
-        action = this.states[this.state][c];
-    } else if('*' in this.states[this.state]) {
-        action = this.states[this.state]['*'];
-    }
-
-    if(action === null) {
-        console.log("unexpectedChar: " + c);
-    } else if("notImplemented" in action) {
-        console.log("Not implemented: " + action.notImplemented);
-    } else if("error" in action) {
-        console.log("Error: " + action.error);
-    } else if("func" in action && !(action.func in this)) {
-        console.log("Error: developer forgot to write " + action.func);
-    } else if("func" in action) {
-        let args = [];
-        if("arg" in action) {
-            args = [action.arg];
-        } else if("dynarg" in action) {
-            args = this.previousBytes.lastValues(action.dynarg);
-        }
-
-        this[action.func].apply(this, args);
-    }
-
-    this.state = action && "goto" in action ? action.goto : "start";
-}
-
-MinitelDecoder.prototype.decodeList = function(items) {
-    if (typeof items === "string" || items instanceof String) {
-        for(let i = 0; i < items.length; i++) {
-            this.decode(items[i]);
-        }
-    } else {
-        for(let i = 0; i < items.length; i++) {
-            this.decode(String.fromCharCode(items[i]));
-        }
-    }
 }
 

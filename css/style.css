@@ -25,6 +25,14 @@ body { padding-top: 6em; }
 
 select { height: 2.6em; }
 
-canvas {
-    border: 2em solid black;
+.minitel-screen, .minitel-overlay {
+    /*border: 2em solid black;
+    padding: 2em;*/
 }
+.minitel-editor { position: relative; }
+.minitel-overlay {
+    top: 0;
+    left: 0;
+    position: absolute;
+}
+
