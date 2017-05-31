@@ -1,7 +1,7 @@
+"use strict"
+
 class MinitelScreen {
     constructor(canvas) {
-        "use strict"
-        
         const zoom = { x: 2, y: 2 }
         const grid = { cols: 40, rows: 25 }
         const char = { width: 8, height: 10 }
@@ -21,8 +21,12 @@ class MinitelScreen {
     }
 
     send(items) {
-        "use strict"
         this.queue = this.queue.concat(items)
+    }
+
+    directSend(items) {
+        this.queue = []
+        this.decoder.decodeList(items)
     }
 
     sendChunk() {
@@ -37,8 +41,6 @@ class MinitelScreen {
 
 class MinitelScreenTest {
     constructor(canvas) {
-        "use strict"
-        
         const zoom = { x: 2, y: 2 }
         const grid = { cols: 40, rows: 4 }
         const char = { width: 8, height: 10 }
@@ -51,7 +53,6 @@ class MinitelScreenTest {
     }
 
     send(items) {
-        "use strict"
         this.decoder.decodeList(items)
     }
 }

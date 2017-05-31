@@ -1,3 +1,5 @@
+"use strict"
+
 const minitelGrays = [
     '#000000', // 0%
     '#7F7F7F', // 50%
@@ -27,8 +29,6 @@ class PageMemory {
     zoom = { x: …, y: … }
     */
     constructor(grid, char, zoom, canvas) {
-        "use strict"
-
         this.grid = grid
         this.char = char
         this.zoom = zoom
@@ -72,19 +72,19 @@ class PageMemory {
             this.changed[j] = true
         }
 
+        [ this.previousX, this.previousY ] = [ 0, 0 ]
+
         this.refresh = window.setInterval(
-            () => { this.render(); },
+            () => { this.render() },
             1000 / this.frameRate
         )
-
-        this.previousX = 0
-        this.previousY = 0
 
         this.canvas.addEventListener("mousemove", (event) => {
             event.preventDefault()
             const detail = this.eventDetail(event)
 
-            if(this.previousX === detail.detail.x && this.previousY === detail.detail.y) {
+            if(   this.previousX === detail.detail.x
+               && this.previousY === detail.detail.y) {
                 return
             }
 
@@ -101,7 +101,6 @@ class PageMemory {
     }
 
     eventDetail(event) {
-        "use strict"
         const rect = this.canvas.getBoundingClientRect()
         const charWidth = this.char.width * this.zoom.x
         const charHeight = this.char.height * this.zoom.y
@@ -120,21 +119,16 @@ class PageMemory {
     }
 
     set(x, y, cell) {
-        "use strict"
         this.memory[y][x] = cell
         this.changed[y] = true
     }
 
     getBlink() {
-        "use strict"
-        const now = new Date()
-        const msecs = now.getTime()
+        const msecs = (new Date()).getTime()
         return (msecs % 1500) >= 750
     }
 
     createContext() {
-        "use strict"
-
         const ctx = this.canvas.getContext("2d")
 
         ctx.imageSmoothingEnabled = false
@@ -152,7 +146,6 @@ class PageMemory {
     }
 
     loadFont(url) {
-        "use strict"
         return new FontSprite(
             url,
             { cols: 8, rows: 16 },
@@ -163,8 +156,6 @@ class PageMemory {
     }
 
     scroll(direction) {
-        "use strict"
-
         const newRow = []
         for(let col = 0; col < this.grid.cols; col++) {
             newRow[col] = new MosaicCell()
@@ -196,16 +187,13 @@ class PageMemory {
     }
 
     render() {
-        "use strict"
-
         // Add the inverted F on the status line
         const fCell = new CharCell()
         fCell.value = 0x46
         fCell.invert = true
         this.memory[0][38] = fCell
 
-        const defaultFgColor = 7
-        const defaultBgColor = 0
+        const [ defaultFgColor, defaultBgColor ] = [ 7, 0 ]
         const ctx = this.context
         const blink = this.getBlink()
 
@@ -214,8 +202,7 @@ class PageMemory {
         let mult = { width: 1, height: 1}
         let unde = false
 
-        let front = 7
-        let back = 0
+        let [ front, back ] = [ 7, 0 ]
 
         // Draw each cell
         for(let row = 0; row < this.grid.rows; row++) {
@@ -238,21 +225,19 @@ class PageMemory {
                 const cell = this.memory[row][col]
                 const x = col * this.char.width
 
-                if(cell.type !== "C") {
+                if(!(cell instanceof CharCell)) {
                     bgColor = cell.bgColor
                     underline = false
                 }
                 
-                if(cell.type !== "D" && cell.blink === true) {
+                if(!(cell instanceof DelimiterCell) && cell.blink === true) {
                     blinkRow = true
                 }
 
-                if(cell.type !== "M" && cell.invert === true) {
-                    front = bgColor
-                    back = cell.fgColor
+                if(!(cell instanceof MosaicCell) && cell.invert === true) {
+                    [ front, back ] = [ bgColor, cell.fgColor ]
                 } else {
-                    front = cell.fgColor
-                    back = bgColor
+                    [ front, back ] = [ cell.fgColor, bgColor ]
                 }
 
                 // Draw background
@@ -261,15 +246,15 @@ class PageMemory {
 
                 // Draw character
                 if(   mask !== true
-                   && !(   cell.type !== "D"
+                   && !(   !(cell instanceof DelimiterCell)
                         && cell.blink === true
-                        && blink === (cell.type === "M" || !cell.invert))) {
-                    if(cell.type === 'C') {
+                        && blink === (cell instanceof MosaicCell || !cell.invert))) {
+                    if(cell instanceof CharCell) {
                         page = this.font['G0']
                         part = cell.part
                         mult = cell.mult
                         unde = underline
-                    } else if(cell.type === 'D') {
+                    } else if(cell instanceof DelimiterCell) {
                         page = this.font["G0"]
                         part = { x: 0, y: 0 }
                         mult = cell.mult
@@ -284,7 +269,7 @@ class PageMemory {
                     page.writeChar(ctx, cell.value, x, y, part, mult, front, unde)
                 }
 
-                if(cell.type === 'D') {
+                if(cell instanceof DelimiterCell) {
                     if(cell.mask !== undefined) {
                         mask = cell.mask
                     }

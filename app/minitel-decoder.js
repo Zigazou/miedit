@@ -53,7 +53,7 @@ class MinitelDecoder{
     resetCurrent() {
         "use strict"
         this.current = {
-            charType: "C",
+            charType: CharCell,
             mult: { width: 1, height: 1 },
             fgColor: 7,
             bgColor: 0,
@@ -192,14 +192,14 @@ class MinitelDecoder{
 
     setCharType(charPage) {
         "use strict"
-        if(charPage === "G0" && this.current.charType === "C") return
-        if(charPage === "G1" && this.current.charType === "M") return
+        if(charPage === "G0" && this.current.charType === CharCell) return
+        if(charPage === "G1" && this.current.charType === MosaicCell) return
 
         if(charPage === "G0") {
-            this.current.charType = "C"
+            this.current.charType = CharCell
             this.current.separated = false
         } else if(charPage === "G1") {
-            this.current.charType = "M"
+            this.current.charType = MosaicCell
             this.current.underline = false
             this.current.invert = false
             this.current.mult = { width: 1, height: 1 }
@@ -218,16 +218,16 @@ class MinitelDecoder{
 
     setBgColor(color) {
         "use strict"
-        if(this.current.charType === "C") {
+        if(this.current.charType === CharCell) {
             this.waiting.bgColor = color
-        } else if(this.current.charType === "M") {
+        } else if(this.current.charType === MosaicCell) {
             this.current.bgColor = color
         }
     }
 
     setSize(sizeName) {
         "use strict"
-        if(this.current.charType !== "C") return
+        if(this.current.charType !== CharCell) return
 
         const sizes = {
             "normalSize": { width: 1, height: 1 },
@@ -252,16 +252,16 @@ class MinitelDecoder{
 
     setUnderline(underline) {
         "use strict"
-        if(this.current.charType === "C") {
+        if(this.current.charType === CharCell) {
             this.waiting.underline = underline
-        } else if(this.current.charType === "M") {
+        } else if(this.current.charType === MosaicCell) {
             this.current.separated = underline
         }
     }
 
     setInvert(invert) {
         "use strict"
-        if(this.current.charType === "M") return
+        if(this.current.charType === MosaicCell) return
 
         this.current.invert = invert
     }
@@ -370,9 +370,9 @@ class MinitelDecoder{
         "use strict"
         if(charCode === 0x20 && this.serialAttributesDefined()) {
             this.printDelimiter(charCode)
-        } else if(this.current.charType === "C") {
+        } else if(this.current.charType === CharCell) {
             this.printG0Char(charCode)
-        } else if(this.current.charType === "M") {
+        } else if(this.current.charType === MosaicCell) {
             this.printG1Char(charCode)
         }
 

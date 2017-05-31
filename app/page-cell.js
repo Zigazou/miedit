@@ -1,7 +1,7 @@
+"use strict"
+
 class Cell {
-    constructor(type, value, fgColor) {
-        "use strict"
-        this.type = type
+    constructor(value, fgColor) {
         this.value = value
         this.fgColor = fgColor
     }
@@ -13,8 +13,7 @@ class Cell {
 
 class CharCell extends Cell {
     constructor() {
-        "use strict";
-        super('C', 0x20, 7)
+        super(0x20, 7)
 
         this.blink = false
         this.invert = false
@@ -25,7 +24,6 @@ class CharCell extends Cell {
     }
 
     copy() {
-        "use strict"
         const cell = new CharCell()
 
         cell.value = this.value
@@ -42,8 +40,7 @@ class CharCell extends Cell {
 
 class MosaicCell extends Cell {
     constructor() {
-        "use strict"
-        super('M', 0x40, 7)
+        super(0x40, 7)
 
         this.bgColor = 0
         this.blink = false
@@ -69,8 +66,7 @@ class MosaicCell extends Cell {
 
 class DelimiterCell extends Cell {
     constructor() {
-        "use strict"
-        super('D', 0x20, 7)
+        super(0x20, 7)
 
         this.bgColor = 0
         this.invert = false
@@ -82,7 +78,6 @@ class DelimiterCell extends Cell {
     }
 
     copy() {
-        "use strict"
         const cell = new DelimiterCell()
 
         cell.value = this.value

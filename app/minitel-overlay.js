@@ -1,7 +1,7 @@
+"use strict"
+
 class MinitelOverlay {
     constructor(canvas, screen) {
-        "use strict"
-
         this.overlay = canvas
         this.overlay.width = screen.pageMemory.canvas.width
         this.overlay.height = screen.pageMemory.canvas.height
@@ -14,26 +14,25 @@ class MinitelOverlay {
         this.previousX = 0
         this.previousY = 0
 
-        screen.pageMemory.canvas.addEventListener("minimove", (event) => {
+        screen.pageMemory.canvas.addEventListener("minimove", event => {
             event.preventDefault()
 
             this.hideGuide()
             this.showGuide(event.detail.x, event.detail.y)
         })
 
-        screen.pageMemory.canvas.addEventListener("miniclick", (event) => {
+        screen.pageMemory.canvas.addEventListener("miniclick", event => {
             event.preventDefault()
             console.log(event.detail.col, event.detail.row)
         })
 
-        screen.pageMemory.canvas.addEventListener("miniout", (event) => {
+        screen.pageMemory.canvas.addEventListener("miniout", event => {
             event.preventDefault()
             that.hideGuide()
         })
     }
 
     drawGuide(x, y, color) {
-        "use strict"
         const ctx = this.overlay.getContext("2d")
 
         ctx.beginPath()
@@ -55,14 +54,12 @@ class MinitelOverlay {
     }
 
     showGuide(x, y) {
-        "use strict"
         this.drawGuide(x, y, "#FFFF00")
         this.previousX = x
         this.previousY = y
     }
 
     hideGuide() {
-        "use strict"
         this.drawGuide(this.previousX, this.previousY, "")
     }
 

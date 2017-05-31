@@ -16,16 +16,18 @@
     <div class="col-lg-12" role="main">
       <div id="miedit" class="containers">
         <div class="row mb-4">
-          <div class="migrid-container col-lg-6">
+          <div class="migrid-container col-lg-7">
             <div class="card">
               <div class="card-header">Preview</div>
               <div class="card-block">
-                <div class="migrid mx-auto"></div>
+                <div class="migrid mx-auto">
+                    <canvas id="minitel-screen"></canvas>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="col-lg-6 miedit-page">
+          <div class="col-lg-5 miedit-page">
             <div class="card">
               <div class="card-header">Info</div>
               <div class="card-block info-block">
@@ -48,6 +50,8 @@
           </div>
           <div class="col-lg-7">
             <div class="miedit-forms">
+              <import src="import/form-fgcolor.html"></import>
+              <import src="import/form-bgcolor.html"></import>
               <import src="import/form-string.html"></import>
               <import src="import/form-block.html"></import>
               <import src="import/form-smgraph.html"></import>
@@ -68,10 +72,24 @@
     <script src="library/jstree/dist/jstree.js"></script>
     <script src="library/queryParameters/queryParameters.js"></script>
 
+    <script src="app/font-sprite.js"></script>
+    <script src="app/page-cell.js"></script>
+    <script src="app/page-memory.js"></script>
+    <script src="app/minitel-decoder.js"></script>
+    <script src="app/minitel-screen.js"></script>
+
     <script src="app/mitree.js"></script>
     <script src="app/migrid.js"></script>
     <script src="app/miform.js"></script>
     <script src="app/mistorage.js"></script>
     <script src="app/miedit-page.js"></script>
+
+    <script src="test/atari.vdt.js"></script>
+
+    <script>
+        const canvas = document.getElementById("minitel-screen");
+        let ms = new MinitelScreen(canvas);
+        ms.directSend(vdtAtari);
+    </script>
   </body>
 </html>
