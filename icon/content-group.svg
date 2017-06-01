@@ -14,7 +14,7 @@
    viewBox="0 0 8.4666665 8.4666669"
    version="1.1"
    id="svg8"
-   sodipodi:docname="move-locate.svg"
+   sodipodi:docname="content-group.svg"
    inkscape:version="0.92.1 r15371">
   <defs
      id="defs2" />
@@ -25,18 +25,19 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="15.839192"
-     inkscape:cx="10.994328"
-     inkscape:cy="0.82643535"
+     inkscape:zoom="9.6796782"
+     inkscape:cx="-20.058632"
+     inkscape:cy="-8.2640083"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
      units="px"
      inkscape:window-width="1962"
      inkscape:window-height="1478"
-     inkscape:window-x="1008"
-     inkscape:window-y="494"
-     inkscape:window-maximized="0" />
+     inkscape:window-x="399"
+     inkscape:window-y="542"
+     inkscape:window-maximized="0"
+     inkscape:snap-global="false" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -45,7 +46,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -55,11 +56,11 @@
      id="layer1"
      transform="translate(0,-288.53332)">
     <g
-       id="g4489"
-       transform="matrix(0.00482313,0,0,-0.00482313,0.52916949,295.85346)">
+       id="g5976"
+       transform="matrix(0.00413411,0,0,-0.00413411,0.52917077,295.41248)">
       <path
-         id="path4487"
-         d="m 1197,512 h -109 q -26,0 -45,19 -19,19 -19,45 v 128 q 0,26 19,45 19,19 45,19 h 109 Q 1165,876 1084.5,956.5 1004,1037 896,1069 V 960 q 0,-26 -19,-45 -19,-19 -45,-19 H 704 q -26,0 -45,19 -19,19 -19,45 v 109 Q 532,1037 451.5,956.5 371,876 339,768 h 109 q 26,0 45,-19 19,-19 19,-45 V 576 q 0,-26 -19,-45 -19,-19 -45,-19 H 339 Q 371,404 451.5,323.5 532,243 640,211 v 109 q 0,26 19,45 19,19 45,19 h 128 q 26,0 45,-19 19,-19 19,-45 V 211 q 108,32 188.5,112.5 Q 1165,404 1197,512 Z m 339,192 V 576 q 0,-26 -19,-45 -19,-19 -45,-19 H 1329 Q 1292,351 1174.5,233.5 1057,116 896,79 V -64 q 0,-26 -19,-45 -19,-19 -45,-19 H 704 q -26,0 -45,19 -19,19 -19,45 V 79 Q 479,116 361.5,233.5 244,351 207,512 H 64 Q 38,512 19,531 0,550 0,576 v 128 q 0,26 19,45 19,19 45,19 H 207 Q 244,929 361.5,1046.5 479,1164 640,1201 v 143 q 0,26 19,45 19,19 45,19 h 128 q 26,0 45,-19 19,-19 19,-45 v -143 q 161,-37 278.5,-154.5 Q 1292,929 1329,768 h 143 q 26,0 45,-19 19,-19 19,-45 z"
+         id="path5974"
+         d="M 1792,288 V -32 q 0,-40 -28,-68 -28,-28 -68,-28 h -320 q -40,0 -68,28 -28,28 -28,68 v 320 q 0,40 28,68 28,28 68,28 h 96 V 576 H 960 V 384 h 96 q 40,0 68,-28 28,-28 28,-68 V -32 q 0,-40 -28,-68 -28,-28 -68,-28 H 736 q -40,0 -68,28 -28,28 -28,68 v 320 q 0,40 28,68 28,28 68,28 h 96 V 576 H 320 V 384 h 96 q 40,0 68,-28 28,-28 28,-68 V -32 q 0,-40 -28,-68 -28,-28 -68,-28 H 96 q -40,0 -68,28 -28,28 -28,68 v 320 q 0,40 28,68 28,28 68,28 h 96 v 192 q 0,52 38,90 38,38 90,38 h 512 v 192 h -96 q -40,0 -68,28 -28,28 -28,68 v 320 q 0,40 28,68 28,28 68,28 h 320 q 40,0 68,-28 28,-28 28,-68 V 992 q 0,-40 -28,-68 -28,-28 -68,-28 H 960 V 704 h 512 q 52,0 90,-38 38,-38 38,-90 V 384 h 96 q 40,0 68,-28 28,-28 28,-68 z"
          inkscape:connector-curvature="0"
          style="fill:currentColor" />
     </g>

@@ -14,16 +14,15 @@ class MiEditPage{
             ribbon,
             this.mistorage.load(pageName)
         )
-        container.find('.miedit-page').autocallback(this)
+
+        container.find("#ribbon").autocallback(this)
+        container.find("#page-name").val(pageName)
     }
 
     onSave(event) {
+        const el = event.data.that
         event.preventDefault()
-
-        event.data.mistorage.save(
-            event.data.pageName,
-            event.data.mitree.serialize()
-        )
+        el.mistorage.save(el.pageName, el.mitree.serialize())
     }
 }
 

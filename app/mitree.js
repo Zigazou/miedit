@@ -42,11 +42,11 @@ class MiTree {
             "effect-invert-off": "Invert off",
             "effect-underline-on": "Underline on",
             "effect-underline-off": "Underline off",
-            "group": "Group",
+            "content-group": "Group",
             "content-string": "String",
             "content-block": "Block",
             "smgraph": "Semigraphic characters",
-            "delay": "Delay"
+            "content-delay": "Delay"
         }
 
         // Initialize the tree widget
@@ -60,7 +60,7 @@ class MiTree {
 
         Object.keys(this.children).forEach(child => {
             widgetTypes[child] = { "icon": "./icon/" + child + ".svg" }
-            if(child !== "group") widgetTypes[child].valid_children = []
+            if(child !== "content-group") widgetTypes[child].valid_children = []
         })
 
         this.treeWidget.jstree({
@@ -84,7 +84,7 @@ class MiTree {
     }
 
     hideForms() {
-        this.container.find(".miedit-forms form").hide()
+        this.container.find(".miedit-forms>*").hide()
     }
 
     showForm(selector, selected) {
@@ -95,7 +95,7 @@ class MiTree {
             form.unserialize(selected.data["miedit-value"])
         } else {
             // No form available, defaults to empty form
-            form = this.container.find(".miedit-forms .miform-empty")
+            form = this.container.find(".miedit-forms .empty")
         }
 
         // Show the form
@@ -108,11 +108,6 @@ class MiTree {
 
     unserialize(nodes) {
         this.tree.core.data = nodes
-    }
-
-    onSave(event) {
-        console.log(event.data.serialize())
-        return false
     }
 
     onCreateTidget(event) {
@@ -143,7 +138,7 @@ class MiTree {
         const selected = data.instance.get_node(data.selected[0])
 
         event.data.hideForms()
-        event.data.showForm(".miedit-forms .miform-" + selected.type, selected)
+        event.data.showForm(".miedit-forms ." + selected.type, selected)
     }
 
     onSubmit(event) {

@@ -1,14 +1,11 @@
 <!-- Block of text widget -->
-<form class="miform-block card" data-call="onSubmit">
-  <div class="card-header">
-    Block of text
-    <input type="submit" class="btn btn-primary pull-right" value="Apply"/>
-  </div>
-  <div class="card-block">
+<form class="content-block" data-call="onSubmit">
+  <h2>Block of text<input type="submit" value="Apply"/></h2>
+  <div>
     <div class="miedit-field">
-      <label for="miform-block-value">Value:</label>
+      <label for="content-block-value">Value:</label>
       <textarea
-        id="miform-block-value"
+        id="content-block-value"
         name="value"
         cols="41"
         rows="10"
@@ -16,9 +13,9 @@
     </div>
     
     <div class="miedit-field">
-      <label for="miform-block-x">X:</label>
+      <label for="content-block-x">X:</label>
       <input
-        id="miform-block-x"
+        id="content-block-x"
         type="number"
         name="x"
         min="1"
@@ -30,9 +27,9 @@
     </div>
 
     <div class="miedit-field">
-      <label for="miform-block-y">Y:</label>
+      <label for="content-block-y">Y:</label>
       <input
-        id="miform-block-y"
+        id="content-block-y"
         type="number"
         name="y"
         min="0"
@@ -44,9 +41,9 @@
     </div>
 
     <div class="miedit-field">
-      <label for="miform-block-width">Width:</label>
+      <label for="content-block-width">Width:</label>
       <input
-        id="miform-block-width"
+        id="content-block-width"
         type="number"
         name="width"
         min="1"
@@ -58,9 +55,9 @@
     </div>
 
     <div class="miedit-field">
-      <label for="miform-block-height">Height:</label>
+      <label for="content-block-height">Height:</label>
       <input
-        id="miform-block-height"
+        id="content-block-height"
         type="number"
         name="height"
         min="0"
@@ -72,9 +69,9 @@
     </div>
 
     <div class="miedit-field">
-      <label for="miform-block-hyphen">Hyphenation:</label>
+      <label for="content-block-hyphen">Hyphenation:</label>
       <input
-        id="miform-block-hyphen"
+        id="content-block-hyphen"
         type="checkbox"
         name="hyphen"
         value=""
@@ -82,8 +79,8 @@
     </div>
 
     <div class="miedit-field">
-      <label for="miform-block-align">Align:</label>
-      <select id="miform-block-align" name="align">
+      <label for="content-block-align">Align:</label>
+      <select id="content-block-align" name="align">
         <option value="left" selected="selected">Left</option>
         <option value="center">Center</option>
         <option value="right">Right</option>

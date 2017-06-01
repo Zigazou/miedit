@@ -9,25 +9,22 @@ body {
     font-family: sans-serif;
 }
 
-.jstree-node {
-    line-height: 32px;
+div.jstree::before {
+    display: block;
+    content: "";
+    background-color: black;
+    border-radius: 50%;
+    width: 1em;
+    height: 1em;
+    margin: 0.5em 0 0 0.25em;
 }
 
-.jstree-default .jstree-icon:empty {
-    width: 32px;
-    height: 32px;
-    line-height: 32px;
+a>.jstree-icon {
+    background-size: 100% 100% !important;
 }
 
-.miedit-treeactions {
-    float: left;
-    width: 49%;
-}
-
-.miedit-forms {
-    float: right;
-    width: 49%;
-}
+.miedit-treeactions { float: left; width: 49%; }
+.miedit-forms { float: right; width: 49%; }
 
 .miedit-forms {
     background: linear-gradient(#ffffff, #eaedf1);
@@ -35,21 +32,38 @@ body {
     box-shadow: #8b9097 0 0.1em 0.3em;
 }
 
-.miedit-forms form {
+.miedit-forms>* {
     display: none;
     padding: 1.5em;
 }
 
+.miedit-forms h2 {
+    margin-top: 0;
+    border-bottom: 0.1em solid white;
+    font-size: 115%;
+}
+
+.miedit-forms h2::after {
+    content: "";
+    display: block;
+    padding-top: 0.7em;
+    border-bottom: 0.1em solid #CCC;
+}
+
+.miedit-forms h2 input {
+    float: right;
+    font-size: 80%;
+    background: linear-gradient(#4488e5, #2860b3);
+    color: white;
+    border-radius: 0.5em;
+    padding: 0.2em 0.8em;
+    cursor: pointer;
+}
+
+.miedit-forms h2 input:hover { background: linear-gradient(#5498f5, #3870c3); }
+
 .miedit-forms .card-header { line-height: 2.25; }
 .miedit-forms input[type=number] { width: 3em; }
-.miedit-forms input:checked + label::after {
-    content: "\f0a5"; /* hand-o-left */
-    font-family: FontAwesome;
-    position: absolute;
-    font-size: 150%;
-    right: -1.5em;
-    top: 0.2em;
-}
 
 .miedit-forms label {
     display: inline-block;

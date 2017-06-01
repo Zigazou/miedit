@@ -61,16 +61,13 @@
     border: 0.1em solid #1f48a1;
     margin: -0.1em 0.4em;
     border-bottom: 0.1em solid #4488e5;
-    cursor: default;
+    cursor: pointer;
     color: white;
 }
 
 #ribbon .rbn-tab-header.file:hover {
     position: relative;
     background: linear-gradient(#5498f5, #3870c3);
-    border: 0.1em solid #1f48a1;
-    cursor: pointer;
-    border-bottom: 0.1em solid #4488e5;
 }
 
 #ribbon .rbn-tab-header.file.sel {
