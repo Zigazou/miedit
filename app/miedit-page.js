@@ -1,25 +1,31 @@
-function MiEditPage(container, pageName) {
-    "use strict";
+"use strict"
 
-    this.container = container;
-    this.pageName = pageName;
-    this.mistorage = new MiStorage('page');
-    this.mitree = new MiTree(
-        container.find('.mitree-container'),
-        this.mistorage.load(pageName)
-    );
-    container.find('.miedit-page').autocallback(this);
+class MiEditPage{
+    constructor(container, pageName) {
+        this.container = container
+        this.pageName = pageName
+        this.mistorage = new MiStorage('page')
+
+        const ribbon = $('#ribbon')
+        ribbon.simpleRibbon()
+
+        this.mitree = new MiTree(
+            container.find('.mitree-container'),
+            ribbon,
+            this.mistorage.load(pageName)
+        )
+        container.find('.miedit-page').autocallback(this)
+    }
+
+    onSave(event) {
+        event.preventDefault()
+
+        event.data.mistorage.save(
+            event.data.pageName,
+            event.data.mitree.serialize()
+        )
+    }
 }
 
-MiEditPage.prototype.onSave = function(event) {
-    "use strict";
-    event.preventDefault();
-
-    event.data.mistorage.save(
-        event.data.pageName,
-        event.data.mitree.serialize()
-    );
-}
-
-mieditpage = new MiEditPage($('#miedit'), getParameter('page'));
+let mieditpage = new MiEditPage($('#miedit'), getParameter('page'))
 

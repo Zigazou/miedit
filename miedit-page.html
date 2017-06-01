@@ -4,61 +4,31 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>MiEdit</title>
-    <link rel="stylesheet" href="library/bootstrap4/css/bootstrap.min.css" />
     <link rel="stylesheet" href="library/FontAwesome/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="library/jstree/dist/themes/default/style.css"/>
     <link rel="stylesheet" href="library/jquery.inputnumber/style.css"/>
+    <link rel="stylesheet" href="library/simple-ribbon/simple-ribbon.css" />
+    <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <import src="import/main-menu.html"></import>
+    <div id="miedit">
+      <div class="migrid">
+        <canvas id="minitel-screen"></canvas>
+      </div>
 
-    <div class="col-lg-12" role="main">
-      <div id="miedit" class="containers">
-        <div class="row mb-4">
-          <div class="migrid-container col-lg-7">
-            <div class="card">
-              <div class="card-header">Preview</div>
-              <div class="card-block">
-                <div class="migrid mx-auto">
-                    <canvas id="minitel-screen"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
+      <import src="import/ribbon.html"></import>
 
-          <div class="col-lg-5 miedit-page">
-            <div class="card">
-              <div class="card-header">Info</div>
-              <div class="card-block info-block">
-                <import src="import/form-page.html"></import>
-              </div>
-            </div>
-          </div>
+      <div class="mitree-container">
+        <div class="miedit-treeactions">
+          <div class="miedit-tree"></div>
         </div>
-
-        <div class="mitree-container row mb-4">
-          <div class="col-lg-5 miedit-treeactions">
-            <div class="card">
-              <div class="card-header">
-                <import src="import/form-actions.html"></import>
-              </div>
-              <div class="card-block">
-                <div class="miedit-tree"></div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-7">
-            <div class="miedit-forms">
-              <import src="import/form-fgcolor.html"></import>
-              <import src="import/form-bgcolor.html"></import>
-              <import src="import/form-string.html"></import>
-              <import src="import/form-block.html"></import>
-              <import src="import/form-smgraph.html"></import>
-              <import src="import/form-group.html"></import>
-              <import src="import/form-delay.html"></import>
-            </div>
-          </div>
+        <div class="miedit-forms">
+          <import src="import/form-string.html"></import>
+          <import src="import/form-block.html"></import>
+          <import src="import/form-smgraph.html"></import>
+          <import src="import/form-group.html"></import>
+          <import src="import/form-delay.html"></import>
+          <import src="import/form-empty.html"></import>
         </div>
       </div>
     </div>
@@ -68,9 +38,9 @@
     <script src="library/jquery.autocallback/jquery.autocallback.js"></script>
     <script src="library/importHTML/importHTML.js"></script>
     <script src="library/jquery.inputnumber/jquery.inputnumber.js"></script>
-    <script src="library/bootstrap/bootstrap.min.js"></script>
     <script src="library/jstree/dist/jstree.js"></script>
     <script src="library/queryParameters/queryParameters.js"></script>
+    <script src="library/simple-ribbon/simple-ribbon.js"></script>
 
     <script src="app/font-sprite.js"></script>
     <script src="app/page-cell.js"></script>
@@ -78,18 +48,13 @@
     <script src="app/minitel-decoder.js"></script>
     <script src="app/minitel-screen.js"></script>
 
+    <script src="test/atari.vdt.js"></script>
+
     <script src="app/mitree.js"></script>
     <script src="app/migrid.js"></script>
     <script src="app/miform.js"></script>
     <script src="app/mistorage.js"></script>
     <script src="app/miedit-page.js"></script>
 
-    <script src="test/atari.vdt.js"></script>
-
-    <script>
-        const canvas = document.getElementById("minitel-screen");
-        let ms = new MinitelScreen(canvas);
-        ms.directSend(vdtAtari);
-    </script>
   </body>
 </html>

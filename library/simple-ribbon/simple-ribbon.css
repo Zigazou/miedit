@@ -1,0 +1,199 @@
+#ribbon {
+    font-family: sans-serif;
+    font-size: 80%;
+    padding-top: 1em;
+    background-color: #eaedf1;
+    border-bottom: 0.1em solid #8b9097;
+    box-shadow: #8b9097 0 0.1em 0.3em;
+    overflow: hidden;
+    height: 12.2em;
+}
+
+#ribbon.backstage {
+    height: auto;
+    bottom: 0;
+}
+
+#ribbon .rbn-window-title {
+    display: block;
+    font-size: 125%;
+    padding: 0.2em;
+    text-align: center;
+    color: black;
+}
+
+#ribbon #rbn-tab-header-strip {
+    margin: 0.5em 0 0 1em;
+    white-space: nowrap;
+}
+
+#ribbon .rbn-tab-header {
+    display: inline;
+    position: relative;
+    margin: 0 0.5em;
+    padding: 0.3em 1em;
+    color: #444;
+    border-bottom: 0.1em solid #b6babf;
+    border-radius: 0.4em 0.4em 0 0;
+}
+
+#ribbon.backstage .rbn-tab-header { border-bottom: 0.1em solid #1f48a1; }
+
+#ribbon .rbn-tab-header:hover {
+    background-color: #f1f3f4;
+    border: 0.1em solid #b6babf;
+    margin: -0.1em 0.4em;
+    cursor: pointer;
+}
+
+#ribbon .rbn-tab-header.sel,
+#ribbon .rbn-tab-header.sel:hover {
+    background-color: white;
+    margin: -0.1em 0.4em;
+    border: 0.1em solid #b6babf;
+    border-bottom: 0.1em solid white;
+    cursor: default;
+}
+
+#ribbon .rbn-tab-header.file {
+    padding: 0.3em 2em;
+    background: linear-gradient(#4488e5, #2860b3);
+    border: 0.1em solid #1f48a1;
+    margin: -0.1em 0.4em;
+    border-bottom: 0.1em solid #4488e5;
+    cursor: default;
+    color: white;
+}
+
+#ribbon .rbn-tab-header.file:hover {
+    position: relative;
+    background: linear-gradient(#5498f5, #3870c3);
+    border: 0.1em solid #1f48a1;
+    cursor: pointer;
+    border-bottom: 0.1em solid #4488e5;
+}
+
+#ribbon .rbn-tab-header.file.sel {
+    background: linear-gradient(#2860b3, #4488e5);
+    border: 0.1em solid #1f48a1;
+    cursor: pointer;
+    border-bottom: 0.1em solid #4488e5;
+    position: relative;
+}
+
+#ribbon .rbn-tab {
+    height: 8em;
+    padding: 0.6em;
+    margin-top: 0.3em;
+    border-top: 0.1em solid #b6babf;
+    background: linear-gradient(#ffffff, #eaedf1);
+    overflow: hidden;
+    min-width: 50em;
+}
+
+#ribbon .rbn-tab.file {
+    padding: 0;
+    margin-top: 0.3em;
+    border-top: 0.1em solid #1f48a1;
+    background: linear-gradient(left, #4488e5 15%, #ffffff 100%);
+    overflow: hidden;
+    min-width: 50em;
+}
+
+#ribbon .rbn-backstage { display: none; }
+
+#ribbon.backstage .rbn-backstage {
+    display: block;
+    padding: 1em;
+}
+
+#ribbon .section-title {
+    color: #5B626C;
+    text-align: center;
+    clear: left;
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#ribbon .rbn-section {
+    float: left;
+    position: relative;
+    height: 7.2em;
+}
+
+#ribbon .rbn-section-sep {
+    border-left: 0.1em solid #CCC;
+    border-right: 0.1em solid white;
+    margin: 0 0.5em;
+    height: 6.8em;
+    position: relative;
+    width: 0;
+    float: left;
+}
+
+#ribbon .rbn-btn {
+    padding: 0.4em 0.6em;
+    border: 0.1em solid transparent;
+    border-radius: 0.3em;
+}
+
+#ribbon .rbn-btn-large {
+    text-align: center;
+    height: 5em;
+    min-width: 3.7em;
+    float: left;
+}
+
+#ribbon .rbn-btn-small {
+    height: 1.6em;
+    padding: 0.3em 0.4em;
+    text-align: left;
+}
+
+#ribbon .rbn-btn .btn-title { color: #444; }
+
+#ribbon .rbn-btn-large .btn-title {
+    clear: left;
+    display: block;
+}
+
+#ribbon .rbn-btn-large .rbn-icon { margin: auto; }
+
+#ribbon .rbn-btn-small .rbn-icon {
+    float: left;
+    clear: left;
+    width: 16px;
+    height: 16px;
+    margin: -1px 5px 0 1px;
+}
+
+#ribbon .rbn-btn:hover .rbn-icon.rbn-normal {
+    display: none;
+}
+
+#ribbon .rbn-btn-large .rbn-icon.rbn-normal,
+#ribbon .rbn-btn-large:hover .rbn-icon.rbn-hot {
+    display: block;
+}
+
+#ribbon .rbn-btn-small .rbn-icon.rbn-normal,
+#ribbon .rbn-btn-small:hover .rbn-icon.rbn-hot {
+    display: inline;
+}
+
+#ribbon .rbn-btn:hover,
+#ribbon .rbn-btn.sel {
+    border: 0.1em solid #F1C43F;
+    background-color: #fdeeb3;
+    cursor: pointer;
+}
+
+#ribbon .rbn-btn:active {
+    border: 0.1em solid #F1C43F;
+    background-color: #F1C43F;
+    cursor: pointer;
+}
+
