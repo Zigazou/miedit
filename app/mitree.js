@@ -120,7 +120,10 @@ class MiTree {
         }
         const currents = that.tree.get_selected(true)
         const parent = currents.length > 0 ? currents[0] : "#"
-        that.tree.create_node(parent, newNode, "after")
+        const newNodeId = that.tree.create_node(parent, newNode, "after")
+
+        that.tree.deselect_all(true)
+        that.tree.select_node(newNodeId)
 
         return false
     }
@@ -136,7 +139,6 @@ class MiTree {
 
     onSelect(event, data) {
         const selected = data.instance.get_node(data.selected[0])
-
         event.data.hideForms()
         event.data.showForm(".miedit-forms ." + selected.type, selected)
     }
@@ -147,3 +149,45 @@ class MiTree {
         currents[0].data["miedit-value"] = $(this).serialize()
     }
 }
+
+function mieditActions(objs) {
+    function parseQuery(query) {
+        const queryParsed = {}
+
+        if(query === undefined) {
+            return queryParsed
+        }
+
+        for(let arg of query.split("&")) {
+            if(arg.indexOf("=") === -1) {
+                queryParsed[decodeURIComponent(arg)] = true
+            } else {
+                const kvp = arg.split("=")
+                const key = decodeURIComponent(kvp[0])
+                const value = decodeURIComponent(kvp[1]).replace(/\+/g, " ")
+                queryParsed[key] = value
+            }
+        }
+
+        return queryParsed
+    }
+
+    const stream = []
+
+    for(let obj of objs) {
+        const action = {
+            "type": obj.type,
+            "data": parseQuery(obj.data["miedit-value"]),
+            "children": []
+        }
+
+        if(obj.children.length !== 0) {
+            action.children = mieditActions(obj.children)
+        }
+
+        stream.push(action)
+    }
+
+    return stream
+}
+
