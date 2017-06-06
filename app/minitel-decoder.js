@@ -162,6 +162,8 @@ class MinitelDecoder{
                 }
             }
 
+            this.pm.cursor.x = 0
+            this.pm.cursor.y = 1
             this.resetCurrent()
             return
         }
@@ -227,6 +229,7 @@ class MinitelDecoder{
 
     setSize(sizeName) {
         "use strict"
+        if(this.pm.cursor.y === 0) return
         if(this.current.charType !== CharCell) return
 
         const sizes = {
@@ -237,6 +240,7 @@ class MinitelDecoder{
         }
 
         if(!(sizeName in sizes)) return
+        if(this.pm.cursor.y === 1 && sizes[sizeName].height === 2) return
         this.current.mult = sizes[sizeName]
     }
 
