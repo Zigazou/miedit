@@ -141,6 +141,8 @@ class Stream {
 }
 
 function actions2stream(actions, offsetX, offsetY) {
+    if(offsetX === undefined) offsetX = 0
+    if(offsetY === undefined) offsetY = 0
     const stream = new Stream()
 
     for(let action of actions) {
@@ -159,7 +161,7 @@ function actions2stream(actions, offsetX, offsetY) {
         } else if(action.type === "content-string") {
             stream.push(action.data.value)
         } else if(action.type === "content-block") {
-            const x = offsetX + parseInt(action.data.x)
+            const x = offsetX + parseInt(action.data.x) + 1
             let y = offsetY + parseInt(action.data.y)
             const width = parseInt(action.data.width)
             const height = parseInt(action.data.height)
@@ -182,7 +184,7 @@ function actions2stream(actions, offsetX, offsetY) {
                 stream.push(row)
             }
         } else if(action.type === "content-box") {
-            const x = offsetX + parseInt(action.data.x)
+            const x = offsetX + parseInt(action.data.x) + 1
             const y = offsetY + parseInt(action.data.y)
             const width = parseInt(action.data.width)
             const height = parseInt(action.data.height)
@@ -198,14 +200,14 @@ function actions2stream(actions, offsetX, offsetY) {
             if(offsetX !== 0 || offsetY !== 0) {
                 stream.push(0x1f)
                 stream.push(0x40 + parseInt(offsetY))
-                stream.push(0x40 + parseInt(offsetX))
+                stream.push(0x40 + parseInt(offsetX) + 1)
             } else {
                 stream.push(0x1e)
             }
         } else if(action.type === "move-locate") {
             stream.push(0x1f)
             stream.push(0x40 + parseInt(action.data.y) + offsetY)
-            stream.push(0x40 + parseInt(action.data.x) + offsetX)
+            stream.push(0x40 + parseInt(action.data.x) + offsetX + 1)
         }
     }
 
