@@ -38,69 +38,174 @@ const directStream = {
     "color-bg-7": [0x1b, 0x57],
 }
 
+const specialChars = {
+    163: [0x19, 0x23], // £
+    176: [0x19, 0x30], // °
+    177: [0x19, 0x31], // ±
+    8592: [0x19, 0x2C], // ←
+    8593: [0x19, 0x2D], // ↑
+    8594: [0x19, 0x2E], // →
+    8595: [0x19, 0x2F], // ↓
+    188: [0x19, 0x3C], // ¼
+    189: [0x19, 0x3D], // ½
+    190: [0x19, 0x3E], // ¾
+    231: [0x19, 0x4B, 0x63], // ç
+    8217: [0x27], // ’
+    224: [0x19, 0x41, 0x61], // à
+    225: [0x19, 0x42, 0x61], // á
+    226: [0x19, 0x43, 0x61], // â
+    228: [0x19, 0x48, 0x61], // ä
+    232: [0x19, 0x41, 0x65], // è
+    233: [0x19, 0x42, 0x65], // é
+    234: [0x19, 0x43, 0x65], // ê
+    235: [0x19, 0x48, 0x65], // ë
+    236: [0x19, 0x41, 0x69], // ì
+    237: [0x19, 0x42, 0x69], // í
+    238: [0x19, 0x43, 0x69], // î
+    239: [0x19, 0x48, 0x69], // ï
+    242: [0x19, 0x41, 0x6F], // ò
+    243: [0x19, 0x42, 0x6F], // ó
+    244: [0x19, 0x43, 0x6F], // ô
+    246: [0x19, 0x48, 0x6F], // ö
+    249: [0x19, 0x41, 0x75], // ù
+    250: [0x19, 0x42, 0x75], // ú
+    251: [0x19, 0x43, 0x75], // û
+    252: [0x19, 0x48, 0x75], // ü
+    338: [0x19, 0x6A], // Œ
+    339: [0x19, 0x7A], // œ
+    223: [0x19, 0x7B], // ß
+    946: [0x19, 0x7B] // β
+}
+
+function splitRows(str, width) {
+    str = str.replace(/ +/g, " ")
+
+    const rows = []
+    for(let bit of str.split("\n")) {
+        let row = ""
+        for(let word of bit.split(" ")) {
+            if(row.length + 1 + word.length > width) {
+                rows.push(row)
+                row = ""
+            } else if(row.length !== 0) {
+                row = row + " "
+            }
+            row = row + word
+        }
+        rows.push(row)
+    }
+
+    return rows
+}
+
+class Stream {
+    constructor() {
+        this.reset()
+    }
+
+    reset() {
+        this.items = []
+        this.length = 0
+    }
+
+    push(item) {
+        if(item === null || item === undefined) return
+
+        if(item instanceof Stream) {
+            this.items = this.items.concat(item.items)
+        } else if(typeof item[Symbol.iterator] === "function") {
+            for(let value of item) {
+                if(typeof value === "number") {
+                    this._pushValue(value)
+                } else {
+                    this._pushValue(value.charCodeAt(0))
+                }
+            }
+        } else if(typeof item === "number") {
+            this._pushValue(item)
+        }
+        this.length = this.items.length
+    }
+
+    _pushValue(value) {
+        if(specialChars[value]) {
+            for(let v of specialChars[value]) {
+                this.items.push(v)
+            }
+        } else if(value > 0x7f) {
+            return
+        } else {
+            this.items.push(value)
+        }
+    }
+}
+
 function actions2stream(actions, offsetX, offsetY) {
-    const stream = []
+    const stream = new Stream()
 
     for(let action of actions) {
         if(action.type in directStream) {
-            for(let byte of directStream[action.type]) stream.push(byte)
+            stream.push(directStream[action.type])
             continue
         }
 
-        switch(action.type) {
-            case "content-group":
-                if(action.data.disabled) break
-                let bytes = actions2stream(
-                    action.children,
-                    offsetX + parseInt(action.data.offsetX),
-                    offsetY + parseInt(action.data.offsetY)
-                )
+        if(action.type === "content-group") {
+            if(action.data.disabled) break
+            stream.push(actions2stream(
+                action.children,
+                offsetX + parseInt(action.data.offsetX),
+                offsetY + parseInt(action.data.offsetY)
+            ))
+        } else if(action.type === "content-string") {
+            stream.push(action.data.value)
+        } else if(action.type === "content-block") {
+            const x = offsetX + parseInt(action.data.x)
+            let y = offsetY + parseInt(action.data.y)
+            const width = parseInt(action.data.width)
+            const height = parseInt(action.data.height)
+            const maxHeight = y + height - 1
+            const value = action.data.value.replace(/\r/g, "")
+                                           .replace(/ +/g, " ")
 
-                for(let byte of bytes) stream.push(byte)
-                break
-
-            case "content-string":
-                for(let i = 0; i < action.data.value.length; i++) {
-                    stream.push(action.data.value.charCodeAt(i))
+            const rows = splitRows(value, width).slice(0, height)
+            let py = y - 1
+            for(let row of rows) {
+                py += 1
+                if(row.length === 0) continue
+                let px = x
+                if(action.data.align === "center") {
+                    px += Math.floor((width - row.length) / 2)
+                } else if(action.data.align === "right") {
+                    px += width - row.length
                 }
-                break
+                stream.push([0x1f, 0x40 + py, 0x40 + px])
+                stream.push(row)
+            }
+        } else if(action.type === "content-box") {
+            const x = offsetX + parseInt(action.data.x)
+            const y = offsetY + parseInt(action.data.y)
+            const width = parseInt(action.data.width)
+            const height = parseInt(action.data.height)
+            const bgcolor = parseInt(action.data.bgcolor)
 
-            case "content-block":/*
-                for(let i = 0; i < action.data.value.length; i++) {
-                    stream.push(action.data.value.charCodeAt(i))
-                }*/
-                break
-
-            case "content-box":
-                const x = offsetX + parseInt(action.data.x)
-                const y = offsetY + parseInt(action.data.y)
-                const width = parseInt(action.data.width)
-                const height = parseInt(action.data.height)
-                const bgcolor = parseInt(action.data.bgcolor)
-
-                for(let row = y; row < y + height; row++) {
-                    stream.push(0x1f, 0x40 + row, 0x40 + x)
-                    stream.push(0x0e, 0x1b, 0x50 + bgcolor)
-                    stream.push(0x20)
-                    stream.push(0x12, 0x40 + width - 1)
-                }
-                break
-
-            case "move-home":
-                if(offsetX !== 0 || offsetY !== 0) {
-                    stream.push(0x1f)
-                    stream.push(0x40 + parseInt(offsetY))
-                    stream.push(0x40 + parseInt(offsetX))
-                } else {
-                    stream.push(0x1e)
-                }
-                break
-
-            case "move-locate":
+            for(let row = y; row < y + height; row++) {
+                stream.push([0x1f, 0x40 + row, 0x40 + x])
+                stream.push([0x0e, 0x1b, 0x50 + bgcolor])
+                stream.push(0x20)
+                stream.push([0x12, 0x40 + width - 1])
+            }
+        } else if(action.type === "move-home") {
+            if(offsetX !== 0 || offsetY !== 0) {
                 stream.push(0x1f)
-                stream.push(0x40 + parseInt(action.data.y) + offsetY)
-                stream.push(0x40 + parseInt(action.data.x) + offsetX)
-                break
+                stream.push(0x40 + parseInt(offsetY))
+                stream.push(0x40 + parseInt(offsetX))
+            } else {
+                stream.push(0x1e)
+            }
+        } else if(action.type === "move-locate") {
+            stream.push(0x1f)
+            stream.push(0x40 + parseInt(action.data.y) + offsetY)
+            stream.push(0x40 + parseInt(action.data.x) + offsetX)
         }
     }
 
@@ -138,13 +243,13 @@ class MiEditPage {
     onRunSlow(event) {
         const el = event.data.that
         const actions = mieditActions(el.mitree.serialize())
-        el.miscreen.send(actions2stream(actions, 0, 0))
+        el.miscreen.send(actions2stream(actions, 0, 0).items)
     }
 
     onRunFast(event) {
         const el = event.data.that
         const actions = mieditActions(el.mitree.serialize())
-        el.miscreen.directSend(actions2stream(actions, 0, 0))
+        el.miscreen.directSend(actions2stream(actions, 0, 0).items)
     }
 }
 
