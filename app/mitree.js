@@ -7,7 +7,7 @@ class MiTree {
         this.treeWidget = container.find(".miedit-tree")
         this.tree = undefined
         this.children = {
-            "move-locate": "Move cursor to an abolute position",
+            "move-locate": "Move cursor to an absolute position",
             "move-home": "Move cursor to first row, first column",
             "move-left": "Move cursor on the left",
             "move-up": "Move cursor on the preceding row",
@@ -91,8 +91,10 @@ class MiTree {
         // Load form with node values
         let form = this.container.find(selector)
         if(form.length > 0) {
-            form[0].reset()
-            form.unserialize(selected.data["miedit-value"])
+            if(form[0].reset) {
+                form[0].reset()
+                form.unserialize(selected.data["miedit-value"])
+            }
         } else {
             // No form available, defaults to empty form
             form = this.container.find(".miedit-forms .empty")

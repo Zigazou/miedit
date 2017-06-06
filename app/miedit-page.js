@@ -1,11 +1,60 @@
 "use strict"
 
-function actions2stream(actions) {
+const directStream = {
+    "clear-screen": [0x0c],
+    "move-up": [0x0b],
+    "move-down": [0x0a],
+    "move-left": [0x08],
+    "move-right": [0x09],
+    "move-sol": [0x0d],
+    "effect-underline-on": [0x1b, 0x5a],
+    "effect-underline-off": [0x1b, 0x59],
+    "effect-invert-on": [0x1b, 0x5d],
+    "effect-invert-off": [0x1b, 0x5c],
+    "effect-blink-on": [0x1b, 0x48],
+    "effect-blink-off": [0x1b,0x49],
+    "effect-normal-size": [0x1b, 0x4c],
+    "effect-double-height": [0x1b, 0x4d],
+    "effect-double-width": [0x1b, 0x4e],
+    "effect-double-size": [0x1b, 0x4f],
+    "color-fg-0": [0x1b, 0x40],
+    "color-fg-1": [0x1b, 0x41],
+    "color-fg-2": [0x1b, 0x42],
+    "color-fg-3": [0x1b, 0x43],
+    "color-fg-4": [0x1b, 0x44],
+    "color-fg-5": [0x1b, 0x45],
+    "color-fg-6": [0x1b, 0x46],
+    "color-fg-7": [0x1b, 0x47],
+    "color-bg-0": [0x1b, 0x50],
+    "color-bg-1": [0x1b, 0x51],
+    "color-bg-2": [0x1b, 0x52],
+    "color-bg-3": [0x1b, 0x53],
+    "color-bg-4": [0x1b, 0x54],
+    "color-bg-5": [0x1b, 0x55],
+    "color-bg-6": [0x1b, 0x56],
+    "color-bg-7": [0x1b, 0x57],
+}
+
+function actions2stream(actions, offsetX, offsetY) {
     const stream = []
 
     for(let action of actions) {
+        if(action.type in directStream) {
+            for(let byte of directStream[action.type]) stream.push(byte)
+            continue
+        }
+
         switch(action.type) {
-            case "clear-screen": stream.push(0x0c); break
+            case "content-group":
+                if(action.data.disabled) break
+                let bytes = actions2stream(
+                    action.children,
+                    offsetX + parseInt(action.data.offsetX),
+                    offsetY + parseInt(action.data.offsetY)
+                )
+
+                for(let byte of bytes) stream.push(byte)
+                break
 
             case "content-string":
                 for(let i = 0; i < action.data.value.length; i++) {
@@ -13,48 +62,21 @@ function actions2stream(actions) {
                 }
                 break
 
-            case "move-home": stream.push(0x1e); break
-            case "move-up": stream.push(0x0b); break
-            case "move-down": stream.push(0x0a); break
-            case "move-left": stream.push(0x08); break
-            case "move-right": stream.push(0x09); break
-            case "move-sol": stream.push(0x0d); break
-
-            case "effect-underline-on": stream.push(0x1b, 0x5a); break
-            case "effect-underline-off": stream.push(0x1b, 0x59); break
-            case "effect-invert-on": stream.push(0x1b, 0x5d); break
-            case "effect-invert-off": stream.push(0x1b, 0x5c); break
-            case "effect-blink-on": stream.push(0x1b, 0x48); break
-            case "effect-blink-off": stream.push(0x1b,0x49); break
-            case "effect-normal-size": stream.push(0x1b, 0x4c); break
-            case "effect-double-height": stream.push(0x1b, 0x4d); break
-            case "effect-double-width": stream.push(0x1b, 0x4e); break
-            case "effect-double-size": stream.push(0x1b, 0x4f); break
-            // case "": stream.push(); break
+            case "move-home":
+                if(offsetX !== 0 || offsetY !== 0) {
+                    stream.push(0x1f)
+                    stream.push(0x40 + parseInt(offsetY))
+                    stream.push(0x40 + parseInt(offsetX))
+                } else {
+                    stream.push(0x1e)
+                }
+                break
 
             case "move-locate":
                 stream.push(0x1f)
-                stream.push(0x40 + parseInt(action.data.y))
-                stream.push(0x40 + parseInt(action.data.x))
+                stream.push(0x40 + parseInt(action.data.y) + offsetY)
+                stream.push(0x40 + parseInt(action.data.x) + offsetX)
                 break
-
-            case "color-fg-0": stream.push(0x1b, 0x40); break
-            case "color-fg-1": stream.push(0x1b, 0x41); break
-            case "color-fg-2": stream.push(0x1b, 0x42); break
-            case "color-fg-3": stream.push(0x1b, 0x43); break
-            case "color-fg-4": stream.push(0x1b, 0x44); break
-            case "color-fg-5": stream.push(0x1b, 0x45); break
-            case "color-fg-6": stream.push(0x1b, 0x46); break
-            case "color-fg-7": stream.push(0x1b, 0x47); break
-
-            case "color-bg-0": stream.push(0x1b, 0x50); break
-            case "color-bg-1": stream.push(0x1b, 0x51); break
-            case "color-bg-2": stream.push(0x1b, 0x52); break
-            case "color-bg-3": stream.push(0x1b, 0x53); break
-            case "color-bg-4": stream.push(0x1b, 0x54); break
-            case "color-bg-5": stream.push(0x1b, 0x55); break
-            case "color-bg-6": stream.push(0x1b, 0x56); break
-            case "color-bg-7": stream.push(0x1b, 0x57); break
         }
     }
 
@@ -92,13 +114,13 @@ class MiEditPage {
     onRunSlow(event) {
         const el = event.data.that
         const actions = mieditActions(el.mitree.serialize())
-        el.miscreen.send(actions2stream(actions))
+        el.miscreen.send(actions2stream(actions, 0, 0))
     }
 
     onRunFast(event) {
         const el = event.data.that
         const actions = mieditActions(el.mitree.serialize())
-        el.miscreen.directSend(actions2stream(actions))
+        el.miscreen.directSend(actions2stream(actions, 0, 0))
     }
 }
 
