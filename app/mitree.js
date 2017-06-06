@@ -43,6 +43,8 @@ class MiTree {
             "effect-underline-on": "Underline on",
             "effect-underline-off": "Underline off",
             "content-group": "Group",
+            "content-g0": "Switch to standard characters",
+            "content-g1": "Switch to mosaic characters",
             "content-string": "String",
             "content-block": "Block",
             "smgraph": "Semigraphic characters",
@@ -66,7 +68,11 @@ class MiTree {
         this.treeWidget.jstree({
             "core": { "check_callback": true, "data": nodes },
             "types": widgetTypes,
-            "plugins": [ "dnd" , "types" ],
+            "contextmenu": {
+                "show_at_node": false,
+                "items": this.contextualMenu()
+            },
+            "plugins": [ "dnd" , "types", "contextmenu" ],
         })
         this.tree = $.jstree.reference(this.treeWidget)
 
@@ -81,6 +87,40 @@ class MiTree {
         container.find(".info-block").each(function() {
             $(this).text(this.pageName)
         })
+    }
+
+    contextualMenu() {
+        return {
+            "rename" : {
+                "separator_before": false,
+                "separator_after": false,
+                "_disabled": false,
+                "label": "Rename",
+                "icon": "./icon/edit-rename.svg",
+                "action": function (data) {
+                    const inst = $.jstree.reference(data.reference)
+                    const obj = inst.get_node(data.reference)
+                    inst.edit(obj)
+                }
+            },
+            "remove" : {
+                "separator_before": false,
+                "icon": false,
+                "separator_after": false,
+                "_disabled": false,
+                "label": "Delete",
+                "icon": "./icon/edit-delete.svg",
+                "action": function (data) {
+                    const inst = $.jstree.reference(data.reference)
+                    const obj = inst.get_node(data.reference)
+                    if(inst.is_selected(obj)) {
+                        inst.delete_node(inst.get_selected())
+                    } else {
+                        inst.delete_node(obj)
+                    }
+                }
+            }
+        }
     }
 
     hideForms() {

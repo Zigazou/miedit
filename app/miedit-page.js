@@ -1,12 +1,15 @@
 "use strict"
 
 const directStream = {
+    "content-delay": [0x00],
     "clear-screen": [0x0c],
     "move-up": [0x0b],
     "move-down": [0x0a],
     "move-left": [0x08],
     "move-right": [0x09],
     "move-sol": [0x0d],
+    "content-g0": [0x0f],
+    "content-g1": [0x0e],
     "effect-underline-on": [0x1b, 0x5a],
     "effect-underline-off": [0x1b, 0x59],
     "effect-invert-on": [0x1b, 0x5d],
