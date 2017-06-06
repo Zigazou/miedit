@@ -4,9 +4,9 @@
 
   <div>
     <div class="miedit-field">
-      <label for="content-group-x">X:</label>
+      <label for="content-group-offset-x">X offset:</label>
       <input
-        id="content-group-x"
+        id="content-group-offset-x"
         type="number"
         name="x"
         min="1"
@@ -18,9 +18,9 @@
     </div>
 
     <div class="miedit-field">
-      <label for="content-group-y">Y:</label>
+      <label for="content-group-offset-y">Y offset:</label>
       <input
-        id="content-group-y"
+        id="content-group-offset-y"
         type="number"
         name="y"
         min="0"
@@ -32,13 +32,18 @@
     </div>
 
     <div class="miedit-field">
-      <label for="content-group-invisible">Invisible:</label>
+      <label for="content-group-disabled">Disabled:</label>
       <input
-        id="content-group-invisible"
+        id="content-group-disabled"
         type="checkbox"
         name="invisible"
         value="checked"
       />
+    </div>
+
+    <div class="miedit-info">
+      <h3>Note</h3>
+      <p>Only absolute positioning is affected by X and Y offsets.</p>
     </div>
   </div>
 </form>
