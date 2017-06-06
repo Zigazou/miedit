@@ -77,6 +77,14 @@ a>.jstree-icon {
     width: inherit;
 }
 
+.miedit-radio { display: inline-block; }
+.miedit-radio img {
+    position: relative;
+    top: 0.5em;
+}
+.radio-label { line-height: 2; }
+.miedit-forms .miedit-radio label { width: 10em; }
+
 .miedit-field, .miedit-action { clear: both; }
 
 .miedit-info>* { padding-left: 2.5rem; }

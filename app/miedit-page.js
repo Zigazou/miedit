@@ -65,6 +65,27 @@ function actions2stream(actions, offsetX, offsetY) {
                 }
                 break
 
+            case "content-block":/*
+                for(let i = 0; i < action.data.value.length; i++) {
+                    stream.push(action.data.value.charCodeAt(i))
+                }*/
+                break
+
+            case "content-box":
+                const x = offsetX + parseInt(action.data.x)
+                const y = offsetY + parseInt(action.data.y)
+                const width = parseInt(action.data.width)
+                const height = parseInt(action.data.height)
+                const bgcolor = parseInt(action.data.bgcolor)
+
+                for(let row = y; row < y + height; row++) {
+                    stream.push(0x1f, 0x40 + row, 0x40 + x)
+                    stream.push(0x0e, 0x1b, 0x50 + bgcolor)
+                    stream.push(0x20)
+                    stream.push(0x12, 0x40 + width - 1)
+                }
+                break
+
             case "move-home":
                 if(offsetX !== 0 || offsetY !== 0) {
                     stream.push(0x1f)
