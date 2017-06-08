@@ -8,38 +8,236 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <import src="import/main-menu.html"></import>
-
-    <div class="container theme-showcase" role="main">
+    <div>
       <h1>Test editor</h1>
-      <div class="minitel-editor">
-        <canvas class="minitel-screen"></canvas>
-        <canvas class="minitel-overlay"></canvas>
-      </div>
-      <img id="g0" src="font/ef9345-g0.png"></img>
-      <img id="g1" src="font/ef9345-g1.png"></img>
+      <form>
+        <textarea class="minitel-mosaic"></textarea>
+      </form>
     </div>
 
     <script src="library/jquery/jquery.js"></script>
-    <script src="app/font-sprite.js"></script>
-    <script src="app/page-cell.js"></script>
-    <script src="app/page-memory.js"></script>
-    <script src="app/minitel-decoder.js"></script>
-    <script src="app/minitel-screen.js"></script>
-    <script src="app/minitel-overlay.js"></script>
 
-    <script src="test/attribut.vdt.js"></script>
+<style>
+.mosaic-root {
+    position: relative;
+    background-color: black;
+    display: inline-block;
+}
+.mosaic-background {
+}
+
+.mosaic-drawing, .mosaic-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+</style>
 
     <script>
-        const mscreens = []
-        const canvases = document.getElementsByClassName("minitel-screen");
-        mscreens.push(new MinitelScreen(canvases[0]));
+"use strict"
 
-        const overlays = document.getElementsByClassName("minitel-overlay");
+const minitelColors = [
+    "#000000", // black
+    "#FF0000", // red
+    "#00FF00", // green
+    "#FFFF00", // yellow
+    "#0000FF", // blue
+    "#FF00FF", // magenta
+    "#00FFFF", // cyan
+    "#FFFFFF", // white
+]
 
-        mover = new MinitelOverlay(overlays[0], mscreens[0]);
+class MinitelMosaic {
+    constructor(textarea, zoom) {
+        this.width = 320
+        this.height = 240
+        this.zoom = zoom
+        this.isDrawing = false
+        this.previousX = undefined
+        this.previousY = undefined
 
-        mscreens[0].send(vdtAttribut);
+        this.color = 4
+
+        this.root = document.createElement("div")
+        this.root.className = "mosaic-root"
+
+        this.background = this._createCanvas("mosaic-background")
+        this.root.appendChild(this.background)
+
+        this.drawing = this._createCanvas("mosaic-drawing")
+        this.root.appendChild(this.drawing)
+
+        this.grid = this._createCanvas("mosaic-grid")
+        this.grid.style = "pointer-events: none"
+        this.root.appendChild(this.grid)
+
+        document.body.appendChild(this.root)
+        this.drawGrid()
+        this.drawBackground()
+
+        this.drawing.addEventListener("mouseup", event => {
+            event.preventDefault()
+            this.isDrawing = false
+        })
+
+        this.drawing.addEventListener("mousedown", event => {
+            event.preventDefault()
+            const detail = this.translate(event)
+            this.isDrawing = true
+            this.drawLine(
+                this.previousX,
+                this.previousY,
+                detail.x,
+                detail.y,
+                minitelColors[this.color]
+            )
+        })
+
+        this.drawing.addEventListener("mousemove", event => {
+            event.preventDefault()
+
+            const detail = this.translate(event)
+
+            if(this.isDrawing) {
+                this.drawLine(
+                    this.previousX,
+                    this.previousY,
+                    detail.x,
+                    detail.y,
+                    minitelColors[this.color]
+                )
+            }
+            
+            this.previousX = detail.x
+            this.previousY = detail.y
+        })
+    }
+
+    translate(event) {
+        const rect = this.drawing.getBoundingClientRect()
+        const charWidth = 8 * this.zoom / 2
+        const charHeight = 10 * this.zoom / 3
+        const col = Math.floor((event.clientX - rect.left) / charWidth)
+        const row = Math.floor((event.clientY - rect.top) / charHeight)
+
+        return({ "x": col, "y": row })
+    }
+
+    _createCanvas(className, width, height) {
+        const canvas = document.createElement("canvas")
+        canvas.width  = this.width * this.zoom
+        canvas.height = this.height * this.zoom
+        canvas.className = className
+        const ctx = canvas.getContext("2d")
+        ctx.scale(this.zoom, this.zoom)
+
+        return canvas
+    }
+
+    convertCoordinates(x, y) {
+        const coords = {}
+
+        coords.x = x * 4
+        coords.width = 4
+        coords.y = Math.floor(y / 3) * 10
+        switch(y % 3) {
+            case 0:
+                coords.height = 3
+                break
+            case 1:
+                coords.y += 3
+                coords.height = 4
+                break
+            case 2:
+                coords.y += 7
+                coords.height = 3
+                break
+        }
+
+        return coords
+    }
+
+    drawPoint(x, y, color) {
+        const ctx = this.drawing.getContext("2d")
+
+        ctx.fillStyle = color
+        const coords = this.convertCoordinates(x, y)
+        ctx.fillRect(coords.x, coords.y, coords.width, coords.height)
+    }
+
+    drawLine(x0, y0, x1, y1, color) {
+        const dx = Math.abs(x1 - x0)
+        const dy = Math.abs(y1 - y0)
+        const sx = (x0 < x1) ? 1 : -1
+        const sy = (y0 < y1) ? 1 : -1
+        let err = dx - dy
+
+        while(true){
+            this.drawPoint(x0, y0, color)
+
+            if(x0 === x1 && y0 === y1) break
+            var e2 = 2 * err
+            if(e2 > -dy) {
+                err -= dy
+                x0 += sx
+            }
+
+            if(e2 < dx) {
+                err += dx
+                y0 += sy
+            }
+        }
+    }
+
+    drawBackground() {
+    
+    }
+
+    drawGrid() {
+        const ctx = this.grid.getContext("2d")
+
+        ctx.beginPath()
+
+        ctx.lineWidth = 1 / this.zoom
+        ctx.imageSmoothingEnabled = false
+        ctx.mozImageSmoothingEnabled = false
+
+        ctx.strokeStyle = "#606000"
+        for(let x = 4; x < this.width; x+= 8) {
+            ctx.moveTo(x, 0)
+            ctx.lineTo(x, this.height)
+        }
+
+        for(let y = 0; y < this.height; y+= 10) {
+            ctx.moveTo(0, y + 3)
+            ctx.lineTo(this.width, y + 3)
+            ctx.moveTo(0, y + 7)
+            ctx.lineTo(this.width, y + 7)
+        }
+
+        ctx.stroke()
+        ctx.closePath()
+
+        ctx.beginPath()
+        ctx.strokeStyle = "#FFFF00"
+        for(let x = 0; x < this.width; x+= 8) {
+            ctx.moveTo(x, 0)
+            ctx.lineTo(x, this.height)
+        }
+
+        for(let y = 0; y < this.height; y+= 10) {
+            ctx.moveTo(0, y)
+            ctx.lineTo(this.width, y)
+        }
+
+        ctx.stroke()
+        ctx.closePath()
+    }
+}
+
+const textarea = document.getElementsByClassName("minitel-mosaic")[0]
+new MinitelMosaic(textarea, 3)
+
     </script>
   </body>
 </html>
