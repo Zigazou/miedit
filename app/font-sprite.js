@@ -40,8 +40,8 @@ class FontSprite {
         }
 
         return {
-            'x': Math.floor(ord / this.grid.rows) * this.char.width,
-            'y': (ord % this.grid.rows) * this.char.height,
+            "x": Math.floor(ord / this.grid.rows) * this.char.width,
+            "y": (ord % this.grid.rows) * this.char.height,
         }
     }
 

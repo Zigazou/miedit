@@ -1,12 +1,12 @@
+"use strict"
+
 class FiniteStack {
     constructor(maxLength) {
-        "use strict"
         this.maxLength = maxLength
         this.stack = []
     }
 
     push(value) {
-        "use strict"
         this.stack.push(value)
         if(this.stack.length > this.maxLength) {
             this.stack.shift()
@@ -14,7 +14,6 @@ class FiniteStack {
     }
 
     lastValue() {
-        "use strict"
         if(this.stack.length == 0) {
             return null
         }
@@ -23,14 +22,12 @@ class FiniteStack {
     }
 
     lastValues(count) {
-        "use strict"
         return this.stack.slice(-count)
     }
 }
 
-class MinitelDecoder{
+class MinitelDecoder {
     constructor(pageMemory) {
-        "use strict"
         this.state = "start"
         this.pageMode = true
 
@@ -51,7 +48,6 @@ class MinitelDecoder{
     }
 
     resetCurrent() {
-        "use strict"
         this.current = {
             charType: CharCell,
             mult: { width: 1, height: 1 },
@@ -66,14 +62,12 @@ class MinitelDecoder{
     }
 
     serialAttributesDefined() {
-        "use strict"
         return this.waiting.bgColor !== undefined
             || this.waiting.underline !== undefined
             || this.waiting.mask !== undefined
     }
 
     moveCursor(direction) {
-        "use strict"
         switch(direction) {
             case "char":
                 this.pm.cursor.x += this.current.mult.width
@@ -154,7 +148,6 @@ class MinitelDecoder{
     }
 
     clear(range) {
-        "use strict"
         if(range === "page") {
             for(let j = 1; j < this.pm.grid.rows; j++) {
                 for(let i = 0; i < this.pm.grid.cols; i++) {
@@ -188,12 +181,10 @@ class MinitelDecoder{
     }
 
     setPageMode(bool) {
-        "use strict"
         this.pageMode = bool
     }
 
     setCharType(charPage) {
-        "use strict"
         if(charPage === "G0" && this.current.charType === CharCell) return
         if(charPage === "G1" && this.current.charType === MosaicCell) return
 
@@ -209,17 +200,14 @@ class MinitelDecoder{
     }
 
     showCursor(visibility) {
-        "use strict"
         this.pm.cursor.visible = visibility
     }
 
     setFgColor(color) {
-        "use strict"
         this.current.fgColor = color
     }
 
     setBgColor(color) {
-        "use strict"
         if(this.current.charType === CharCell) {
             this.waiting.bgColor = color
         } else if(this.current.charType === MosaicCell) {
@@ -228,7 +216,6 @@ class MinitelDecoder{
     }
 
     setSize(sizeName) {
-        "use strict"
         if(this.pm.cursor.y === 0) return
         if(this.current.charType !== CharCell) return
 
@@ -245,17 +232,14 @@ class MinitelDecoder{
     }
 
     setBlink(blink) {
-        "use strict"
         this.current.blink = blink
     }
 
     setMask(mask) {
-        "use strict"
         this.waiting.mask = mask
     }
 
     setUnderline(underline) {
-        "use strict"
         if(this.current.charType === CharCell) {
             this.waiting.underline = underline
         } else if(this.current.charType === MosaicCell) {
@@ -264,14 +248,12 @@ class MinitelDecoder{
     }
 
     setInvert(invert) {
-        "use strict"
         if(this.current.charType === MosaicCell) return
 
         this.current.invert = invert
     }
 
     locate(y, x) {
-        "use strict"
         x -= 0x40
         y -= 0x40
 
@@ -285,7 +267,6 @@ class MinitelDecoder{
     }
 
     printDelimiter(charCode) {
-        "use strict"
         const x = this.pm.cursor.x
         const y = this.pm.cursor.y
 
@@ -327,7 +308,6 @@ class MinitelDecoder{
     }
 
     printG0Char(charCode) {
-        "use strict"
         const x = this.pm.cursor.x
         const y = this.pm.cursor.y
 
@@ -348,7 +328,6 @@ class MinitelDecoder{
     }
 
     printG1Char(charCode) {
-        "use strict"
         const x = this.pm.cursor.x
         const y = this.pm.cursor.y
 
@@ -371,7 +350,6 @@ class MinitelDecoder{
     }
 
     print(charCode) {
-        "use strict"
         if(charCode === 0x20 && this.serialAttributesDefined()) {
             this.printDelimiter(charCode)
         } else if(this.current.charType === CharCell) {
@@ -385,8 +363,6 @@ class MinitelDecoder{
     }
 
     repeat(count) {
-        "use strict"
-
         count -= 0x40
         for(let i = 0; i < count; i++) {
             this.print(this.charCode)
@@ -394,7 +370,6 @@ class MinitelDecoder{
     }
 
     decode(char) {
-        "use strict"
         const c = char.charCodeAt(0)
 
         if(c == 0x00) return
@@ -437,7 +412,6 @@ class MinitelDecoder{
     }
 
     decodeList(items) {
-        "use strict"
         if (typeof items === "string" || items instanceof String) {
             for(let i = 0; i < items.length; i++) {
                 this.decode(items[i])

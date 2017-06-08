@@ -86,13 +86,14 @@ class PageMemory {
 
             this.previousX = detail.detail.x
             this.previousY = detail.detail.y
-            this.canvas.dispatchEvent(new CustomEvent("minimove", detail));
+            this.canvas.dispatchEvent(new CustomEvent("minimove", detail))
         })
 
         this.canvas.addEventListener("click", function(event) {
             event.preventDefault()
+            const detail = this.eventDetail(event)
             this.canvas.dispatchEvent(
-                new CustomEvent("miniclick", this.eventDetail(event))
+                new CustomEvent("miniclick", this.eventDetail(detail))
             )
         })
     }
@@ -103,6 +104,8 @@ class PageMemory {
         const charHeight = this.char.height * this.zoom.y
         const x = Math.floor((event.clientX - rect.left) / charWidth)
         const y = Math.floor((event.clientY - rect.top) / charHeight)
+        const subx = Math.floor(2 * (rect.left - x * charWidth) / charWidth)
+        const suby = Math.floor(3 * (rect.top - y * charHeight) / charHeight)
 
         return({
             "detail":
@@ -110,7 +113,9 @@ class PageMemory {
                     "x": x * charWidth,
                     "y": y * charHeight,
                     "row": y,
-                    "col": x
+                    "col": x,
+                    "subx": subx,
+                    "suby": suby,
                 }
         })
     }
@@ -138,7 +143,7 @@ class PageMemory {
             this.char.width * this.grid.cols * this.zoom.x,
             this.char.height * this.grid.rows * this.zoom.y
         )
-        
+
         return ctx
     }
 
@@ -197,7 +202,7 @@ class PageMemory {
         const ctx = this.context
         const blink = this.getBlink()
 
-        let page = 'G0'
+        let page = this.font["G0"]
         let part = { x: 0, y: 0}
         let mult = { width: 1, height: 1}
         let unde = false
@@ -252,7 +257,7 @@ class PageMemory {
                                       || !cell.invert))
                                      ) {
                     if(cell instanceof CharCell) {
-                        page = this.font['G0']
+                        page = this.font["G0"]
                         part = cell.part
                         mult = cell.mult
                         unde = underline

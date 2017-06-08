@@ -50,7 +50,6 @@ class MosaicCell extends Cell {
     }
 
     copy() {
-        "use strict"
         const cell = new MosaicCell()
 
         cell.value = this.value
