@@ -5,12 +5,12 @@ class FontSprite {
         this.grid = grid
         this.char = char
         this.colors = colors
+        this.spriteSheetColors = []
+        this.isReady = false
 
         this.spriteSheet = new Image()
+        this.spriteSheet.onload = () => this.generateColors()
         this.spriteSheet.src = sheetURL
-
-        this.spriteSheetColors = []
-        this.generateColors()
     }
 
     generateColors() {
@@ -30,6 +30,8 @@ class FontSprite {
 
             this.spriteSheetColors[color] = canvas
         }
+
+        this.isReady = true
     }
 
     toCoordinates(ord) {
@@ -65,7 +67,7 @@ class FontSprite {
         )
 
         // Draw the underline if needed
-        if(underline && part.y == mult.height - 1) {
+        if(underline && part.y === mult.height - 1) {
             ctx.fillStyle = this.colors[color]
             ctx.fillRect(x, y + this.char.height - 1, this.char.width, 1)
         }

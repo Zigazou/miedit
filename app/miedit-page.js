@@ -162,7 +162,7 @@ function actions2stream(actions, offsetX, offsetY) {
             stream.push(action.data.value)
         } else if(action.type === "content-block") {
             const x = offsetX + parseInt(action.data.x) + 1
-            let y = offsetY + parseInt(action.data.y)
+            const y = offsetY + parseInt(action.data.y)
             const width = parseInt(action.data.width)
             const height = parseInt(action.data.height)
             const maxHeight = y + height - 1

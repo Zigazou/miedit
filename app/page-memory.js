@@ -38,15 +38,11 @@ class PageMemory {
         this.frameRate = 50 // Frame per second
 
         this.font = {
-            'G0': this.loadFont('font/ef9345-g0.png'),
-            'G1': this.loadFont('font/ef9345-g1.png'),
+            "G0": this.loadFont("font/ef9345-g0.png"),
+            "G1": this.loadFont("font/ef9345-g1.png"),
         }
 
-        this.cursor = {
-            x: 0,
-            y: 1,
-            visible: false,
-        }
+        this.cursor = { x: 0, y: 1, visible: false }
 
         this.memory = []
 
@@ -95,8 +91,9 @@ class PageMemory {
 
         this.canvas.addEventListener("click", function(event) {
             event.preventDefault()
-            const newEvent = new CustomEvent("miniclick", this.eventDetail(event))
-            this.canvas.dispatchEvent(newEvent)
+            this.canvas.dispatchEvent(
+                new CustomEvent("miniclick", this.eventDetail(event))
+            )
         })
     }
 
@@ -187,6 +184,9 @@ class PageMemory {
     }
 
     render() {
+        if(this.font["G0"].isReady === false) return
+        if(this.font["G1"].isReady === false) return
+
         // Add the inverted F on the status line
         const fCell = new CharCell()
         fCell.value = 0x46
@@ -248,7 +248,9 @@ class PageMemory {
                 if(   mask !== true
                    && !(   !(cell instanceof DelimiterCell)
                         && cell.blink === true
-                        && blink === (cell instanceof MosaicCell || !cell.invert))) {
+                        && blink === (cell instanceof MosaicCell
+                                      || !cell.invert))
+                                     ) {
                     if(cell instanceof CharCell) {
                         page = this.font['G0']
                         part = cell.part
