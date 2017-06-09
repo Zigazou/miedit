@@ -53,64 +53,67 @@ class MinitelMosaic {
         this.height = 240
         this.zoom = zoom
         this.isDrawing = false
-        this.previousX = undefined
-        this.previousY = undefined
+        this.previous = { x: undefined, y: undefined }
+        this.lastpoint = { x: undefined, y: undefined }
 
-        this.color = 4
+        this.color = 7
+        this.separated = true
 
         this.root = document.createElement("div")
         this.root.className = "mosaic-root"
 
-        this.background = this._createCanvas("mosaic-background")
-        this.root.appendChild(this.background)
-
-        this.drawing = this._createCanvas("mosaic-drawing")
-        this.root.appendChild(this.drawing)
-
-        this.grid = this._createCanvas("mosaic-grid")
-        this.grid.style = "pointer-events: none"
-        this.root.appendChild(this.grid)
+        this.createDOMElements()
 
         document.body.appendChild(this.root)
+
         this.drawGrid()
         this.drawBackground()
 
-        this.drawing.addEventListener("mouseup", event => {
-            event.preventDefault()
-            this.isDrawing = false
-        })
+        this.drawing.addEventListener("mouseup", e => this.onMouseUp(e))
+        this.drawing.addEventListener("mousedown", e => this.onMouseDown(e))
+        this.drawing.addEventListener("mousemove", e => this.onMouseMove(e))
 
-        this.drawing.addEventListener("mousedown", event => {
-            event.preventDefault()
-            const detail = this.translate(event)
-            this.isDrawing = true
-            this.drawLine(
-                this.previousX,
-                this.previousY,
-                detail.x,
-                detail.y,
-                minitelColors[this.color]
-            )
-        })
+        for(let obj of this.root.getElementsByClassName("mosaic-color")) {
+            obj.addEventListener("click", e => this.onColorChange(e))
+        }
+    }
 
-        this.drawing.addEventListener("mousemove", event => {
-            event.preventDefault()
+    onColorChange(event) {
+        event.preventDefault()
+        this.color = event.target.value
+        if(this.color !== "transparent") this.color = parseInt(this.color)
+    }
 
-            const detail = this.translate(event)
+    onMouseUp(event) {
+        event.preventDefault()
+        this.isDrawing = false
+    }
 
-            if(this.isDrawing) {
-                this.drawLine(
-                    this.previousX,
-                    this.previousY,
-                    detail.x,
-                    detail.y,
-                    minitelColors[this.color]
-                )
-            }
-            
-            this.previousX = detail.x
-            this.previousY = detail.y
-        })
+    onMouseDown(event) {
+        event.preventDefault()
+        const point = this.translate(event)
+        this.isDrawing = true
+        
+        if(event.shiftKey) {
+            this.drawLine(this.lastPoint, point, this.color)
+        } else {
+            this.drawLine(this.previous, point, this.color)
+        }
+
+        this.lastPoint = { x: point.x, y: point.y }
+    }
+
+    onMouseMove(event) {
+        event.preventDefault()
+
+        const point = this.translate(event)
+
+        if(this.isDrawing) {
+            this.drawLine(this.previous, point, this.color)
+            this.lastPoint = { x: point.x, y: point.y }
+        }
+
+        this.previous = { x: point.x, y: point.y }
     }
 
     translate(event) {
@@ -123,15 +126,54 @@ class MinitelMosaic {
         return({ "x": col, "y": row })
     }
 
-    _createCanvas(className, width, height) {
-        const canvas = document.createElement("canvas")
-        canvas.width  = this.width * this.zoom
-        canvas.height = this.height * this.zoom
-        canvas.className = className
-        const ctx = canvas.getContext("2d")
-        ctx.scale(this.zoom, this.zoom)
+    createDOMElements() {
+        this.root.innerHTML = `
+            <canvas class="mosaic-background"></canvas>
+            <canvas class="mosaic-drawing"></canvas>
+            <canvas class="mosaic-grid"></canvas>
+            <div class="mosaic-colors">
+                <button class="mosaic-color" value="transparent">
+                    <img src="icon/color-bg-transparent.svg" /><br/>
+                    Transparent
+                </button>
+                <button class="mosaic-color" value="0">
+                    <img src="icon/color-bg-0.svg" /><br/>Black / 0%
+                </button>
+                <button class="mosaic-color" value="4">
+                    <img src="icon/color-bg-4.svg" /><br/>Blue / 40%
+                </button>
+                <button class="mosaic-color" value="1">
+                    <img src="icon/color-bg-1.svg" /><br/>Red / 50%
+                </button>
+                <button class="mosaic-color" value="5">
+                    <img src="icon/color-bg-5.svg" /><br/>Magenta / 60%
+                </button>
+                <button class="mosaic-color" value="2">
+                    <img src="icon/color-bg-2.svg" /><br/>Green / 70%
+                </button>
+                <button class="mosaic-color" value="6">
+                    <img src="icon/color-bg-6.svg" /><br/>Cyan / 80%
+                </button>
+                <button class="mosaic-color" value="3">
+                    <img src="icon/color-bg-3.svg" /><br/>Yellow / 90%
+                </button>
+                <button class="mosaic-color" value="7">
+                    <img src="icon/color-bg-7.svg" /><br/>White / 40%
+                </button>
+            </div>
+        `
 
-        return canvas
+        this.background = this.root.getElementsByClassName("mosaic-background")[0]
+        this.drawing = this.root.getElementsByClassName("mosaic-drawing")[0]
+        this.grid = this.root.getElementsByClassName("mosaic-grid")[0]
+        this.grid.style = "pointer-events: none"
+
+        for(let obj of [ this.background, this.drawing, this.grid ]) {
+            obj.width  = this.width * this.zoom
+            obj.height = this.height * this.zoom
+            const ctx = obj.getContext("2d")
+            ctx.scale(this.zoom, this.zoom)
+        }
     }
 
     convertCoordinates(x, y) {
@@ -154,18 +196,32 @@ class MinitelMosaic {
                 break
         }
 
+        if(this.separated && this.color !== "transparent") {
+            coords.width--
+            coords.height--
+            coords.x++
+        }
+
         return coords
     }
 
     drawPoint(x, y, color) {
         const ctx = this.drawing.getContext("2d")
-
-        ctx.fillStyle = color
         const coords = this.convertCoordinates(x, y)
-        ctx.fillRect(coords.x, coords.y, coords.width, coords.height)
+
+        if(color === "transparent") {
+            ctx.clearRect(coords.x, coords.y, coords.width, coords.height)
+        } else {
+            ctx.fillStyle = minitelColors[color]
+            ctx.fillRect(coords.x, coords.y, coords.width, coords.height)
+        }
     }
 
-    drawLine(x0, y0, x1, y1, color) {
+    drawLine(first, last, color) {
+        let x0 = first.x
+        let y0 = first.y
+        let x1 = last.x
+        let y1 = last.y
         const dx = Math.abs(x1 - x0)
         const dy = Math.abs(y1 - y0)
         const sx = (x0 < x1) ? 1 : -1
@@ -190,7 +246,19 @@ class MinitelMosaic {
     }
 
     drawBackground() {
-    
+        const skew = 500
+        const inc = 20
+
+        const ctx = this.background.getContext("2d")
+        ctx.lineWidth = 10 / this.zoom
+        ctx.strokeStyle = "#202020"
+        ctx.beginPath()
+        for(let x = -skew; x < this.width; x += inc) {
+            ctx.moveTo(x, 0)
+            ctx.lineTo(x + skew, this.height)
+        }
+        ctx.stroke()
+        ctx.closePath()
     }
 
     drawGrid() {
@@ -202,7 +270,7 @@ class MinitelMosaic {
         ctx.imageSmoothingEnabled = false
         ctx.mozImageSmoothingEnabled = false
 
-        ctx.strokeStyle = "#606000"
+        ctx.strokeStyle = "#404000"
         for(let x = 4; x < this.width; x+= 8) {
             ctx.moveTo(x, 0)
             ctx.lineTo(x, this.height)
@@ -219,7 +287,7 @@ class MinitelMosaic {
         ctx.closePath()
 
         ctx.beginPath()
-        ctx.strokeStyle = "#FFFF00"
+        ctx.strokeStyle = "#808000"
         for(let x = 0; x < this.width; x+= 8) {
             ctx.moveTo(x, 0)
             ctx.lineTo(x, this.height)
@@ -236,7 +304,7 @@ class MinitelMosaic {
 }
 
 const textarea = document.getElementsByClassName("minitel-mosaic")[0]
-new MinitelMosaic(textarea, 3)
+new MinitelMosaic(textarea, 4)
 
     </script>
   </body>
