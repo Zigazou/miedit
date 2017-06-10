@@ -80,10 +80,10 @@ class MiTree {
         // Disable default behaviour of forms
         container.find("form").submit(e => { e.preventDefault() })
 
-        container.autocallback(this)
+        container.get()[0].autocallback(this)
         this.treeWidget.on("select_node.jstree", this, this.onSelect)
 
-        ribbon.autocallback(this)
+        ribbon.get()[0].autocallback(this)
 
         container.find(".info-block").each(function() {
             $(this).text(this.pageName)
@@ -134,7 +134,7 @@ class MiTree {
         if(form.length > 0) {
             if(form[0].reset) {
                 form[0].reset()
-                form.unserialize(selected.data["miedit-value"])
+                form[0].unserialize(selected.data["miedit-value"])
             }
         } else {
             // No form available, defaults to empty form
@@ -153,29 +153,27 @@ class MiTree {
         this.tree.core.data = nodes
     }
 
-    onCreateTidget(event) {
-        const that = event.data.that
-        const param = event.data.param
+    onCreateTidget(event, param) {
         const newNode = {
-            "text": that.children[param],
+            "text": this.children[param],
             "type": param,
             "data": {},
         }
-        const currents = that.tree.get_selected(true)
+        const currents = this.tree.get_selected(true)
         const parent = currents.length > 0 ? currents[0] : "#"
-        const newNodeId = that.tree.create_node(parent, newNode, "after")
+        const newNodeId = this.tree.create_node(parent, newNode, "after")
 
-        that.tree.deselect_all(true)
-        that.tree.select_node(newNodeId)
+        this.tree.deselect_all(true)
+        this.tree.select_node(newNodeId)
 
         return false
     }
 
-    onDelete(event) {
-        const that = event.data.that
-        const currents = that.tree.get_selected(true)
-        currents.forEach(function(e) { that.tree.delete_node(e) })
-        that.hideForms()
+    onDelete(event, param) {
+        const currents = this.tree.get_selected(true)
+        //currents.forEach(e => { this.tree.delete_node(e) })
+        currents.map(this.tree.delete_node)
+        this.hideForms()
 
         return false
     }
@@ -186,10 +184,10 @@ class MiTree {
         event.data.showForm(".miedit-forms ." + selected.type, selected)
     }
 
-    onSubmit(event) {
+    onSubmit(event, param) {
         // Save node values
-        const currents = event.data.that.tree.get_selected(true)
-        currents[0].data["miedit-value"] = $(this).serialize()
+        const currents = this.tree.get_selected(true)
+        currents[0].data["miedit-value"] = $(event.target).serialize()
     }
 }
 

@@ -1,6 +1,5 @@
 "use strict"
-
-function getParameter(varName) {
+function queryParameters(varName) {
     function decode(str) { return decodeURIComponent(str.replace('+', ' ')) }
 
     const value = window.location.search.substring(1)

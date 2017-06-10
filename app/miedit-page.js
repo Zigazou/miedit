@@ -229,33 +229,30 @@ class MiEditPage {
             this.mistorage.load(pageName)
         )
 
-        container.find("#ribbon").autocallback(this)
+        container.find("#ribbon")[0].autocallback(this)
         container.find("#page-name").val(pageName)
 
         const canvas = container.find("#minitel-screen")[0]
         this.miscreen = new MinitelScreen(canvas)
     }
 
-    onSave(event) {
-        const el = event.data.that
+    onSave(event, param) {
         event.preventDefault()
-        el.mistorage.save(el.pageName, el.mitree.serialize())
+        this.mistorage.save(this.pageName, this.mitree.serialize())
     }
 
-    onRunSlow(event) {
-        const el = event.data.that
-        const actions = mieditActions(el.mitree.serialize())
-        el.miscreen.send(actions2stream(actions, 0, 0).items)
+    onRunSlow(event, param) {
+        const actions = mieditActions(this.mitree.serialize())
+        this.miscreen.send(actions2stream(actions, 0, 0).items)
     }
 
     onRunFast(event) {
-        const el = event.data.that
-        const actions = mieditActions(el.mitree.serialize())
-        el.miscreen.directSend(actions2stream(actions, 0, 0).items)
+        const actions = mieditActions(this.mitree.serialize())
+        this.miscreen.directSend(actions2stream(actions, 0, 0).items)
     }
 }
 
 importHTML.install()
           .then(inputNumberButton.install)
-          .then(() => { new MiEditPage($("#miedit"), getParameter("page")) })
+          .then(() => { new MiEditPage($("#miedit"), queryParameters("page")) })
 
