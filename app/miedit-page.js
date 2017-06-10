@@ -223,6 +223,9 @@ class MiEditPage {
         const ribbon = $("#ribbon")
         ribbon.simpleRibbon()
 
+        const textarea = document.getElementsByClassName("mosaic-root")[0]
+        this.graphics = new MinitelMosaic(textarea, 4)
+
         this.mitree = new MiTree(
             container.find(".mitree-container"),
             ribbon,
@@ -249,6 +252,10 @@ class MiEditPage {
     onRunFast(event) {
         const actions = mieditActions(this.mitree.serialize())
         this.miscreen.directSend(actions2stream(actions, 0, 0).items)
+    }
+
+    onEditGraphics(event, param) {
+        
     }
 }
 

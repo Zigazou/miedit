@@ -1,27 +1,5 @@
 "use strict"
 
-const minitelGrays = [
-    '#000000', // 0%
-    '#7F7F7F', // 50%
-    '#B2B2B2', // 70%
-    '#E5E5E5', // 90%
-    '#666666', // 40% 
-    '#999999', // 60%
-    '#CCCCCC', // 80%
-    '#FFFFFF', // 100%
-]
-
-const minitelColors = [
-    '#000000', // black
-    '#FF0000', // red
-    '#00FF00', // green
-    '#FFFF00', // yellow
-    '#0000FF', // blue
-    '#FF00FF', // magenta
-    '#00FFFF', // cyan
-    '#FFFFFF', // white
-]
-
 class PageMemory {
     /*
     grid = { cols: …, rows: … }
@@ -34,7 +12,7 @@ class PageMemory {
         this.zoom = zoom
         this.canvas = canvas
         this.context = this.createContext()
-        this.colors = minitelColors
+        this.colors = minitelPalette.colors
         this.frameRate = 50 // Frame per second
 
         this.font = {

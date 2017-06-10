@@ -1,0 +1,46 @@
+<!-- Graphics widget -->
+<form class="content-graphics" data-call="onSubmit">
+  <h2>Graphics<input type="submit" value="Apply"/></h2>
+  <div>
+    <div class="miedit-field">
+      <label for="content-graphics-value">Value:</label>
+      <input type="text"
+        id="content-graphics-value"
+        name="value"
+      />
+      <button value="edit"
+        data-call="onEditGraphics"
+        data-param="content-graphics-value"
+      />
+    </div>
+
+    <div class="miedit-field">
+      <label for="content-graphics-x">X:</label>
+      <input
+        id="content-graphics-x"
+        type="number"
+        name="x"
+        min="0"
+        max="40"
+        value="0"
+        size="2"
+        maxlength="2"
+      />
+    </div>
+
+    <div class="miedit-field">
+      <label for="content-graphics-y">Y:</label>
+      <input
+        id="content-graphics-y"
+        type="number"
+        name="y"
+        min="0"
+        max="24"
+        value="1"
+        size="2"
+        maxlength="2"
+      />
+    </div>
+  </div>
+</form>
+

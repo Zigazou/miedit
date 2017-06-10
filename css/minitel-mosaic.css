@@ -1,0 +1,38 @@
+.mosaic-root {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background-color: black;
+}
+
+.hidden {
+    /*display: none;*/
+}
+
+.mosaic-drawing, .mosaic-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.mosaic-colors {
+    background: linear-gradient(#ffffff, #eaedf1);
+    padding: 0.5em;
+}
+
+.mosaic-color {
+    padding: 0.5em 0.5em;
+    background-color: transparent;
+    border: none;
+    vertical-align: top;
+}
+
+.mosaic-color:hover, .mosaic-color:active {
+    padding: 0.4em 0.5em;
+    border: 0.1em solid #F1C43F;
+    background-color: #fdeeb3;
+    cursor: pointer;
+}

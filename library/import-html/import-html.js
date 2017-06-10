@@ -1,6 +1,6 @@
 "use strict"
 const importHTML = {
-    _import: function(element) {
+    import: function(element) {
         return new Promise((resolve, reject) => {
             const src = element.getAttribute("src")
             const xhr = new XMLHttpRequest()
@@ -28,6 +28,6 @@ const importHTML = {
         const importTags = Array.prototype.slice.call(
             document.getElementsByTagName("import")
         )
-        return Promise.all(importTags.map(importHTML._import))
+        return Promise.all(importTags.map(importHTML.import))
     },
 }
