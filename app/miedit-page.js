@@ -255,5 +255,7 @@ class MiEditPage {
     }
 }
 
-new MiEditPage($("#miedit"), getParameter("page"))
+importHTML.install()
+          .then(inputNumberButton.install)
+          .then(() => { new MiEditPage($("#miedit"), getParameter("page")) })
 
