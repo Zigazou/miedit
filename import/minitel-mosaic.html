@@ -1,34 +1,99 @@
 <div class="mosaic-root hidden">
-  <canvas class="mosaic-background"></canvas>
-  <canvas class="mosaic-drawing"></canvas>
-  <canvas class="mosaic-grid"></canvas>
-  <div class="mosaic-colors">
-    <button class="mosaic-color" value="transparent">
-      <img src="icon/color-bg-transparent.svg" /><br/>Erase<br/>-
-    </button>
-    <button class="mosaic-color" value="0" data-call="onColorChange">
-      <img src="icon/color-bg-0.svg" /><br/>Black<br/>0%
-    </button>
-    <button class="mosaic-color" value="4" data-call="onColorChange">
-      <img src="icon/color-bg-4.svg" /><br/>Blue<br/>40%
-    </button>
-    <button class="mosaic-color" value="1" data-call="onColorChange">
-      <img src="icon/color-bg-1.svg" /><br/>Red<br/>50%
-    </button>
-    <button class="mosaic-color" value="5" data-call="onColorChange">
-      <img src="icon/color-bg-5.svg" /><br/>Magenta<br/>60%
-    </button>
-    <button class="mosaic-color" value="2" data-call="onColorChange">
-      <img src="icon/color-bg-2.svg" /><br/>Green<br/>70%
-    </button>
-    <button class="mosaic-color" value="6" data-call="onColorChange">
-      <img src="icon/color-bg-6.svg" /><br/>Cyan<br/>80%
-    </button>
-    <button class="mosaic-color" value="3" data-call="onColorChange">
-      <img src="icon/color-bg-3.svg" /><br/>Yellow<br/>90%
-    </button>
-    <button class="mosaic-color" value="7" data-call="onColorChange">
-      <img src="icon/color-bg-7.svg" /><br/>White<br/>40%
-    </button>
+  <div class="mosaic-canvases">
+    <div class="center">
+      <canvas class="mosaic-background"></canvas>
+      <canvas class="mosaic-drawing"></canvas>
+      <canvas class="mosaic-grid"></canvas>
+    </div>
+  </div>
+  <div class="mosaic-styles">
+    <div class="mosaic-colors">
+      <button class="mosaic-btn" value="-1" data-call="onColorChange">
+        <img src="icon/color-bg-transparent.svg" /><br/>Erase<br/>-
+      </button>
+      <button class="mosaic-btn" value="0" data-call="onColorChange">
+        <img src="icon/color-bg-0.svg" /><br/>Black<br/>0%
+      </button>
+      <button class="mosaic-btn" value="4" data-call="onColorChange">
+        <img src="icon/color-bg-4.svg" /><br/>Blue<br/>40%
+      </button>
+      <button class="mosaic-btn" value="1" data-call="onColorChange">
+        <img src="icon/color-bg-1.svg" /><br/>Red<br/>50%
+      </button>
+      <button class="mosaic-btn" value="5" data-call="onColorChange">
+        <img src="icon/color-bg-5.svg" /><br/>Magenta<br/>60%
+      </button>
+      <button class="mosaic-btn" value="2" data-call="onColorChange">
+        <img src="icon/color-bg-2.svg" /><br/>Green<br/>70%
+      </button>
+      <button class="mosaic-btn" value="6" data-call="onColorChange">
+        <img src="icon/color-bg-6.svg" /><br/>Cyan<br/>80%
+      </button>
+      <button class="mosaic-btn" value="3" data-call="onColorChange">
+        <img src="icon/color-bg-3.svg" /><br/>Yellow<br/>90%
+      </button>
+      <button class="mosaic-btn" value="7" data-call="onColorChange">
+        <img src="icon/color-bg-7.svg" /><br/>White<br/>40%
+      </button>
+    </div>
+
+    <div class="mosaic-tools">
+      <button class="mosaic-large" value="pencil" data-call="onToolChange">
+        <img src="icon/graphics-pencil.svg" /> Pencil
+      </button><br/>
+      <button class="mosaic-large" value="fill" data-call="onToolChange">
+        <img src="icon/graphics-fill.svg" /> Fill
+      </button>
+    </div>
+
+    <div class="mosaic-separated">
+      <button class="mosaic-large" value="7" data-call="onNormalMosaic">
+        <img src="icon/effect-separated-off.svg" /> Full
+      </button><br/>
+      <button class="mosaic-large" value="7" data-call="onSeparatedMosaic">
+        <img src="icon/effect-separated-on.svg" /> Separated
+      </button>
+    </div>
+
+    <div class="mosaic-offset">
+      <button data-param='{"x":-1,"y":-1}' data-call="onMoveGraphics">
+        <img src="icon/graphics-move-up-left.svg" />
+      </button>
+      <button data-param='{"x":0,"y":-1}' data-call="onMoveGraphics">
+        <img src="icon/graphics-move-up.svg" />
+      </button>
+      <button data-param='{"x":1,"y":-1}' data-call="onMoveGraphics">
+        <img src="icon/graphics-move-up-right.svg" />
+      </button>
+      <br/>
+      <button data-param='{"x":-1,"y":0}' data-call="onMoveGraphics">
+        <img src="icon/graphics-move-left.svg" />
+      </button>
+      <button data-param="center" data-call="onMoveGraphics">
+        <img src="icon/graphics-move-center.svg" />
+      </button>
+      <button data-param='{"x":1,"y":0}' data-call="onMoveGraphics">
+        <img src="icon/graphics-move-right.svg" />
+      </button>
+      <br/>
+      <button data-param='{"x":-1,"y":1}' data-call="onMoveGraphics">
+        <img src="icon/graphics-move-down-left.svg" />
+      </button>
+      <button data-param='{"x":0,"y":1}' data-call="onMoveGraphics">
+        <img src="icon/graphics-move-down.svg" />
+      </button>
+      <button data-param='{"x":1,"y":1}' data-call="onMoveGraphics">
+        <img src="icon/graphics-move-down-right.svg" />
+      </button>
+    </div>
+
+    <div class="mosaic-exit">
+      <button class="mosaic-btn" value="save" data-call="onSaveGraphics">
+        <img src="icon/save.svg" /><br/>Save<br/>graphics
+      </button>
+      <button class="mosaic-btn" value="exit" data-call="onExitGraphics">
+        <img src="icon/exit.svg" /><br/>Ignore<br/>changes
+      </button>
+    </div>
   </div>
 </div>

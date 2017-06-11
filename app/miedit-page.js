@@ -98,6 +98,10 @@ function splitRows(str, width) {
     return rows
 }
 
+function graphics2Stream(string) {
+
+}
+
 class Stream {
     constructor() {
         this.reset()
@@ -196,6 +200,8 @@ function actions2stream(actions, offsetX, offsetY) {
                 stream.push(0x20)
                 stream.push([0x12, 0x40 + width - 1])
             }
+        } else if(action.type === "content-graphics") {
+            console.log("TODO")
         } else if(action.type === "move-home") {
             if(offsetX !== 0 || offsetY !== 0) {
                 stream.push(0x1f)
@@ -204,6 +210,7 @@ function actions2stream(actions, offsetX, offsetY) {
             } else {
                 stream.push(0x1e)
             }
+
         } else if(action.type === "move-locate") {
             stream.push(0x1f)
             stream.push(0x40 + parseInt(action.data.y) + offsetY)
@@ -219,12 +226,13 @@ class MiEditPage {
         this.container = container
         this.pageName = pageName
         this.mistorage = new MiStorage("page")
+        this.inputGraphics = undefined
 
         const ribbon = $("#ribbon")
         ribbon.simpleRibbon()
 
-        const textarea = document.getElementsByClassName("mosaic-root")[0]
-        this.graphics = new MinitelMosaic(textarea, 4)
+        const mosaicRoot = document.getElementsByClassName("mosaic-root")[0]
+        this.graphics = new MinitelMosaic(mosaicRoot, 4)
 
         this.mitree = new MiTree(
             container.find(".mitree-container"),
@@ -234,6 +242,8 @@ class MiEditPage {
 
         container.find("#ribbon")[0].autocallback(this)
         container.find("#page-name").val(pageName)
+        container.find(".content-graphics")[0].autocallback(this)
+        container.find(".mosaic-exit")[0].autocallback(this)
 
         const canvas = container.find("#minitel-screen")[0]
         this.miscreen = new MinitelScreen(canvas)
@@ -255,7 +265,18 @@ class MiEditPage {
     }
 
     onEditGraphics(event, param) {
-        
+        this.inputGraphics = document.getElementById(param)
+        this.graphics.reset(this.inputGraphics.value)
+        this.graphics.root.classList.remove("hidden")
+    }
+
+    onSaveGraphics(event, param) {
+        this.inputGraphics.value = this.graphics.toString()
+        this.graphics.root.classList.add("hidden")
+    }
+
+    onExitGraphics(event, param) {
+        this.graphics.root.classList.add("hidden")
     }
 }
 

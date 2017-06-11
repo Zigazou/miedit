@@ -47,6 +47,7 @@ class MiTree {
             "content-g1": "Switch to mosaic characters",
             "content-string": "String",
             "content-block": "Block",
+            "content-graphics": "Graphics",
             "content-box": "Box",
             "smgraph": "Semigraphic characters",
             "content-delay": "Delay"

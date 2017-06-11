@@ -1,18 +1,24 @@
 "use strict"
 class MinitelMosaic {
     constructor(root, zoom) {
-        this.width = 320
-        this.height = 240
+        this.canvas = { width: 320, height: 240 }
+        this.resolution = { width: 80, height: 72 }
         this.zoom = zoom
         this.isDrawing = false
         this.previous = { x: undefined, y: undefined }
         this.lastpoint = { x: undefined, y: undefined }
-
         this.color = 7
-        this.separated = true
+        this.separated = false
+        this.bitmap = []
+        this.fullChars = "abcedfgh"
+        this.sepChars = "ABCDEFGH"
+        this.primaryGrid = "#808000"
+        this.secondaryGrid = "#404000"
+        this.tool = "pencil"
 
         this.root = root
         this.configureDOMElements()
+        this.setCursor()
 
         this.drawGrid()
         this.drawBackground()
@@ -21,15 +27,98 @@ class MinitelMosaic {
         this.drawing.addEventListener("mousedown", e => this.onMouseDown(e))
         this.drawing.addEventListener("mousemove", e => this.onMouseMove(e))
 
-        for(let obj of this.root.getElementsByClassName("mosaic-color")) {
-            obj.autocallback(this)
+        this.root.autocallback(this)
+    }
+
+    setCursor() {
+        this.drawing.classList.remove("cursor-pencil")
+        this.drawing.classList.remove("cursor-fill")
+        this.drawing.classList.add("cursor-" + this.tool)
+    }
+
+    reset(string) {
+        const pixelCount = this.resolution.width * this.resolution.height
+        if(string === undefined || string.length !== pixelCount) {
+            string = "-".repeat(pixelCount)
         }
+
+        this.bitmap = []
+        for(let y = 0; y < this.resolution.height; y++) {
+            const row = []
+            for(let x = 0; x < this.resolution.width; x++) {
+                row.push({ color: -1, separated: false })
+            }
+            this.bitmap.push(row)
+        }
+
+        let i = 0
+        for(let y = 0; y < this.resolution.height; y++) {
+            for(let x = 0; x < this.resolution.width; x++) {
+                const char = string[i]
+                let color = -1
+                let separated = false
+
+                color = this.fullChars.indexOf(char)
+                if(color < 0) {
+                    color = this.sepChars.indexOf(char)
+                    separated = true
+                }
+
+                this.drawPoint(x, y, color, separated)
+
+                i++
+            }
+        }
+    }
+
+    refresh() {
+        const ctx = this.drawing.getContext("2d")
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+
+        for(let y = 0; y < this.resolution.height; y++) {
+            for(let x = 0; x < this.resolution.width; x++) {
+                const pixel = this.bitmap[y][x]
+                if(pixel.color < 0) continue
+                this.drawPoint(x, y, pixel.color, pixel.separated)
+            }
+        }
+    }
+
+    toString() {
+        let string = ""
+        for(let y = 0; y < this.resolution.height; y++) {
+            for(let x = 0; x < this.resolution.width; x++) {
+                const pixel = this.bitmap[y][x]
+
+                if(pixel.color < 0) {
+                    string += "-"
+                } else if(pixel.separated) {
+                    string += this.sepChars[pixel.color]
+                } else {
+                    string += this.fullChars[pixel.color]
+                }
+            }
+        }
+
+        return string
+    }
+
+    onToolChange(event, param) {
+        this.tool = event.target.value
+        this.setCursor()
     }
 
     onColorChange(event) {
         event.preventDefault()
-        this.color = event.target.value
-        if(this.color !== "transparent") this.color = parseInt(this.color)
+        this.color = parseInt(event.target.value)
+    }
+
+    onNormalMosaic(event) {
+        this.separated = false
+    }
+
+    onSeparatedMosaic(event) {
+        this.separated = true
     }
 
     onMouseUp(event) {
@@ -40,15 +129,20 @@ class MinitelMosaic {
     onMouseDown(event) {
         event.preventDefault()
         const point = this.translate(event)
-        this.isDrawing = true
-        
-        if(event.shiftKey) {
-            this.drawLine(this.lastPoint, point, this.color)
-        } else {
-            this.drawLine(this.previous, point, this.color)
-        }
 
-        this.lastPoint = { x: point.x, y: point.y }
+        if(this.tool === "pencil") {
+            this.isDrawing = true
+            
+            if(event.shiftKey) {
+                this.drawLine(this.lastPoint, point, this.color, this.separated)
+            } else {
+                this.drawLine(this.previous, point, this.color, this.separated)
+            }
+
+            this.lastPoint = { x: point.x, y: point.y }
+        } else if(this.tool === "fill") {
+            this.fillArea(point, this.color, this.separated)
+        }
     }
 
     onMouseMove(event) {
@@ -57,11 +151,57 @@ class MinitelMosaic {
         const point = this.translate(event)
 
         if(this.isDrawing) {
-            this.drawLine(this.previous, point, this.color)
+            this.drawLine(this.previous, point, this.color, this.separated)
             this.lastPoint = { x: point.x, y: point.y }
         }
 
         this.previous = { x: point.x, y: point.y }
+    }
+
+    shiftUp(offset) {
+        for(let i = 0; i < offset; i++) {
+            this.bitmap.push(this.bitmap.shift())
+        }
+    }
+
+    shiftDown(offset) {
+        for(let i = 0; i < offset; i++) {
+            this.bitmap.unshift(this.bitmap.pop())
+        }
+    }
+
+    shiftLeft(offset) {
+        for(let y = 0; y < this.resolution.height; y++) {
+            for(let i = 0; i < offset; i++) {
+                this.bitmap[y].push(this.bitmap[y].shift())
+            }
+        }
+    }
+
+    shiftRight(offset) {
+        for(let y = 0; y < this.resolution.height; y++) {
+            for(let i = 0; i < offset; i++) {
+                this.bitmap[y].unshift(this.bitmap[y].pop())
+            }
+        }
+    }
+
+    onMoveGraphics(event, param) {
+        if(param === "center") return
+
+        if(param.x < 0) {
+            this.shiftLeft(Math.abs(param.x))
+        } else if(param.x > 0) {
+            this.shiftRight(param.x)
+        }
+
+        if(param.y < 0) {
+            this.shiftUp(Math.abs(param.y))
+        } else if(param.y > 0) {
+            this.shiftDown(param.y)
+        }
+
+        this.refresh()
     }
 
     translate(event) {
@@ -81,8 +221,8 @@ class MinitelMosaic {
         this.grid.style = "pointer-events: none"
 
         for(let obj of [ this.background, this.drawing, this.grid ]) {
-            obj.width  = this.width * this.zoom
-            obj.height = this.height * this.zoom
+            obj.width  = this.canvas.width * this.zoom
+            obj.height = this.canvas.height * this.zoom
             const ctx = obj.getContext("2d")
             ctx.scale(this.zoom, this.zoom)
         }
@@ -108,7 +248,7 @@ class MinitelMosaic {
                 break
         }
 
-        if(this.separated && this.color !== "transparent") {
+        if(this.separated && this.color >= 0) {
             coords.width--
             coords.height--
             coords.x++
@@ -117,11 +257,16 @@ class MinitelMosaic {
         return coords
     }
 
-    drawPoint(x, y, color) {
+    drawPoint(x, y, color, separated) {
         const ctx = this.drawing.getContext("2d")
         const coords = this.convertCoordinates(x, y)
 
-        if(color === "transparent") {
+        this.bitmap[y][x] = {
+            color: color,
+            separated: separated,
+        }
+
+        if(color < 0) {
             ctx.clearRect(coords.x, coords.y, coords.width, coords.height)
         } else {
             ctx.fillStyle = minitelPalette.colors[color]
@@ -129,7 +274,8 @@ class MinitelMosaic {
         }
     }
 
-    drawLine(first, last, color) {
+    drawLine(first, last, color, separated) {
+        // Bresenham algorithm
         let x0 = first.x
         let y0 = first.y
         let x1 = last.x
@@ -140,11 +286,11 @@ class MinitelMosaic {
         const sy = (y0 < y1) ? 1 : -1
         let err = dx - dy
 
-        while(true){
-            this.drawPoint(x0, y0, color)
+        while(true) {
+            this.drawPoint(x0, y0, color, separated)
 
             if(x0 === x1 && y0 === y1) break
-            var e2 = 2 * err
+            let e2 = 2 * err
             if(e2 > -dy) {
                 err -= dy
                 x0 += sx
@@ -157,6 +303,29 @@ class MinitelMosaic {
         }
     }
 
+    fillArea(point, finalColor, separated) {
+        const startColor = this.bitmap[point.y][point.x].color
+        if(finalColor === startColor) return
+
+        const that = this
+        function floodFill(point) {
+            const color = that.bitmap[point.y][point.x].color
+            if(color !== startColor) return
+
+            that.drawPoint(point.x, point.y, finalColor, separated)
+
+            const neighbors = []
+            if(point.x > 0) neighbors.push({ x: point.x - 1, y: point.y })
+            if(point.x < 79) neighbors.push({ x: point.x + 1, y: point.y })
+            if(point.y > 0) neighbors.push({ x: point.x, y: point.y - 1 })
+            if(point.y < 71) neighbors.push({ x: point.x, y: point.y + 1 })
+
+            neighbors.map(floodFill)
+        }
+
+        floodFill(point)
+    }
+
     drawBackground() {
         const skew = 500
         const inc = 20
@@ -165,9 +334,9 @@ class MinitelMosaic {
         ctx.lineWidth = 10 / this.zoom
         ctx.strokeStyle = "#202020"
         ctx.beginPath()
-        for(let x = -skew; x < this.width; x += inc) {
+        for(let x = -skew; x < this.canvas.width; x += inc) {
             ctx.moveTo(x, 0)
-            ctx.lineTo(x + skew, this.height)
+            ctx.lineTo(x + skew, this.canvas.height)
         }
         ctx.stroke()
         ctx.closePath()
@@ -176,38 +345,41 @@ class MinitelMosaic {
     drawGrid() {
         const ctx = this.grid.getContext("2d")
 
+        // Secondary grid
         ctx.beginPath()
 
         ctx.lineWidth = 1 / this.zoom
         ctx.imageSmoothingEnabled = false
         ctx.mozImageSmoothingEnabled = false
 
-        ctx.strokeStyle = "#404000"
-        for(let x = 4; x < this.width; x+= 8) {
+        ctx.strokeStyle = this.secondaryGrid
+        for(let x = 4; x < this.canvas.width; x+= 8) {
             ctx.moveTo(x, 0)
-            ctx.lineTo(x, this.height)
+            ctx.lineTo(x, this.canvas.height)
         }
 
-        for(let y = 0; y < this.height; y+= 10) {
+        for(let y = 0; y < this.canvas.height; y+= 10) {
             ctx.moveTo(0, y + 3)
-            ctx.lineTo(this.width, y + 3)
+            ctx.lineTo(this.canvas.width, y + 3)
             ctx.moveTo(0, y + 7)
-            ctx.lineTo(this.width, y + 7)
+            ctx.lineTo(this.canvas.width, y + 7)
         }
 
         ctx.stroke()
         ctx.closePath()
 
+        // Primary grid
         ctx.beginPath()
-        ctx.strokeStyle = "#808000"
-        for(let x = 0; x < this.width; x+= 8) {
+        ctx.lineWidth = 1 / this.zoom
+        ctx.strokeStyle = this.primaryGrid
+        for(let x = 0; x < this.canvas.width; x+= 8) {
             ctx.moveTo(x, 0)
-            ctx.lineTo(x, this.height)
+            ctx.lineTo(x, this.canvas.height)
         }
 
-        for(let y = 0; y < this.height; y+= 10) {
+        for(let y = 0; y < this.canvas.height; y+= 10) {
             ctx.moveTo(0, y)
-            ctx.lineTo(this.width, y)
+            ctx.lineTo(this.canvas.width, y)
         }
 
         ctx.stroke()
