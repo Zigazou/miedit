@@ -315,10 +315,21 @@ class MinitelMosaic {
             that.drawPoint(point.x, point.y, finalColor, separated)
 
             const neighbors = []
-            if(point.x > 0) neighbors.push({ x: point.x - 1, y: point.y })
-            if(point.x < 79) neighbors.push({ x: point.x + 1, y: point.y })
-            if(point.y > 0) neighbors.push({ x: point.x, y: point.y - 1 })
-            if(point.y < 71) neighbors.push({ x: point.x, y: point.y + 1 })
+            if(point.x > 0) {
+                neighbors.push({ x: point.x - 1, y: point.y })
+            }
+
+            if(point.x < this.resolution.width - 1) {
+                neighbors.push({ x: point.x + 1, y: point.y })
+            }
+
+            if(point.y > 0) {
+                neighbors.push({ x: point.x, y: point.y - 1 })
+            }
+
+            if(point.y < this.resolution.height - 1) {
+                neighbors.push({ x: point.x, y: point.y + 1 })
+            }
 
             neighbors.map(floodFill)
         }
