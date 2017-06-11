@@ -204,7 +204,7 @@ function graphics2Stream(string, col, row) {
         let separated = isSeparated(sextet)
         sextet = sextet.toLowerCase()
 
-        let [fg, bg] = twoColors(sextet)        
+        let [bg, fg] = twoColors(sextet)        
 
         let char = ""
         for(let c of sextet) char = (color2int[c] === bg ? "0" : "1") + char
