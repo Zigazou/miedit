@@ -10,7 +10,7 @@ class MinitelMosaic {
         this.color = 7
         this.separated = false
         this.bitmap = []
-        this.fullChars = "abcedfgh"
+        this.fullChars = "abcdefgh"
         this.sepChars = "ABCDEFGH"
         this.primaryGrid = "#808000"
         this.secondaryGrid = "#404000"
@@ -36,7 +36,9 @@ class MinitelMosaic {
         this.drawing.classList.add("cursor-" + this.tool)
     }
 
-    reset(string) {
+    reset(string, background) {
+        this.overlay.style.backgroundImage = "url(" + background + ")"
+
         const pixelCount = this.resolution.width * this.resolution.height
         if(string === undefined || string.length !== pixelCount) {
             string = "-".repeat(pixelCount)
@@ -219,6 +221,8 @@ class MinitelMosaic {
         this.drawing = this.root.getElementsByClassName("mosaic-drawing")[0]
         this.grid = this.root.getElementsByClassName("mosaic-grid")[0]
         this.grid.style = "pointer-events: none"
+        this.overlay = this.root.getElementsByClassName("mosaic-overlay")[0]
+        this.overlay.style = "pointer-events: none"
 
         for(let obj of [ this.background, this.drawing, this.grid ]) {
             obj.width  = this.canvas.width * this.zoom
@@ -319,7 +323,7 @@ class MinitelMosaic {
                 neighbors.push({ x: point.x - 1, y: point.y })
             }
 
-            if(point.x < this.resolution.width - 1) {
+            if(point.x < that.resolution.width - 1) {
                 neighbors.push({ x: point.x + 1, y: point.y })
             }
 
@@ -327,7 +331,7 @@ class MinitelMosaic {
                 neighbors.push({ x: point.x, y: point.y - 1 })
             }
 
-            if(point.y < this.resolution.height - 1) {
+            if(point.y < that.resolution.height - 1) {
                 neighbors.push({ x: point.x, y: point.y + 1 })
             }
 

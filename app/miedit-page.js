@@ -98,10 +98,6 @@ function splitRows(str, width) {
     return rows
 }
 
-function graphics2Stream(string) {
-
-}
-
 class Stream {
     constructor() {
         this.reset()
@@ -117,14 +113,10 @@ class Stream {
 
         if(item instanceof Stream) {
             this.items = this.items.concat(item.items)
+        } else if(typeof item === "string" && item.length === 1) {
+            this._pushValue(item.charCodeAt(0))
         } else if(typeof item[Symbol.iterator] === "function") {
-            for(let value of item) {
-                if(typeof value === "number") {
-                    this._pushValue(value)
-                } else {
-                    this._pushValue(value.charCodeAt(0))
-                }
-            }
+            for(let value of item) this.push(value)
         } else if(typeof item === "number") {
             this._pushValue(item)
         }
@@ -142,6 +134,123 @@ class Stream {
             this.items.push(value)
         }
     }
+}
+
+const color2int = {
+    "a": 0,
+    "b": 1,
+    "c": 2,
+    "d": 3,
+    "e": 4,
+    "f": 5,
+    "g": 6,
+    "h": 7,
+    "-": 0,
+}
+
+function graphics2Stream(string, col, row) {
+    function isSeparated(sextet) {
+        let separated = 0
+        let full = 0
+        for(let c of sextet) {
+            if(c >= "a" && c <= "h") full++
+            if(c >= "A" && c <= "H") separated++
+        }
+
+        return separated > full
+    }
+
+    function twoColors(sextet) {
+        const cardinals = {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0,
+            "g": 0,
+            "h": 0,
+            "-": 0,
+        }
+
+        for(let char of sextet) cardinals[char]++
+
+        // Find most often used color
+        let fg = Object.keys(cardinals)[0]
+        for(let key in cardinals) {
+            if(cardinals[key] > cardinals[fg]) fg = key
+        }
+
+        delete cardinals[fg]
+
+        // Find second most often used color
+        let bg = Object.keys(cardinals)[0]
+        for(let key in cardinals) {
+            if(cardinals[key] > cardinals[bg]) bg = key
+        }
+
+        if(fg === "-") {
+            fg = bg
+            bg = "-"
+        }
+
+        if(cardinals[bg] === 0) bg = "-"
+        return [color2int[fg], color2int[bg]]
+    }
+
+    function sextet2char(sextet) {
+        if(sextet === "------") return 0x09
+
+        let separated = isSeparated(sextet)
+        sextet = sextet.toLowerCase()
+
+        let [fg, bg] = twoColors(sextet)        
+
+        let char = ""
+        for(let c of sextet) char = (color2int[c] === bg ? "0" : "1") + char
+        char = 0x20 + parseInt(char, 2)
+
+        if(separated) {
+            return [0x1b, 0x40 + fg, 0x1b, 0x50 + bg, 0x1b, 0x5a, char]
+        } else {
+            return [0x1b, 0x40 + fg, 0x1b, 0x50 + bg, 0x1b, 0x59, char]
+        }
+    }
+
+    const stream = new Stream()
+    for(let y = 0; y < 72 - row * 3; y += 3) {
+        // Converts pixels to mosaic characters
+        let sextets = []
+        for(let x = 0; x < 80 - col * 2; x += 2) {
+            const sextet = string[x + y * 80]
+                         + string[x + 1 + y * 80]
+                         + string[x + (y + 1) * 80]
+                         + string[x + 1 + (y + 1) * 80]
+                         + string[x + (y + 2) * 80]
+                         + string[x + 1 + (y + 2) * 80]
+
+            sextets.push(sextet2char(sextet))
+        }
+
+        // Get rid of empty characters at the beginning
+        let startX = 0
+        while(sextets.length > 0 && sextets[0] === 0x09) {
+            startX++
+            sextets.shift()
+        }
+
+        // Get rid of empty characters at the end
+        while(sextets.length > 0 && sextets[sextets.length - 1] === 0x09) {
+            sextets.pop()
+        }
+
+        if(sextets.length === 0) continue
+
+        stream.push([0x1f, 0x40 + y / 3 + 1, 0x40 + col + startX + 1, 0x0e])
+        stream.push(sextets)
+    }
+
+    return stream
 }
 
 function actions2stream(actions, offsetX, offsetY) {
@@ -201,7 +310,9 @@ function actions2stream(actions, offsetX, offsetY) {
                 stream.push([0x12, 0x40 + width - 1])
             }
         } else if(action.type === "content-graphics") {
-            console.log("TODO")
+            const x = offsetX + parseInt(action.data.x)
+            const y = offsetY + parseInt(action.data.y)
+            stream.push(graphics2Stream(action.data.value, x, y))
         } else if(action.type === "move-home") {
             if(offsetX !== 0 || offsetY !== 0) {
                 stream.push(0x1f)
@@ -210,7 +321,6 @@ function actions2stream(actions, offsetX, offsetY) {
             } else {
                 stream.push(0x1e)
             }
-
         } else if(action.type === "move-locate") {
             stream.push(0x1f)
             stream.push(0x40 + parseInt(action.data.y) + offsetY)
@@ -266,8 +376,12 @@ class MiEditPage {
 
     onEditGraphics(event, param) {
         this.inputGraphics = document.getElementById(param)
-        this.graphics.reset(this.inputGraphics.value)
+        this.graphics.reset(
+            this.inputGraphics.value,
+            document.getElementById("content-graphics-background").value
+        )
         this.graphics.root.classList.remove("hidden")
+        
     }
 
     onSaveGraphics(event, param) {
