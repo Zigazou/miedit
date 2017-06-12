@@ -106,13 +106,13 @@ class MinitelMosaic {
     }
 
     onToolChange(event, param) {
-        this.tool = event.target.value
+        this.tool = param
         this.setCursor()
     }
 
-    onColorChange(event) {
+    onColorChange(event, param) {
         event.preventDefault()
-        this.color = parseInt(event.target.value)
+        this.color = parseInt(param)
     }
 
     onNormalMosaic(event) {
