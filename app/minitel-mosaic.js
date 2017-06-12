@@ -6,7 +6,7 @@ class MinitelMosaic {
         this.zoom = zoom
         this.isDrawing = false
         this.previous = { x: undefined, y: undefined }
-        this.lastpoint = { x: undefined, y: undefined }
+        this.lastPoint = { x: undefined, y: undefined }
         this.color = 7
         this.separated = false
         this.bitmap = []
@@ -135,7 +135,7 @@ class MinitelMosaic {
         if(this.tool === "pencil") {
             this.isDrawing = true
             
-            if(event.shiftKey) {
+            if(event.shiftKey && this.lastPoint.x !== undefined) {
                 this.drawLine(this.lastPoint, point, this.color, this.separated)
             } else {
                 this.drawLine(this.previous, point, this.color, this.separated)

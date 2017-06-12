@@ -63,6 +63,8 @@
     border-radius: 0.3em;
     background-color: transparent;
     vertical-align: top;
+    line-height: 1.5;
+    font-size: 1em;
 }
 
 .mosaic-btn:hover, .mosaic-btn:active,
