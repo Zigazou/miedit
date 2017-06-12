@@ -307,38 +307,36 @@ class MinitelMosaic {
         }
     }
 
-    fillArea(point, finalColor, separated) {
-        const startColor = this.bitmap[point.y][point.x].color
+    fillArea(startPoint, finalColor, separated) {
+        const startColor = this.bitmap[startPoint.y][startPoint.x].color
         if(finalColor === startColor) return
 
-        const that = this
-        function floodFill(point) {
-            const color = that.bitmap[point.y][point.x].color
-            if(color !== startColor) return
+        const stack = [startPoint]
 
-            that.drawPoint(point.x, point.y, finalColor, separated)
+        while(stack.length !== 0) {
+            let point = stack.shift()
 
-            const neighbors = []
+            const color = this.bitmap[point.y][point.x].color
+            if(color !== startColor) continue
+
+            this.drawPoint(point.x, point.y, finalColor, separated)
+
             if(point.x > 0) {
-                neighbors.push({ x: point.x - 1, y: point.y })
+                stack.push({ x: point.x - 1, y: point.y })
             }
 
-            if(point.x < that.resolution.width - 1) {
-                neighbors.push({ x: point.x + 1, y: point.y })
+            if(point.x < this.resolution.width - 1) {
+                stack.push({ x: point.x + 1, y: point.y })
             }
 
             if(point.y > 0) {
-                neighbors.push({ x: point.x, y: point.y - 1 })
+                stack.push({ x: point.x, y: point.y - 1 })
             }
 
-            if(point.y < that.resolution.height - 1) {
-                neighbors.push({ x: point.x, y: point.y + 1 })
+            if(point.y < this.resolution.height - 1) {
+                stack.push({ x: point.x, y: point.y + 1 })
             }
-
-            neighbors.map(floodFill)
         }
-
-        floodFill(point)
     }
 
     drawBackground() {
