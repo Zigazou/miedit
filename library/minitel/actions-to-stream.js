@@ -13,7 +13,7 @@ Minitel.actionsToStream = function(actions, offsetX, offsetY) {
         }
 
         if(action.type === "content-group") {
-            if(action.data.disabled) break
+            if(action.data.disabled) continue
             stream.push(Minitel.actionsToStream(
                 action.children,
                 offsetX + parseInt(action.data.offsetX),
