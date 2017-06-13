@@ -1,31 +1,5 @@
 "use strict"
 
-class FiniteStack {
-    constructor(maxLength) {
-        this.maxLength = maxLength
-        this.stack = []
-    }
-
-    push(value) {
-        this.stack.push(value)
-        if(this.stack.length > this.maxLength) {
-            this.stack.shift()
-        }
-    }
-
-    lastValue() {
-        if(this.stack.length == 0) {
-            return null
-        }
-
-        return this.stack[this.stack.length - 1]
-    }
-
-    lastValues(count) {
-        return this.stack.slice(-count)
-    }
-}
-
 class MinitelDecoder {
     constructor(pageMemory) {
         this.state = "start"
@@ -376,17 +350,17 @@ class MinitelDecoder {
 
         this.previousBytes.push(c)
 
-        if(!(this.state in minitelStates)) {
+        if(!(this.state in Minitel.states)) {
             console.log("Unknown state: " + this.state)
             this.state = "start"
             return
         }
 
         let action = null
-        if(c in minitelStates[this.state]) {
-            action = minitelStates[this.state][c]
-        } else if('*' in minitelStates[this.state]) {
-            action = minitelStates[this.state]['*']
+        if(c in Minitel.states[this.state]) {
+            action = Minitel.states[this.state][c]
+        } else if('*' in Minitel.states[this.state]) {
+            action = Minitel.states[this.state]['*']
         }
 
         if(action === null) {
@@ -423,193 +397,3 @@ class MinitelDecoder {
         }
     }
 }
-
-const minitelStates = {
-    "start": {
-        0x01: { error: "unrecognized01" },
-        0x02: { error: "unrecognized02" },
-        0x03: { error: "unrecognized03" },
-        0x04: { error: "unrecognized04" },
-        0x05: { notImplemented: "askId" },
-        0x06: { error: "unrecognized06" },
-        0x07: { notImplemented: "beep" },
-        0x08: { func: "moveCursor", arg: "left" },
-        0x09: { func: "moveCursor", arg: "right" },
-        0x0A: { func: "moveCursor", arg: "down" },
-        0x0B: { func: "moveCursor", arg: "up" },
-        0x0C: { func: "clear", arg: "page" },
-        0x0D: { func: "moveCursor", arg: "firstColumn" },
-        0x0E: { func: "setCharType", arg: "G1" },
-        0x0F: { func: "setCharType", arg: "G0" },
-        0x10: { error: "unrecognized10" },
-        0x11: { func: "showCursor", arg: true },
-        0x12: { goto: "repeat" },
-        0x13: { goto: "sep" },
-        0x14: { func: "showCursor", arg: false },
-        0x15: { error: "unrecognized15" },
-        0x16: { goto: "g2" },
-        0x17: { error: "unrecognized17" },
-        0x18: { func: "clear", arg: "eol" },
-        0x19: { goto: "g2" },
-        0x1A: { notImplemented: "errorSignal" },
-        0x1B: { goto: "esc"},
-        0x1C: { error: "unrecognized1C" },
-        0x1D: { error: "unrecognized1D" },
-        0x1E: { func: "moveCursor", arg: "home" },
-        0x1F: { goto: "us" },
-        "*": { func: "print", dynarg: 1 }
-    },
-
-    "repeat": {
-        "*": { func: "repeat", dynarg: 1 }
-    },
-
-    "g2": {
-        0x23: { func: "print", arg: 0x03 }, // £
-        0x24: { func: "print", arg: 0x24 }, // $
-        0x26: { func: "print", arg: 0x23 }, // #
-        0x2C: { func: "print", arg: 0x0C }, // ←
-        0x2D: { func: "print", arg: 0x5E }, // ↑
-        0x2E: { func: "print", arg: 0x0E }, // →
-        0x2F: { func: "print", arg: 0x0F }, // ↓
-        0x30: { func: "print", arg: 0x10 }, // °
-        0x31: { func: "print", arg: 0x11 }, // ±
-        0x38: { func: "print", arg: 0x18 }, // ÷
-        0x3C: { func: "print", arg: 0x1C }, // ¼
-        0x3D: { func: "print", arg: 0x1D }, // ½
-        0x3E: { func: "print", arg: 0x1E }, // ¾
-        0x6A: { func: "print", arg: 0x0A }, // Œ
-        0x7A: { func: "print", arg: 0x1A }, // œ
-        0x41: { goto: "g2grave" }, // grave
-        0x42: { goto: "g2acute" }, // acute
-        0x43: { goto: "g2circ" }, // circ
-        0x48: { goto: "g2trema" }, // trema
-        0x4B: { goto: "g2cedila" }, // cedila
-        "*": { func: "print", arg: 0x5F }
-    },
-
-    "g2grave": {
-        0x41: { func: "print", arg: 0x07 }, // À
-        0x61: { func: "print", arg: 0x17 }, // à
-        0x45: { func: "print", arg: 0x09 }, // È
-        0x65: { func: "print", arg: 0x19 }, // è
-        0x75: { func: "print", arg: 0x08 }, // ù
-        "*": { func: "print", arg: 0x5F }
-    },
-
-    "g2acute": {
-        0x45: { func: "print", arg: 0x09 }, // É
-        0x65: { func: "print", arg: 0x12 }, // é
-        "*": { func: "print", arg: 0x5F }
-    },
-
-    "g2circ": {
-        0x41: { func: "print", arg: 0x01 }, // Â
-        0x61: { func: "print", arg: 0x04 }, // â
-        0x45: { func: "print", arg: 0x0B }, // Ê
-        0x65: { func: "print", arg: 0x1B }, // ê
-        0x75: { func: "print", arg: 0x16 }, // û
-        0x69: { func: "print", arg: 0x0D }, // î
-        0x6F: { func: "print", arg: 0x1F }, // ô
-        "*": { func: "print", arg: 0x5F }
-    },
-
-    "g2trema": {
-        0x45: { func: "print", arg: 0x06 }, // Ë
-        0x65: { func: "print", arg: 0x13 }, // ë
-        0x69: { func: "print", arg: 0x14 }, // ï
-        "*": { func: "print", arg: 0x5F }
-    },
-
-    "g2cedila": {
-        0x43: { func: "print", arg: 0x05 }, // Ç
-        0x63: { func: "print", arg: 0x15 }, // ç
-        "*": { func: "print", arg: 0x5F }
-    },
-
-
-    "sep": {
-        "*": { notImplemented: "sepCommand" }
-    },
-
-    "esc": {
-        0x23: { goto: "attribute" },
-        0x28: { goto: "selectG0charset" },
-        0x29: { goto: "selectG1charset" },
-        0x39: { goto: "pro1" },
-        0x3A: { goto: "pro2" },
-        0x3B: { goto: "pro3" },
-        0x40: { func: "setFgColor", arg: 0 },
-        0x41: { func: "setFgColor", arg: 1 },
-        0x42: { func: "setFgColor", arg: 2 },
-        0x43: { func: "setFgColor", arg: 3 },
-        0x44: { func: "setFgColor", arg: 4 },
-        0x45: { func: "setFgColor", arg: 5 },
-        0x46: { func: "setFgColor", arg: 6 },
-        0x47: { func: "setFgColor", arg: 7 },
-        0x48: { func: "setBlink", arg: true },
-        0x49: { func: "setBlink", arg: false },
-        0x4A: { notImplemented: "setInsertOff" },
-        0x4B: { notImplemented: "setInsertOn" },
-        0x4C: { func: "setSize", arg: "normalSize" },
-        0x4D: { func: "setSize", arg: "doubleHeight" },
-        0x4E: { func: "setSize", arg: "doubleWidth" },
-        0x4F: { func: "setSize", arg: "doubleSize" },
-        0x50: { func: "setBgColor", arg: 0 },
-        0x51: { func: "setBgColor", arg: 1 },
-        0x52: { func: "setBgColor", arg: 2 },
-        0x53: { func: "setBgColor", arg: 3 },
-        0x54: { func: "setBgColor", arg: 4 },
-        0x55: { func: "setBgColor", arg: 5 },
-        0x56: { func: "setBgColor", arg: 6 },
-        0x57: { func: "setBgColor", arg: 7 },
-        0x58: { func: "setMask", arg: true },
-        0x59: { func: "setUnderline", arg: false },
-        0x5A: { func: "setUnderline", arg: true },
-        0x5B: { goto: "csi" },
-        0x5C: { func: "setInvert", arg: false },
-        0x5D: { func: "setInvert", arg: true },
-        0x5F: { func: "setMask", arg: false },
-    },
-
-    "us": { "*": { goto: "us-2" } },
-    "us-2": { "*": { func: "locate", dynarg: 2 } },
-
-    "attribute": {
-        0x20: { goto: "attributeOn" },
-        0x21: { goto: "attributeOff" },
-    },
-
-    "attributeOn": { "*": { notImplemented: "attributeOn" } },
-    "attributeOff": { "*": { notImplemented: "attributeOff" } },
-
-    "csi": {
-        /*0x41: { func: "moveCursorN
-        0x42: { func: "moveCursorN", arg:"", csi: },
-        "*": { goto: "csi" }*/
-        "*": { notImplemented: "csiSequence" }
-     },
-
-    "pro1": { "*": { notImplemented: "pro1Sequence" } },
-    "pro2": {
-        0x69: { goto: "startScreenMode" },
-        0x6A: { goto: "stopScreenMode" },
-    },
-
-    "startScreenMode": {
-        0x43: { func: "setPageMode", arg: false },
-        0x46: { notImplemented: "startUpZoom" },
-        0x47: { notImplemented: "startDownZoom" },
-    },
-
-    "stopScreenMode": {
-        0x43: { func: "setPageMode", arg: true },
-        0x46: { notImplemented: "stopUpZoom" },
-        0x47: { notImplemented: "stopDownZoom" },
-    },
-
-    "pro3": { "*": { goto: "pro3-2" } },
-    "pro3-2": { "*": { goto: "pro3-3" } },
-    "pro3-3": { "*": { notImplemented: "pro3Sequence" } },
-}
-

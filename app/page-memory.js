@@ -12,7 +12,7 @@ class PageMemory {
         this.zoom = zoom
         this.canvas = canvas
         this.context = this.createContext()
-        this.colors = minitelPalette.colors
+        this.colors = Minitel.colors
         this.frameRate = 50 // Frame per second
 
         this.font = {

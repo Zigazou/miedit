@@ -273,7 +273,7 @@ class MinitelMosaic {
         if(color < 0) {
             ctx.clearRect(coords.x, coords.y, coords.width, coords.height)
         } else {
-            ctx.fillStyle = minitelPalette.colors[color]
+            ctx.fillStyle = Minitel.colors[color]
             ctx.fillRect(coords.x, coords.y, coords.width, coords.height)
         }
     }

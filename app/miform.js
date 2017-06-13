@@ -1,3 +1,0 @@
-function miform(formID, node) {
-    
-}
