@@ -2,6 +2,12 @@
 var Minitel = Minitel || {}
 
 Minitel.graphicsToStream = function(string, col, row) {
+    let previous = {
+        fg: undefined,
+        bg: undefined,
+        separated: undefined
+    }
+
     function isSeparated(sextet) {
         let separated = 0
         let full = 0
@@ -10,7 +16,7 @@ Minitel.graphicsToStream = function(string, col, row) {
             if(c >= "A" && c <= "H") separated++
         }
 
-        return separated > full
+        return separated >= full
     }
 
     function twoColors(sextet) {
@@ -42,7 +48,7 @@ Minitel.graphicsToStream = function(string, col, row) {
             if(cardinals[key] > cardinals[bg]) bg = key
         }
 
-        if(fg === "-") {
+        if(fg === "-" || fg === "a") {
             fg = bg
             bg = "-"
         }
@@ -57,7 +63,14 @@ Minitel.graphicsToStream = function(string, col, row) {
         let separated = isSeparated(sextet)
         sextet = sextet.toLowerCase()
 
-        let [bg, fg] = twoColors(sextet)        
+        let fg = 7
+        let bg = 0
+
+        if(separated) {
+            [fg, bg] = twoColors(sextet)
+        } else {
+            [bg, fg] = twoColors(sextet)
+        }
 
         let char = ""
         for(let c of sextet) {
@@ -65,15 +78,33 @@ Minitel.graphicsToStream = function(string, col, row) {
         }
         char = 0x20 + parseInt(char, 2)
 
-        if(separated) {
-            return [0x1b, 0x40 + fg, 0x1b, 0x50 + bg, 0x1b, 0x5a, char]
+        if(   previous.fg === fg
+           && previous.bg === bg
+           && previous.separated === separated) {
+            return [char]
         } else {
-            return [0x1b, 0x40 + fg, 0x1b, 0x50 + bg, 0x1b, 0x59, char]
+            previous = {
+                fg: fg,
+                bg: bg,
+                separated: separated
+            }
+
+            if(separated) {
+                return [0x1b, 0x40 + fg, 0x1b, 0x50 + bg, 0x1b, 0x5a, char]
+            } else {
+                return [0x1b, 0x40 + fg, 0x1b, 0x50 + bg, 0x1b, 0x59, char]
+            }
         }
     }
 
     const stream = new Minitel.Stream()
-    for(let y = 0; y < 72 - row * 3; y += 3) {
+    for(let y = 0; y <= 72 - row * 3; y += 3) {
+        previous = {
+            fg: undefined,
+            bg: undefined,
+            separated: undefined
+        }
+
         // Converts pixels to mosaic characters
         let sextets = []
         for(let x = 0; x < 80 - col * 2; x += 2) {
@@ -101,7 +132,12 @@ Minitel.graphicsToStream = function(string, col, row) {
 
         if(sextets.length === 0) continue
 
-        stream.push([0x1f, 0x40 + y / 3 + 1, 0x40 + col + startX + 1, 0x0e])
+        stream.push([
+            0x1f,
+            0x40 + y / 3 + 1 + row,
+            0x40 + col + startX + 1,
+            0x0e
+        ])
         stream.push(sextets)
     }
 
