@@ -73,6 +73,10 @@ Minitel.actionsToStream = function(actions, offsetX, offsetY) {
             stream.push(0x1f)
             stream.push(0x40 + parseInt(action.data.y) + offsetY)
             stream.push(0x40 + parseInt(action.data.x) + offsetX + 1)
+        } else if(action.type === "content-delay") {
+            for(let i = 0; i < parseInt(action.data.value); i++) {
+                stream.push(0x00)
+            }
         }
     }
 

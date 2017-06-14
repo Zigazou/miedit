@@ -24,7 +24,6 @@ Minitel.colors = [
 ]
 
 Minitel.directStream = {
-    "content-delay": [0x00],
     "clear-screen": [0x0c],
     "move-up": [0x0b],
     "move-down": [0x0a],
