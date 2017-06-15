@@ -134,7 +134,7 @@ Minitel.graphicsToStream = function(string, col, row) {
 
         stream.push([
             0x1f,
-            0x40 + y / 3 + 1 + row,
+            0x40 + y / 3 + row,
             0x40 + col + startX + 1,
             0x0e
         ])

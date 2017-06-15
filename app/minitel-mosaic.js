@@ -232,7 +232,7 @@ class MinitelMosaic {
         }
     }
 
-    convertCoordinates(x, y) {
+    convertCoordinates(x, y, color, separated) {
         const coords = {}
 
         coords.x = x * 4
@@ -252,7 +252,7 @@ class MinitelMosaic {
                 break
         }
 
-        if(this.separated && this.color >= 0) {
+        if(separated && color >= 0) {
             coords.width--
             coords.height--
             coords.x++
@@ -263,7 +263,7 @@ class MinitelMosaic {
 
     drawPoint(x, y, color, separated) {
         const ctx = this.drawing.getContext("2d")
-        const coords = this.convertCoordinates(x, y)
+        const coords = this.convertCoordinates(x, y, color, separated)
 
         this.bitmap[y][x] = {
             color: color,
