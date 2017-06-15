@@ -1,6 +1,12 @@
 "use strict"
 var Minitel = Minitel || {}
 
+Minitel.rows = 25
+Minitel.columns = 40
+Minitel.charWidth = 8
+Minitel.charHeight = 10
+Minitel.B1200 = 1200 // bits per second
+
 Minitel.grays = [
     "#000000", // 0%
     "#7F7F7F", // 50%

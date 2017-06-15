@@ -7,8 +7,7 @@ class MiEditPage {
         this.mistorage = new MiStorage("page")
         this.inputGraphics = undefined
 
-        const ribbon = $("#ribbon")
-        ribbon.simpleRibbon()
+        const ribbon = new SimpleRibbon(document.getElementById("ribbon"))
 
         const mosaicRoot = document.getElementsByClassName("mosaic-root")[0]
         this.graphics = new MinitelMosaic(mosaicRoot, 4)
@@ -19,7 +18,7 @@ class MiEditPage {
             this.mistorage.load(pageName)
         )
 
-        container.find("#ribbon")[0].autocallback(this)
+        ribbon.root.autocallback(this)
         container.find("#page-name").val(pageName)
         container.find(".content-graphics")[0].autocallback(this)
         container.find(".mosaic-exit")[0].autocallback(this)

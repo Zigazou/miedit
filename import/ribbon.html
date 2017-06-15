@@ -1,10 +1,11 @@
 <!-- Ribbon menu -->
-<div id="ribbon">
-  <span class="rbn-window-title">Minitel page editor</span>
+<div class="simple-ribbon" id="ribbon">
+  <h2>Minitel page editor</h2>
+
   <!-- File tab -->
-  <div class="rbn-tab file">
-    <span class="rbn-title">File</span>
-    <div class="rbn-backstage">
+  <h3 class="file">File</h3>
+  <div>
+    <div class="backstage">
       <form data-call="onSave">
         <label for="page-name">Editing page:</label>
         <input type="text" id="page-name" name="page"></input>
@@ -15,315 +16,244 @@
   </div>
 
   <!-- Move tab -->
-  <div class="rbn-tab" id="move-tab">
-    <span class="rbn-title">Move</span>
-    <div class="rbn-section">
-      <span class="section-title">Absolute</span>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="move-locate">
-        <span class="btn-title">Locate</span>
-        <img class="rbn-icon rbn-normal" src="icon/move-locate.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="move-home">
-        <span class="btn-title">Home</span>
-        <img class="rbn-icon rbn-normal" src="icon/move-home.svg" />
-      </div>
+  <h3 class="first">Move</h3>
+  <div id="move-tab">
+    <div>
+      <h4>Absolute</h4>
+      <button class="large" data-call="onCreateTidget" data-param="move-locate">
+        <img src="icon/move-locate.svg" /><br/>Locate
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="move-home">
+        <img src="icon/move-home.svg" /><br/>Home
+      </button>
     </div>
 
-    <div class="rbn-section">
-      <span class="section-title">Simple</span>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="move-left">
-        <span class="btn-title">Left</span>
-        <img class="rbn-icon rbn-normal" src="icon/move-left.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="move-up">
-        <span class="btn-title">Up</span>
-        <img class="rbn-icon rbn-normal" src="icon/move-up.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-          data-call="onCreateTidget"
-          data-param="move-down">
-        <span class="btn-title">Down</span>
-        <img class="rbn-icon rbn-normal" src="icon/move-down.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="move-right">
-        <span class="btn-title">Right</span>
-        <img class="rbn-icon rbn-normal" src="icon/move-right.svg" />
-      </div>
+    <hr/>
+
+    <div>
+      <h4>Simple</h4>
+      <button class="large" data-call="onCreateTidget" data-param="move-left">
+        <img src="icon/move-left.svg" /><br/>Left
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="move-up">
+        <img src="icon/move-up.svg" /><br/>Up
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="move-down">
+        <img src="icon/move-down.svg" /><br/>Down
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="move-right">
+        <img src="icon/move-right.svg" /><br/>Right
+      </button>
     </div>
-    
-    <div class="rbn-section">
-      <span class="section-title">Special</span>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="move-sol">
-        <span class="btn-title">Start<br/>of line</span>
-        <img class="rbn-icon rbn-normal" src="icon/move-sol.svg" />
-      </div>
+
+    <hr/>
+
+    <div>
+      <h4>Special</h4>
+      <button class="large" data-call="onCreateTidget" data-param="move-sol">
+        <img src="icon/move-sol.svg" /><br/>Start<br/>of line
+      </button>
     </div>
   </div>
 
   <!-- Clear tab -->
-  <div class="rbn-tab" id="clear-tab">
-    <span class="rbn-title">Clear</span>
-    <div class="rbn-section">
-      <span class="section-title">Clear</span>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="clear-screen">
-        <span class="btn-title">Clear<br/>screen</span>
-        <img class="rbn-icon rbn-normal" src="icon/clear-screen.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="clear-eol">
-        <span class="btn-title">Clear<br/>EOL</span>
-        <img class="rbn-icon rbn-normal" src="icon/clear-eol.svg" />
-      </div>
+  <h3>Clear</h3>
+  <div id="clear-tab">
+    <div>
+      <h4>Clear</h4>
+      <button class="large" data-call="onCreateTidget" data-param="clear-screen">
+        <img src="icon/clear-screen.svg" /><br/>Clear<br/>screen
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="clear-eol">
+        <img src="icon/clear-eol.svg" /><br/>Clear<br/>EOL
+      </button>
     </div>
   </div>
 
   <!-- Effect tab -->
-  <div class="rbn-tab" id="effect-tab">
-    <span class="rbn-title">Effect</span>
-    <div class="rbn-section">
-      <span class="section-title">Size</span>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="effect-normal-size">
-        <span class="btn-title">Normal<br/>size</span>
-        <img class="rbn-icon rbn-normal" src="icon/effect-normal-size.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="effect-double-width">
-        <span class="btn-title">Double<br/>width</span>
-        <img class="rbn-icon rbn-normal" src="icon/effect-double-width.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="effect-double-height">
-        <span class="btn-title">Double<br/>height</span>
-        <img class="rbn-icon rbn-normal" src="icon/effect-double-height.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="effect-double-size">
-        <span class="btn-title">Double<br/>size</span>
-        <img class="rbn-icon rbn-normal" src="icon/effect-double-size.svg" />
-      </div>
+  <h3>Effect</h3>
+  <div id="effect-tab">
+    <div>
+      <h4>Size</h4>
+      <button class="large" data-call="onCreateTidget" data-param="effect-normal-size">
+        <img src="icon/effect-normal-size.svg" /><br/>Normal<br/>size
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="effect-double-width">
+        <img src="icon/effect-double-width.svg" /><br/>Double<br/>width
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="effect-double-height">
+        <img src="icon/effect-double-height.svg" /><br/>Double<br/>height
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="effect-double-size">
+        <img src="icon/effect-double-size.svg" /><br/>Double<br/>size
+      </button>
     </div>
-    <div class="rbn-section">
-      <span class="section-title">Blink</span>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="effect-blink-on">
-        <span class="btn-title">Blink<br/>on</span>
-        <img class="rbn-icon rbn-normal" src="icon/effect-blink-on.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="effect-blink-off">
-        <span class="btn-title">Blink<br/>off</span>
-        <img class="rbn-icon rbn-normal" src="icon/effect-blink-off.svg" />
-      </div>
+
+    <hr/>
+
+    <div>
+      <h4>Blink</h4>
+      <button class="large" data-call="onCreateTidget" data-param="effect-blink-on">
+        <img src="icon/effect-blink-on.svg" /><br/>Blink<br/>on
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="effect-blink-off">
+        <img src="icon/effect-blink-off.svg" /><br/>Blink<br/>off
+      </button>
     </div>
-    <div class="rbn-section">
-      <span class="section-title">Invert</span>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="effect-invert-on">
-        <span class="btn-title">Invert<br/>on</span>
-        <img class="rbn-icon rbn-normal" src="icon/effect-invert-on.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="effect-invert-off">
-        <span class="btn-title">Invert<br/>off</span>
-        <img class="rbn-icon rbn-normal" src="icon/effect-invert-off.svg" />
-      </div>
+
+    <hr/>
+
+    <div>
+      <h4>Invert</h4>
+      <button class="large" data-call="onCreateTidget" data-param="effect-invert-on">
+        <img src="icon/effect-invert-on.svg" /><br/>Invert<br/>on
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="effect-invert-off">
+        <img src="icon/effect-invert-off.svg" /><br/>Invert<br/>off
+      </button>
     </div>
-    <div class="rbn-section">
-      <span class="section-title">Underline / Separated</span>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="effect-underline-on">
-        <span class="btn-title">Underline<br/>on</span>
-        <img class="rbn-icon rbn-normal" src="icon/effect-underline-on.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="effect-underline-off">
-        <span class="btn-title">Underline<br/>off</span>
-        <img class="rbn-icon rbn-normal" src="icon/effect-underline-off.svg" />
-      </div>
+
+    <hr/>
+
+    <div>
+      <h4>Underline / Separated</h4>
+      <button class="large" data-call="onCreateTidget" data-param="effect-underline-on">
+        <img src="icon/effect-underline-on.svg" /><br/>Underline<br/>on
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="effect-underline-off">
+        <img src="icon/effect-underline-off.svg" /><br/>Underline<br/>off
+      </button>
     </div>
   </div>
 
   <!-- Color tab -->
-  <div class="rbn-tab" id="color-tab">
-    <span class="rbn-title">Color</span>
-    <div class="rbn-section">
-      <span class="section-title">Foreground</span>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="color-fg-0">
-        <span class="btn-title">Black<br/>0%</span>
-        <img class="rbn-icon rbn-normal" src="icon/color-fg-0.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="color-fg-4">
-        <span class="btn-title">Blue<br/>40%</span>
-        <img class="rbn-icon rbn-normal" src="icon/color-fg-4.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="color-fg-1">
-        <span class="btn-title">Red<br/>50%</span>
-        <img class="rbn-icon rbn-normal" src="icon/color-fg-1.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="color-fg-5">
-        <span class="btn-title">Magenta<br/>60%</span>
-        <img class="rbn-icon rbn-normal" src="icon/color-fg-5.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="color-fg-2">
-        <span class="btn-title">Green<br/>70%</span>
-        <img class="rbn-icon rbn-normal" src="icon/color-fg-2.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="color-fg-6">
-        <span class="btn-title">Cyan<br/>80%</span>
-        <img class="rbn-icon rbn-normal" src="icon/color-fg-6.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="color-fg-3">
-        <span class="btn-title">Yellow<br/>90%</span>
-        <img class="rbn-icon rbn-normal" src="icon/color-fg-3.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="color-fg-7">
-        <span class="btn-title">White<br/>100%</span>
-        <img class="rbn-icon rbn-normal" src="icon/color-fg-7.svg" />
-      </div>
+  <h3>Color</h3>
+  <div id="color-tab">
+    <div>
+      <h4>Foreground</h4>
+      <button class="large" data-call="onCreateTidget" data-param="color-fg-0">
+        <img src="icon/color-fg-0.svg" /><br/>Black<br/>0%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-fg-4">
+        <img src="icon/color-fg-4.svg" /><br/>Blue<br/>40%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-fg-1">
+        <img src="icon/color-fg-1.svg" /><br/>Red<br/>50%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-fg-5">
+        <img src="icon/color-fg-5.svg" /><br/>Magenta<br/>60%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-fg-2">
+        <img src="icon/color-fg-2.svg" /><br/>Green<br/>70%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-fg-6">
+        <img src="icon/color-fg-6.svg" /><br/>Cyan<br/>80%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-fg-3">
+        <img src="icon/color-fg-3.svg" /><br/>Yellow<br/>90%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-fg-7">
+        <img src="icon/color-fg-7.svg" /><br/>White<br/>100%
+      </button>
     </div>
 
-    <div class="rbn-section">
-      <span class="section-title">Background</span>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="color-bg-0">
-        <span class="btn-title">Black<br/>0%</span>
-        <img class="rbn-icon rbn-normal" src="icon/color-bg-0.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="color-bg-4">
-        <span class="btn-title">Blue<br/>40%</span>
-        <img class="rbn-icon rbn-normal" src="icon/color-bg-4.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="color-bg-1">
-        <span class="btn-title">Red<br/>50%</span>
-        <img class="rbn-icon rbn-normal" src="icon/color-bg-1.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="color-bg-5">
-        <span class="btn-title">Magenta<br/>60%</span>
-        <img class="rbn-icon rbn-normal" src="icon/color-bg-5.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="color-bg-2">
-        <span class="btn-title">Green<br/>70%</span>
-        <img class="rbn-icon rbn-normal" src="icon/color-bg-2.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="color-bg-6">
-        <span class="btn-title">Cyan<br/>80%</span>
-        <img class="rbn-icon rbn-normal" src="icon/color-bg-6.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="color-bg-3">
-        <span class="btn-title">Yellow<br/>90%</span>
-        <img class="rbn-icon rbn-normal" src="icon/color-bg-3.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="color-bg-7">
-        <span class="btn-title">White<br/>100%</span>
-        <img class="rbn-icon rbn-normal" src="icon/color-bg-7.svg" />
-      </div>
+    <hr/>
+
+    <div>
+      <h4>Background</h4>
+      <button class="large" data-call="onCreateTidget" data-param="color-bg-0">
+        <img src="icon/color-bg-0.svg" /><br/>Black<br/>0%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-bg-4">
+        <img src="icon/color-bg-4.svg" /><br/>Blue<br/>40%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-bg-1">
+        <img src="icon/color-bg-1.svg" /><br/>Red<br/>50%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-bg-5">
+        <img src="icon/color-bg-5.svg" /><br/>Magenta<br/>60%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-bg-2">
+        <img src="icon/color-bg-2.svg" /><br/>Green<br/>70%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-bg-6">
+        <img src="icon/color-bg-6.svg" /><br/>Cyan<br/>80%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-bg-3">
+        <img src="icon/color-bg-3.svg" /><br/>Yellow<br/>90%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-bg-7">
+        <img src="icon/color-bg-7.svg" /><br/>White<br/>100%
+      </button>
     </div>
   </div>
   
   <!-- Edit tab -->
-  <div class="rbn-tab" id="edit-tab">
-    <span class="rbn-title">Edit</span>
-    <div class="rbn-section">
-      <span class="section-title">Edit</span>
-      <div class="rbn-btn rbn-btn-large" data-call="onDelete">
-        <span class="btn-title">Delete<br/>item</span>
-        <img class="rbn-icon rbn-normal" src="icon/edit-delete.svg" />
-      </div>
+  <h3>Edit</h3>
+  <div id="edit-tab">
+    <div>
+      <h4>Edit</h4>
+      <button class="large" data-call="onDelete">
+        <img src="icon/edit-delete.svg" /><br/>Delete<br/>item
+      </button>
     </div>
   </div>
 
   <!-- Content tab -->
-  <div class="rbn-tab" id="content-tab">
-    <span class="rbn-title">Content</span>
-    <div class="rbn-section">
-      <span class="section-title">Stream</span>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="content-string">
-        <span class="btn-title">String</span>
-        <img class="rbn-icon rbn-normal" src="icon/content-string.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="content-block">
-        <span class="btn-title">Block</span>
-        <img class="rbn-icon rbn-normal" src="icon/content-block.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="content-graphics">
-        <span class="btn-title">Graphics</span>
-        <img class="rbn-icon rbn-normal" src="icon/content-graphics.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="content-box">
-        <span class="btn-title">Box</span>
-        <img class="rbn-icon rbn-normal" src="icon/content-box.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="content-group">
-        <span class="btn-title">Group</span>
-        <img class="rbn-icon rbn-normal" src="icon/content-group.svg" />
-      </div>
+  <h3>Content</h3>
+  <div id="content-tab">
+    <div>
+      <h4>Stream</h4>
+      <button class="large" data-call="onCreateTidget" data-param="content-string">
+        <img src="icon/content-string.svg" /><br/>String
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="content-block">
+        <img src="icon/content-block.svg" /><br/>Block
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="content-graphics">
+        <img src="icon/content-graphics.svg" /><br/>Graphics
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="content-box">
+        <img src="icon/content-box.svg" /><br/>Box
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="content-group">
+        <img src="icon/content-group.svg" /><br/>Group
+      </button>
     </div>
 
-    <div class="rbn-section">
-      <span class="section-title">Character</span>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="content-g0">
-        <span class="btn-title">Standard</span>
-        <img class="rbn-icon rbn-normal" src="icon/content-g0.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="content-g1">
-        <span class="btn-title">Mosaic</span>
-        <img class="rbn-icon rbn-normal" src="icon/content-g1.svg" />
-      </div>
+    <hr/>
+
+    <div>
+      <h4>Character</h4>
+      <button class="large" data-call="onCreateTidget" data-param="content-g0">
+        <img src="icon/content-g0.svg" /><br/>Standard
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="content-g1">
+        <img src="icon/content-g1.svg" /><br/>Mosaic
+      </button>
     </div>
 
-    <div class="rbn-section">
-      <span class="section-title">Other</span>
-      <div class="rbn-btn rbn-btn-large"
-           data-call="onCreateTidget" data-param="content-delay">
-        <span class="btn-title">Delay</span>
-        <img class="rbn-icon rbn-normal" src="icon/content-delay.svg" />
-      </div>
+    <hr/>
+
+    <div>
+      <h4>Other</h4>
+      <button class="large" data-call="onCreateTidget" data-param="content-delay">
+        <img src="icon/content-delay.svg" /><br/>Delay
+      </button>
     </div>
   </div>
   
   <!-- Run tab -->
-  <div class="rbn-tab" id="run-tab">
-    <span class="rbn-title">Run</span>
-    <div class="rbn-section">
-      <span class="section-title">Run</span>
-      <div class="rbn-btn rbn-btn-large" data-call="onRunSlow">
-        <span class="btn-title">Run<br/>slow</span>
-        <img class="rbn-icon rbn-normal" src="icon/run-slow.svg" />
-      </div>
-      <div class="rbn-btn rbn-btn-large" data-call="onRunFast">
-        <span class="btn-title">Run<br/>fast</span>
-        <img class="rbn-icon rbn-normal" src="icon/run-fast.svg" />
-      </div>
+  <h3>Run</h3>
+  <div id="run-tab">
+    <div>
+      <h4>Run</h4>
+      <button class="large" data-call="onRunSlow">
+        <img src="icon/run-slow.svg" /><br/>Run<br/>slow
+      </button>
+      <button class="large" data-call="onRunFast">
+        <img src="icon/run-fast.svg" /><br/>Run<br/>fast
+      </button>
     </div>
   </div>
 </div>

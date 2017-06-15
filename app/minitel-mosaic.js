@@ -1,8 +1,16 @@
 "use strict"
 class MinitelMosaic {
     constructor(root, zoom) {
-        this.canvas = { width: 320, height: 240 }
-        this.resolution = { width: 80, height: 72 }
+        this.pixelsPerWidth = 2
+        this.pixelsPerHeight = 3
+        this.canvas = {
+            width: Minitel.columns * Minitel.charWidth,
+            height: (Minitel.rows - 1) * Minitel.charHeight
+        }
+        this.resolution = {
+            width: Minitel.columns * this.pixelsPerWidth,
+            height: (Minitel.rows - 1) * this.pixelsPerHeight
+        }
         this.zoom = zoom
         this.isDrawing = false
         this.previous = { x: undefined, y: undefined }
@@ -208,8 +216,8 @@ class MinitelMosaic {
 
     translate(event) {
         const rect = this.drawing.getBoundingClientRect()
-        const charWidth = 8 * this.zoom / 2
-        const charHeight = 10 * this.zoom / 3
+        const charWidth = Minitel.charWidth * this.zoom / this.pixelsPerWidth
+        const charHeight = Minitel.charHeight * this.zoom / this.pixelsPerHeight
         const col = Math.floor((event.clientX - rect.left) / charWidth)
         const row = Math.floor((event.clientY - rect.top) / charHeight)
 
@@ -235,9 +243,9 @@ class MinitelMosaic {
     convertCoordinates(x, y, color, separated) {
         const coords = {}
 
-        coords.x = x * 4
-        coords.width = 4
-        coords.y = Math.floor(y / 3) * 10
+        coords.x = x * (Minitel.charWidth / this.pixelsPerWidth)
+        coords.width = Minitel.charWidth / this.pixelsPerWidth
+        coords.y = Math.floor(y / 3) * Minitel.charHeight
         switch(y % 3) {
             case 0:
                 coords.height = 3
@@ -366,12 +374,15 @@ class MinitelMosaic {
         ctx.mozImageSmoothingEnabled = false
 
         ctx.strokeStyle = this.secondaryGrid
-        for(let x = 4; x < this.canvas.width; x+= 8) {
+        for(let x = Minitel.charWidth / this.pixelsPerWidth;
+            x < this.canvas.width;
+            x+= Minitel.charWidth
+        ) {
             ctx.moveTo(x, 0)
             ctx.lineTo(x, this.canvas.height)
         }
 
-        for(let y = 0; y < this.canvas.height; y+= 10) {
+        for(let y = 0; y < this.canvas.height; y+= Minitel.charHeight) {
             ctx.moveTo(0, y + 3)
             ctx.lineTo(this.canvas.width, y + 3)
             ctx.moveTo(0, y + 7)
@@ -385,12 +396,12 @@ class MinitelMosaic {
         ctx.beginPath()
         ctx.lineWidth = 1 / this.zoom
         ctx.strokeStyle = this.primaryGrid
-        for(let x = 0; x < this.canvas.width; x+= 8) {
+        for(let x = 0; x < this.canvas.width; x+= Minitel.charWidth) {
             ctx.moveTo(x, 0)
             ctx.lineTo(x, this.canvas.height)
         }
 
-        for(let y = 0; y < this.canvas.height; y+= 10) {
+        for(let y = 0; y < this.canvas.height; y+= Minitel.charHeight) {
             ctx.moveTo(0, y)
             ctx.lineTo(this.canvas.width, y)
         }

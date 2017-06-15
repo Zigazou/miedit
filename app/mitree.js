@@ -84,7 +84,7 @@ class MiTree {
         container.get()[0].autocallback(this)
         this.treeWidget.on("select_node.jstree", this, this.onSelect)
 
-        ribbon.get()[0].autocallback(this)
+        ribbon.root.autocallback(this)
 
         container.find(".info-block").each(function() {
             $(this).text(this.pageName)
@@ -172,8 +172,7 @@ class MiTree {
 
     onDelete(event, param) {
         const currents = this.tree.get_selected(true)
-        //currents.forEach(e => { this.tree.delete_node(e) })
-        currents.map(this.tree.delete_node)
+        currents.map(node => this.tree.delete_node(node))
         this.hideForms()
 
         return false
