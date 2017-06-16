@@ -15,6 +15,10 @@ class PageMemory {
         this.colors = Minitel.colors
         this.frameRate = 50 // Frame per second
 
+        // Helper array
+        const rows = []
+        rows.length = this.grid.rows
+
         this.font = {
             "G0": this.loadFont("font/ef9345-g0.png"),
             "G1": this.loadFont("font/ef9345-g1.png"),
@@ -35,16 +39,10 @@ class PageMemory {
 
         // Initializes blinking handling
         this.lastblink = this.getBlink()
-        this.blinking = []
-        for(let j = 0; j < this.grid.rows; j++) {
-            this.blinking[j] = false
-        }
+        this.blinking = rows.map(() => false)
 
         // Marks all rows as changed
-        this.changed = []
-        for(let j = 0; j < this.grid.rows; j++) {
-            this.changed[j] = true
-        }
+        this.changed = rows.map(() => true)
 
         [ this.previousX, this.previousY ] = [ 0, 0 ]
 
@@ -181,8 +179,8 @@ class PageMemory {
         const blink = this.getBlink()
 
         let page = this.font["G0"]
-        let part = { x: 0, y: 0}
-        let mult = { width: 1, height: 1}
+        let part = { x: 0, y: 0 }
+        let mult = { width: 1, height: 1 }
         let unde = false
 
         let [ front, back ] = [ 7, 0 ]
