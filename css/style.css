@@ -72,6 +72,11 @@ a>.jstree-icon {
     width: 8em;
 }
 
+.miedit-forms img {
+    max-width: 100%;
+    height: auto;
+}
+
 .miedit-forms label.box-label {
     position: relative;
     width: inherit;
