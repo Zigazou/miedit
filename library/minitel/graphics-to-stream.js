@@ -2,12 +2,6 @@
 var Minitel = Minitel || {}
 
 Minitel.graphicsToStream = function(string, col, row) {
-    let previous = {
-        fg: undefined,
-        bg: undefined,
-        separated: undefined
-    }
-
     function isSeparated(sextet) {
         let separated = 0
         let full = 0
@@ -58,7 +52,7 @@ Minitel.graphicsToStream = function(string, col, row) {
     }
 
     function sextet2char(sextet) {
-        if(sextet === "------") return 0x09
+        if(sextet === "------") return [0x09]
 
         let separated = isSeparated(sextet)
         sextet = sextet.toLowerCase()
@@ -78,35 +72,75 @@ Minitel.graphicsToStream = function(string, col, row) {
         }
         char = 0x20 + parseInt(char, 2)
 
-        if(   previous.fg === fg
-           && previous.bg === bg
-           && previous.separated === separated) {
-            return [char]
+        if(separated) {
+            return [0x1b, 0x40 + fg, 0x1b, 0x50 + bg, 0x1b, 0x5a, char]
         } else {
-            previous = {
-                fg: fg,
-                bg: bg,
-                separated: separated
+            return [0x1b, 0x40 + fg, 0x1b, 0x50 + bg, 0x1b, 0x59, char]
+        }
+    }
+
+    function optimizeRow(row) {
+        let bg = 0x50
+        let fg = 0x47
+        let separated = false
+        let char = 0x00
+        let count = 0
+
+        const optimized = []
+        for(let i = 0; i < row.length; i++) {
+            let moveRight = row[i] === 0x09
+            let changeFG = row[i] === 0x1b
+                        && row[i + 1] >= 0x40
+                        && row[i + 1] <= 0x47
+                        && row[i + 1] !== fg
+            let changeBG = row[i] === 0x1b
+                        && row[i + 1] >= 0x50
+                        && row[i + 1] <= 0x57
+                        && row[i + 1] !== bg
+            let changeSep = row[i] === 0x1b
+                         && (   (row[i + 1] === 0x5a && !separated)
+                             || (row[i + 1] === 0x59 && separated))
+            let changeChar = row[i] >= 0x20 && row[i] !== char
+
+            if(count > 0 && (moveRight || changeFG || changeBG || changeSep || changeChar)) {
+                optimized.push(0x12, 0x40 + count)
+                count = 0
             }
 
-            if(separated) {
-                return [0x1b, 0x40 + fg, 0x1b, 0x50 + bg, 0x1b, 0x5a, char]
-            } else {
-                return [0x1b, 0x40 + fg, 0x1b, 0x50 + bg, 0x1b, 0x59, char]
+            if(moveRight) {
+                optimized.push(0x09)
+            } else if(changeFG) {
+                // Change foreground color
+                fg = row[i + 1]
+                optimized.push(0x1b, fg)
+            } else if(changeBG) {
+                // Change background color
+                bg = row[i + 1]
+                optimized.push(0x1b, bg)
+            } else if(changeSep) {
+                // Change separated
+                separated = !separated
+                optimized.push(0x1b, row[i + 1])
+            } else if(changeChar) {
+                // Change character
+                optimized.push(row[i])
+                char = row[i]
+            } else if(row[i] >= 0x20) {
+                // Same character
+                count++
             }
+
+            if(row[i] === 0x1b) i++
         }
+        if(count > 0) optimized.push(0x12, 0x40 + count)
+
+        return optimized
     }
 
     const stream = new Minitel.Stream()
     for(let y = 0; y <= 72 - row * 3; y += 3) {
-        previous = {
-            fg: undefined,
-            bg: undefined,
-            separated: undefined
-        }
-
         // Converts pixels to mosaic characters
-        let sextets = []
+        let codes = []
         for(let x = 0; x < 80 - col * 2; x += 2) {
             const sextet = string[x + y * 80]
                          + string[x + 1 + y * 80]
@@ -115,22 +149,24 @@ Minitel.graphicsToStream = function(string, col, row) {
                          + string[x + (y + 2) * 80]
                          + string[x + 1 + (y + 2) * 80]
 
-            sextets.push(sextet2char(sextet))
+            codes = codes.concat(sextet2char(sextet))
         }
+
+        codes = optimizeRow(codes)
 
         // Get rid of empty characters at the beginning
         let startX = 0
-        while(sextets.length > 0 && sextets[0] === 0x09) {
+        while(codes.length > 0 && codes[0] === 0x09) {
             startX++
-            sextets.shift()
+            codes.shift()
         }
 
         // Get rid of empty characters at the end
-        while(sextets.length > 0 && sextets[sextets.length - 1] === 0x09) {
-            sextets.pop()
+        while(codes.length > 0 && codes[codes.length - 1] === 0x09) {
+            codes.pop()
         }
 
-        if(sextets.length === 0) continue
+        if(codes.length === 0) continue
 
         stream.push([
             0x1f,
@@ -138,7 +174,7 @@ Minitel.graphicsToStream = function(string, col, row) {
             0x40 + col + startX + 1,
             0x0e
         ])
-        stream.push(sextets)
+        stream.push(codes)
     }
 
     return stream
