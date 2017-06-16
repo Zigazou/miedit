@@ -1,11 +1,20 @@
 "use strict"
+/**
+ * @file MinitelScreen
+ * @author Frédéric BISSON <zigazou@free.fr>
+ * @version 1.0
+ */
 
+/**
+ * @class MinitelScreen
+ */
 class MinitelScreen {
     constructor(canvas) {
         const zoom = { x: 2, y: 2 }
         const grid = { cols: Minitel.columns, rows: Minitel.rows }
         const char = { width: Minitel.charWidth, height: Minitel.charHeight }
 
+        // Resize canvas based on Minitel characteristics
         canvas.width = char.width * grid.cols * zoom.x
         canvas.height = char.height * grid.rows * zoom.y
 
