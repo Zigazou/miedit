@@ -7,6 +7,17 @@
  * PageMemory simulates a Minitel page memory connected to a screen using a 
  * canvas.
  *
+ * @typedef {Object} Grid
+ * @property {number} cols Number of characters per width.
+ * @property {number} rows Number of characters per height.
+ *
+ * @typedef {Object} Char
+ * @property {number} width Width in pixels of a character.
+ * @property {number} height Height in pixels of a character.
+ *
+ * @typedef {Object} Zoom
+ * @property {number} x Horizontal multiplier.
+ * @property {number} y Vertical multiplier.
  */
 
 /**
@@ -15,38 +26,76 @@
 class PageMemory {
     /**
      * @param {Object} grid How the page is organized.
-     * @param {number} grid.cols Number of characters per width.
-     * @param {number} grid.rows Number of characters per height.
      * @param {Object} char Character characteristics.
-     * @param {number} char.width Width in pixels of a character.
-     * @param {number} char.height Height in pixels of a character.
      * @param {Object} zoom Zoom values.
-     * @param {number} zoom.x Horizontal multiplier.
-     * @param {number} zoom.y Vertical multiplier.
      * @param {HTMLCanvasElement} canvas The canvas which will be used as the
      *                                   screen.
      */
     constructor(grid, char, zoom, canvas) {
+        const frameRate = 50 // Frame per second
+
+        /**
+         * @member {Grid}
+         * @private
+         */
         this.grid = grid
+
+        /**
+         * @member {Char}
+         * @private
+         */
         this.char = char
+
+        /**
+         * @member {Zoom}
+         * @private
+         */
         this.zoom = zoom
+
+        /**
+         * @member {HTMLCanvasElement}
+         * @private
+         */
         this.canvas = canvas
+
+        /**
+         * @member {CanvasRenderingContext2D}
+         * @private
+         */
         this.context = this.createContext()
+
+        /**
+         * @member {string[]}
+         * @private
+         */
         this.colors = Minitel.colors
-        this.frameRate = 50 // Frame per second
 
         // Helper array
         const rows = []
         rows.length = this.grid.rows
 
-        // G0 is the alphanumeric character set, G1 is the mosaic character set
+        /**
+         * G0 is the alphanumeric character set, G1 is the mosaic character set
+         * @member {Object}
+         * @private
+         */
         this.font = {
             "G0": this.loadFont("font/ef9345-g0.png"),
             "G1": this.loadFont("font/ef9345-g1.png"),
         }
 
+        /**
+         * Cursor position and visibility
+         * @member {Cursor}
+         * @private
+         */
         this.cursor = { x: 0, y: 1, visible: false }
 
+        /**
+         * A two dimension array of Cells
+         * @member {Cell[][]}
+         * @private
+         */
         this.memory = []
 
         // Initializes the page memory with default mosaic cells
@@ -58,75 +107,64 @@ class PageMemory {
             this.memory[j] = row
         }
 
-        // Initializes blinking handling
+        /**
+         * Keeps the last blink state
+         * @member {boolean}
+         * @private
+         */
         this.lastblink = this.getBlink()
+
+        /**
+         * List indicating which row contains blinking characters.
+         * @member {boolean[]}
+         * @private
+         */
         this.blinking = rows.map(() => false)
 
         // Marks all rows as changed
+        /**
+         * List indicating which row has been changed.
+         * @member {boolean[]}
+         * @private
+         */
         this.changed = rows.map(() => true)
 
-        [ this.previousX, this.previousY ] = [ 0, 0 ]
-
+        /**
+         * Timer ID of the refresh timer.
+         * @member {number}
+         * @private
+         */
         this.refresh = window.setInterval(
             () => { this.render() },
-            1000 / this.frameRate
+            1000 / frameRate
         )
-
-        this.canvas.addEventListener("mousemove", (event) => {
-            event.preventDefault()
-            const detail = this.eventDetail(event)
-
-            if(   this.previousX === detail.detail.x
-               && this.previousY === detail.detail.y) {
-                return
-            }
-
-            this.previousX = detail.detail.x
-            this.previousY = detail.detail.y
-            this.canvas.dispatchEvent(new CustomEvent("minimove", detail))
-        })
-
-        this.canvas.addEventListener("click", function(event) {
-            event.preventDefault()
-            const detail = this.eventDetail(event)
-            this.canvas.dispatchEvent(
-                new CustomEvent("miniclick", this.eventDetail(detail))
-            )
-        })
     }
 
-    eventDetail(event) {
-        const rect = this.canvas.getBoundingClientRect()
-        const charWidth = this.char.width * this.zoom.x
-        const charHeight = this.char.height * this.zoom.y
-        const x = Math.floor((event.clientX - rect.left) / charWidth)
-        const y = Math.floor((event.clientY - rect.top) / charHeight)
-        const subx = Math.floor(2 * (rect.left - x * charWidth) / charWidth)
-        const suby = Math.floor(3 * (rect.top - y * charHeight) / charHeight)
-
-        return({
-            "detail":
-                {
-                    "x": x * charWidth,
-                    "y": y * charHeight,
-                    "row": y,
-                    "col": x,
-                    "subx": subx,
-                    "suby": suby,
-                }
-        })
-    }
-
+    /**
+     * Set the Cell at (X, Y) position in page memory
+     *
+     * @param {number} x X position of the cell
+     * @param {number} y Y position of the cell
+     * @param {Cell} cell The cell
+     */
     set(x, y, cell) {
         this.memory[y][x] = cell
         this.changed[y] = true
     }
 
+    /**
+     * Get blink state.
+     * @return {boolean}
+     */
     getBlink() {
         const msecs = (new Date()).getTime()
         return (msecs % 1500) >= 750
     }
 
+    /**
+     * Initializes a context for rendering.
+     * @return {CanvasRenderingContext2D}
+     */
     createContext() {
         const ctx = this.canvas.getContext("2d")
 
@@ -144,6 +182,11 @@ class PageMemory {
         return ctx
     }
 
+    /**
+     * Load a font.
+     * @param {string} url URL of the font to load.
+     * @return {FontSprite}
+     */
     loadFont(url) {
         return new FontSprite(
             url,
@@ -154,6 +197,11 @@ class PageMemory {
         )
     }
 
+    /**
+     * Scroll the page memory in a direction. It takes the page mode into
+     * account.
+     * @param {string} direction "up" or "down"
+     */
     scroll(direction) {
         const newRow = []
         for(let col = 0; col < this.grid.cols; col++) {
@@ -161,7 +209,7 @@ class PageMemory {
         }
 
         switch(direction) {
-            case 'up':
+            case "up":
                 for(let row = 2; row < this.grid.rows; row++) {
                     this.memory[row] = this.memory[row + 1];
                     this.changed[row] = true;
@@ -172,7 +220,7 @@ class PageMemory {
 
                 break
 
-            case 'down':
+            case "down":
                 for(let row = this.grid.rows - 1; row > 1; row--) {
                     this.memory[row] = this.memory[row - 1]
                     this.changed[row] = true
@@ -185,6 +233,13 @@ class PageMemory {
         }
     }
 
+    /**
+     * Generate a thumbnail of the current display.
+     *
+     * @param {number} width Width of the thumbnail
+     * @param {number} height Height of the thumbnail
+     * @return {string} The data URL of the thumbnail in PNG format
+     */
     generateThumbnail(width, height) {
         const thumbnail = document.createElement("canvas")
 
@@ -200,7 +255,12 @@ class PageMemory {
         return thumbnail.toDataURL("image/png")
     }
 
+    /**
+     * Render the screen.
+     * @private
+     */
     render() {
+        // Do not render if the fonts are not ready
         if(this.font["G0"].isReady === false) return
         if(this.font["G1"].isReady === false) return
 

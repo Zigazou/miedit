@@ -10,6 +10,19 @@
  * @typedef {Object} Point
  * @property {number} x The X Coordinate
  * @property {number} y The Y Coordinate
+ *
+ * @typedef {Object} Grid
+ * @property {number} cols Number of characters per width.
+ * @property {number} rows Number of characters per height.
+ *
+ * @typedef {Object} Char
+ * @property {number} width Width in pixels of a character.
+ * @property {number} height Height in pixels of a character.
+ *
+ * @typedef {Object} Zoom
+ * @property {number} x Horizontal multiplier.
+ * @property {number} y Vertical multiplier.
+ *
  */
 
 /**
@@ -18,22 +31,42 @@
 class FontSprite {
     /**
      * @param {string} sheetURL The URL of the sprite sheet to use.
-     * @param {Object} grid How the sprite sheet is organized
-     * @param {number} grid.cols Number of characters per width
-     * @param {number} grid.rows Number of characters per height
-     * @param {Object} char Character characteristics
-     * @param {number} char.width Width in pixels of a character
-     * @param {number} char.height Height in pixels of a character
-     * @param {Object} zoom Zoom values
-     * @param {number} zoom.x Horizontal multiplier
-     * @param {number} zoom.y Vertical multiplier
-     * @param {Array} colors The color palette containing the hex colors to use
+     * @param {Grid} grid How the sprite sheet is organized.
+     * @param {Char} char Character characteristics.
+     * @param {Object} zoom Zoom values.
+     * @param {string[]} colors The color palette containing the hex colors to
+     *                          use.
      */
     constructor(sheetURL, grid, char, zoom, colors) {
+        /**
+         * How the sprite sheet is organized.
+         * @member {Grid}
+         */
         this.grid = grid
+
+        /**
+         * Character characteristics.
+         * @member {Char}
+         */
         this.char = char
+
+        /**
+         * The color palette containing the hex colors to use.
+         * @member {string[]}
+         */
         this.colors = colors
+
+        /**
+         * The pre-renderd sprite sheets for each color.
+         * @member {HTMLCanvasElement[]}
+         * @private
+         */
         this.spriteSheetColors = []
+
+        /**
+         * Indicates whether the sprite sheet can be used or not.
+         * @member {boolean}
+         */
         this.isReady = false
 
         // Load the source sprite sheet, optimization will occur when loaded

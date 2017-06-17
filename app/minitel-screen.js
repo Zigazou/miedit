@@ -9,6 +9,9 @@
  * @class MinitelScreen
  */
 class MinitelScreen {
+    /**
+     * @param {HTMLCanvasElement} canvas
+     */
     constructor(canvas) {
         const zoom = { x: 2, y: 2 }
         const grid = { cols: Minitel.columns, rows: Minitel.rows }
@@ -18,30 +21,89 @@ class MinitelScreen {
         canvas.width = char.width * grid.cols * zoom.x
         canvas.height = char.height * grid.rows * zoom.y
 
-        this.bandwidth = Minitel.B1200 // bits per second
-        this.refreshRate = 20 // milliseconds
+        /**
+         * The page memory
+         * @member {PageMemory}
+         * @private
+         */
         this.pageMemory = new PageMemory(grid, char, zoom, canvas)
+
+        /**
+         * The decoder
+         * @member {MinitelDecoder}
+         * @private
+         */
         this.decoder = new MinitelDecoder(this.pageMemory)
 
+        /**
+         * The queue
+         * @member {number[]}
+         * @private
+         */
         this.queue = []
-        this.chunkSize = (this.bandwidth / 10) / (1000 / this.refreshRate)
 
-        window.setInterval(() => { this.sendChunk() }, this.refreshRate)
+        /**
+         * How many bytes are sent to the page memory each refresh time
+         * @member {number}
+         */
+        this.chunkSize = 0
+
+        /**
+         * The ID value of the timer used to refresh the Minitel screen
+         * @param {number}
+         */
+        this.timer = undefined
+
+        this.initRefresh(Minitel.B1200, 20)
     }
 
+    /**
+     * Initializes the timer used to refresh the Minitel screen
+     *
+     * @param {number} bandwidth Bandwidth in bits per second
+     * @param {number} rate Refresh rate in milliseconds
+     */
+    initRefresh(bandwidth, rate) {
+        // Stop any existing timer
+        if(this.timer) window.clearInterval(this.timer)
+
+        // Minitel uses 10 bits for each code (7 bit of data, 1 parity bit and
+        // 2 stop bits)
+        this.chunkSize = (bandwidth / 10) / (1000 / rate)
+        this.timer = window.setInterval(() => { this.sendChunk() }, rate)
+    }
+
+    /**
+     * Push values in the queue for future send
+     * @param {number[]} items Values to send
+     */
     send(items) {
         this.queue = this.queue.concat(items)
     }
 
+    /**
+     * Directly send values to the page memory, bypassing the refresh rate.
+     * @param {number[]} items Values to send
+     */
     directSend(items) {
         this.queue = []
         this.decoder.decodeList(items)
     }
 
+    /**
+     * Generate a thumbnail of the current display.
+     * @param {number} width Width of the thumbnail
+     * @param {number} height Height of the thumbnail
+     */
     generateThumbnail(width, height) {
         return this.pageMemory.generateThumbnail(width, height)
     }
 
+    /**
+     * Send a chunk of the queue to the page memory. This method is called by
+     * the timer.
+     * @private
+     */
     sendChunk() {
         // Nothing to do?
         if(this.queue.length === 0) return
@@ -52,20 +114,3 @@ class MinitelScreen {
     }
 }
 
-class MinitelScreenTest {
-    constructor(canvas) {
-        const zoom = { x: 2, y: 2 }
-        const grid = { cols: 40, rows: 4 }
-        const char = { width: 8, height: 10 }
-
-        canvas.width = char.width * grid.cols * zoom.x
-        canvas.height = char.height * grid.rows * zoom.y
-
-        this.pageMemory = new PageMemory(grid, char, zoom, canvas)
-        this.decoder = new MinitelDecoder(this.pageMemory)
-    }
-
-    send(items) {
-        this.decoder.decodeList(items)
-    }
-}

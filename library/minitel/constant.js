@@ -6,6 +6,8 @@ Minitel.columns = 40
 Minitel.charWidth = 8
 Minitel.charHeight = 10
 Minitel.B1200 = 1200 // bits per second
+Minitel.B4800 = 4800 // bits per second
+Minitel.B9600 = 9600 // bits per second
 
 Minitel.grays = [
     "#000000", // 0%
