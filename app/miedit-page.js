@@ -12,10 +12,11 @@ class MiEditPage {
         const mosaicRoot = document.getElementsByClassName("mosaic-root")[0]
         this.graphics = new MinitelMosaic(mosaicRoot, 4)
 
+        const page = this.mistorage.load(pageName)
         this.mitree = new MiTree(
             container.find(".mitree-container"),
             ribbon,
-            this.mistorage.load(pageName)
+            page !== null && page.tree ? page.tree : page
         )
 
         ribbon.root.autocallback(this)
@@ -29,7 +30,11 @@ class MiEditPage {
 
     onSave(event, param) {
         event.preventDefault()
-        this.mistorage.save(this.pageName, this.mitree.serialize())
+        const objSave = {
+            "thumbnail": this.miscreen.generateThumbnail(320, 250),
+            "tree": this.mitree.serialize()
+        }
+        this.mistorage.save(this.pageName, objSave)
     }
 
     onRunSlow(event, param) {

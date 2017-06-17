@@ -38,6 +38,10 @@ class MinitelScreen {
         this.decoder.decodeList(items)
     }
 
+    generateThumbnail(width, height) {
+        return this.pageMemory.generateThumbnail(width, height)
+    }
+
     sendChunk() {
         // Nothing to do?
         if(this.queue.length === 0) return

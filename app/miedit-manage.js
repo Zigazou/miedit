@@ -3,22 +3,24 @@
 class MiEditManage {
     constructor(container) {
         this.container = container
-        this.mistorage = new MiStorage('page')
+        this.mistorage = new MiStorage("page")
 
         const inside = $('<table class="table"></table>')
-        inside.append($('<tr><th>Page</th><th>Actions</th></tr>'))
-        const that = this
-        this.mistorage.keys().forEach(function(key) {
-            inside.append($(that.page_list_item(key, key)))
+        inside.append($("<tr><th>Thumbnail</th><th>Page</th><th>Actions</th></tr>"))
+        this.mistorage.keys().forEach(key => {
+            const page = this.mistorage.load(key)
+            const img = page !== null && page.thumbnail ? page.thumbnail : ""
+            inside.append($(this.page_list_item(key, img, key)))
         })
 
         this.container.append(inside)
     }
 
-    page_list_item(page_title, key) {
+    page_list_item(page_title, thumbnail, key) {
         return `
           <tr class="page-list-item">
-            <td><span class="">${page_title}</span></td>
+            <td><img src="${thumbnail}" width="160" height="125"/></td>
+            <td>${page_title}</td>
             <td>
               <a href="miedit-page.html?page=${key}" class="btn btn-primary">
                 edit

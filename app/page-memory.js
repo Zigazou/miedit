@@ -164,6 +164,21 @@ class PageMemory {
         }
     }
 
+    generateThumbnail(width, height) {
+        const thumbnail = document.createElement("canvas")
+
+        thumbnail.width = width
+        thumbnail.height = height
+
+        const ctx = thumbnail.getContext("2d")
+        ctx.imageSmoothingEnabled = false
+        ctx.mozImageSmoothingEnabled = false
+
+        ctx.drawImage(this.canvas, 0, 0, width, height)
+
+        return thumbnail.toDataURL("image/png")
+    }
+
     render() {
         if(this.font["G0"].isReady === false) return
         if(this.font["G1"].isReady === false) return
