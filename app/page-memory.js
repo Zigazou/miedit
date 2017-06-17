@@ -1,11 +1,31 @@
 "use strict"
+/**
+ * @file page-memory
+ * @author Frédéric BISSON <zigazou@free.fr>
+ * @version 1.0
+ * 
+ * PageMemory simulates a Minitel page memory connected to a screen using a 
+ * canvas.
+ *
+ */
 
+/**
+ * @class PageMemory
+ */
 class PageMemory {
-    /*
-    grid = { cols: …, rows: … }
-    char = { width: …, height: … }
-    zoom = { x: …, y: … }
-    */
+    /**
+     * @param {Object} grid How the page is organized.
+     * @param {number} grid.cols Number of characters per width.
+     * @param {number} grid.rows Number of characters per height.
+     * @param {Object} char Character characteristics.
+     * @param {number} char.width Width in pixels of a character.
+     * @param {number} char.height Height in pixels of a character.
+     * @param {Object} zoom Zoom values.
+     * @param {number} zoom.x Horizontal multiplier.
+     * @param {number} zoom.y Vertical multiplier.
+     * @param {HTMLCanvasElement} canvas The canvas which will be used as the
+     *                                   screen.
+     */
     constructor(grid, char, zoom, canvas) {
         this.grid = grid
         this.char = char
@@ -19,6 +39,7 @@ class PageMemory {
         const rows = []
         rows.length = this.grid.rows
 
+        // G0 is the alphanumeric character set, G1 is the mosaic character set
         this.font = {
             "G0": this.loadFont("font/ef9345-g0.png"),
             "G1": this.loadFont("font/ef9345-g1.png"),
