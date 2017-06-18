@@ -66,7 +66,7 @@ Minitel.Stream = class {
 
         if(Minitel.specialChars[value]) {
             // Convert special characters to Minitel codes
-            Minitel.specialChars[value].map(v => this.items._pushValue(v))
+            Minitel.specialChars[value].map(v => this.items.push(v))
         } else if(value > 0x7f) {
             // Minitel does not understand values above 0x7f 
             return

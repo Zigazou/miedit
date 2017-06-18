@@ -61,6 +61,9 @@ Minitel.actionsToStream = function(actions, offsetX, offsetY) {
             const x = offsetX + parseInt(action.data.x)
             const y = offsetY + parseInt(action.data.y)
             stream.push(Minitel.graphicsToStream(action.data.value, x, y))
+        } else if(action.type === "content-ceefax") {
+            stream.push([0x1f, 0x41, 0x41])
+            stream.push(Minitel.ceefaxToStream(action.data.value))
         } else if(action.type === "move-home") {
             if(offsetX !== 0 || offsetY !== 0) {
                 stream.push(0x1f)

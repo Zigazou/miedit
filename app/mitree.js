@@ -131,6 +131,7 @@ class MiTree {
             "content-g0": "Switch to standard characters",
             "content-g1": "Switch to mosaic characters",
             "content-string": "String",
+            "content-ceefax": "Ceefax",
             "content-block": "Block",
             "content-graphics": "Graphics",
             "content-box": "Box",
