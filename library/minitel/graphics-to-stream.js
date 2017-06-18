@@ -103,7 +103,11 @@ Minitel.graphicsToStream = function(string, col, row) {
             let changeChar = row[i] >= 0x20 && row[i] !== char
 
             if(count > 0 && (moveRight || changeFG || changeBG || changeSep || changeChar)) {
-                optimized.push(0x12, 0x40 + count)
+                if(count == 1) {
+                    optimized.push(char)
+                } else {
+                    optimized.push(0x12, 0x40 + count)
+                }
                 count = 0
             }
 
