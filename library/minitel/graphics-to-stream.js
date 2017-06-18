@@ -144,7 +144,7 @@ Minitel.graphicsToStream = function(string, col, row) {
     const stream = new Minitel.Stream()
     for(let y = 0; y <= 72 - row * 3; y += 3) {
         // Converts pixels to mosaic characters
-        let codes = []
+        let codes = new Minitel.Stream()
         for(let x = 0; x < 80 - col * 2; x += 2) {
             const sextet = string[x + y * 80]
                          + string[x + 1 + y * 80]
@@ -153,21 +153,16 @@ Minitel.graphicsToStream = function(string, col, row) {
                          + string[x + (y + 2) * 80]
                          + string[x + 1 + (y + 2) * 80]
 
-            codes = codes.concat(sextet2char(sextet))
+            codes.push(sextet2char(sextet))
         }
 
-        codes = optimizeRow(codes)
+        codes = codes.optimizeRow().trimRow()
 
         // Get rid of empty characters at the beginning
         let startX = 0
-        while(codes.length > 0 && codes[0] === 0x09) {
+        while(codes.length > 0 && codes.items[0] === 0x09) {
             startX++
             codes.shift()
-        }
-
-        // Get rid of empty characters at the end
-        while(codes.length > 0 && codes[codes.length - 1] === 0x09) {
-            codes.pop()
         }
 
         if(codes.length === 0) continue

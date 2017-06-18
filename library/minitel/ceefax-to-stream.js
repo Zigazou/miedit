@@ -150,7 +150,7 @@ Minitel.convertCeefaxRow = function(row) {
         if(hold && c & 0x20) held = c
     }
 
-    return destination
+    return destination.optimizeRow().trimRow()
 }
 
 /**
@@ -175,41 +175,27 @@ Minitel.decodeEditTfURL = function(url) {
 
     if(header === -1) return null
 
-    url = url.substring(headerStrings[header].length)
+    url = url.substring(headerStrings[header].length + 2)
 
-    // First char indicates how the page start
-    // TODO: take it into account!
-    const init = url[0]
+    // Convert URL to an array of 6 bits codes
+    const src = []
+    const base64urlchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                         + "abcdefghijklmnopqrstuvwxyz"
+                         + "0123456789-_"
+    for(let c of url) src.push(base64urlchars.indexOf(c))
 
-    const hashstring = url.substring(2)
-    let currentcode = 0
-    const decoded = []
-
-    // p is the position in the string.
-    for(let p = 0; p < hashstring.length; p++) {
-        let pc_dec = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
-                     .indexOf(hashstring.charAt(p))
-
-        for(let b = 0; b < 6; b++) {
-            const charbit = (6*p + b) % 7
-
-            let b64bit = pc_dec & (1 << (5 - b))
-            if(b64bit > 0) b64bit = 1
-
-            currentcode |= b64bit << (6 - charbit)
-
-            if(charbit === 6) { 
-                const charnum = ((6*p + b) - charbit) / 7
-                const col = charnum % 40
-                const row = (charnum - col) / 40
-
-                if(!decoded[row]) decoded[row] = []
-
-                decoded[row][col] = currentcode
-
-                currentcode = 0
-            }
+    // Extract 7 bits codes from the 6 bits codes array
+    const codes = []
+    for(let p = 0; p < src.length; p += 7) {
+        for(let i = 1; i < 7 && p + i <= src.length; i++) {
+            codes.push((src[p + i - 1] << i | src[p + i] >> (6 - i)) & 0x7f)
         }
+    }
+
+    // Split the decoded codes into chunks of 40 codes
+    const decoded = []
+    for(let i = 0; i < codes.length; i += 40) {
+        decoded.push(codes.slice(i, i + 40))
     }
 
     return decoded
