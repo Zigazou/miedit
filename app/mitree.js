@@ -1,12 +1,97 @@
 "use strict"
+/**
+ * @file mitree
+ * @author Frédéric BISSON <zigazou@free.fr>
+ * @version 1.0
+ * 
+ * MiTree is a jstree based tree for manipulating tidget (textual gadget) for
+ * the Minitel.
+ */
 
+/**
+ * @class MiTree
+ */
 class MiTree {
+    /**
+     * @param {jQuery} container
+     * @param {SimpleRibbon} ribbon
+     * @param {Object[]} nodes
+     */
     constructor(container, ribbon, nodes) {
-        // Properties
+        /**
+         * The jQuery object pointing to the DOM element containing our
+         * widget. This includes the jstree and the forms associated to each
+         * kind of node in the tree.
+         * @member {jQuery}
+         * @private
+         */
         this.container = container
+
+        /**
+         * The jQuery object pointing to the DOM element of the actual tree.
+         * @member {jQuery}
+         * @private
+         */
         this.treeWidget = container.find(".miedit-tree")
+
+        /**
+         * The jstree object.
+         * @member {Object}
+         * @private
+         */
         this.tree = undefined
-        this.children = {
+
+        /**
+         * Children types that the tree can handle.
+         * @member {Object}
+         * @private
+         */
+        this.children = this.availableChildren()
+
+        // Initialize the tree widget
+        const widgetTypes = {
+            "#": {
+                "max_children": 100,
+                "max_depth": 5,
+                "valid_children": Object.keys(this.children),
+            },
+        }
+
+        Object.keys(this.children).forEach(child => {
+            widgetTypes[child] = { "icon": "./icon/" + child + ".svg" }
+            if(child !== "content-group") widgetTypes[child].valid_children = []
+        })
+
+        this.treeWidget.jstree({
+            "core": { "check_callback": true, "data": nodes },
+            "types": widgetTypes,
+            "contextmenu": {
+                "show_at_node": false,
+                "items": this.contextualMenu()
+            },
+            "plugins": [ "dnd" , "types", "contextmenu" ],
+        })
+        this.tree = $.jstree.reference(this.treeWidget)
+
+        // Disable default behaviour of forms
+        container.find("form").submit(e => { e.preventDefault() })
+
+        container.get()[0].autocallback(this)
+        this.treeWidget.on("select_node.jstree", this, this.onSelect)
+
+        ribbon.root.autocallback(this)
+
+        container.find(".info-block").each(function() {
+            $(this).text(this.pageName)
+        })
+    }
+
+    /**
+     * An Object containing key-name pairs of the children the tree will handle.
+     * @return {Object}
+     */
+    availableChildren() {
+        return {
             "move-locate": "Move cursor to an absolute position",
             "move-home": "Move cursor to first row, first column",
             "move-left": "Move cursor on the left",
@@ -52,45 +137,13 @@ class MiTree {
             "smgraph": "Semigraphic characters",
             "content-delay": "Delay"
         }
-
-        // Initialize the tree widget
-        const widgetTypes = {
-            "#": {
-                "max_children": 100,
-                "max_depth": 5,
-                "valid_children": Object.keys(this.children),
-            },
-        }
-
-        Object.keys(this.children).forEach(child => {
-            widgetTypes[child] = { "icon": "./icon/" + child + ".svg" }
-            if(child !== "content-group") widgetTypes[child].valid_children = []
-        })
-
-        this.treeWidget.jstree({
-            "core": { "check_callback": true, "data": nodes },
-            "types": widgetTypes,
-            "contextmenu": {
-                "show_at_node": false,
-                "items": this.contextualMenu()
-            },
-            "plugins": [ "dnd" , "types", "contextmenu" ],
-        })
-        this.tree = $.jstree.reference(this.treeWidget)
-
-        // Disable default behaviour of forms
-        container.find("form").submit(e => { e.preventDefault() })
-
-        container.get()[0].autocallback(this)
-        this.treeWidget.on("select_node.jstree", this, this.onSelect)
-
-        ribbon.root.autocallback(this)
-
-        container.find(".info-block").each(function() {
-            $(this).text(this.pageName)
-        })
     }
 
+    /**
+     * Definition of the tree contextual menu which allows to rename or delete
+     * a node directly in the tree.
+     * @return {Object}
+     */
     contextualMenu() {
         return {
             "rename" : {
@@ -125,10 +178,19 @@ class MiTree {
         }
     }
 
+    /**
+     * Hides all tidget forms.
+     */
     hideForms() {
         this.container.find(".miedit-forms>*").hide()
     }
 
+    /**
+     * Show a specific tidget form.
+     * @param {string} selector A selector to find the tidget form.
+     * @param {Object} selected The currently selected node in the tree which
+     *                          will give the data to fill in the form.
+     */
     showForm(selector, selected) {
         // Load form with node values
         let form = this.container.find(selector)
@@ -146,14 +208,28 @@ class MiTree {
         form.show()
     }
 
+    /**
+     * Returns an array of Objects describing all data needed to build the same
+     * tree.
+     * @return {Object[]}
+     */
     serialize() {
         return this.tree.get_json()
     }
 
+    /**
+     * Given an object returned by the serialize method, build a tree
+     * @param {Object} nodes
+     */
     unserialize(nodes) {
         this.tree.core.data = nodes
     }
 
+    /**
+     * Event used to create a tidget and insert it in the tree.
+     * @param event not used.
+     * @param {string} param The type of tidget to create.
+     */
     onCreateTidget(event, param) {
         const newNode = {
             "text": this.children[param],
@@ -170,6 +246,11 @@ class MiTree {
         return false
     }
 
+    /**
+     * Event used to delete the currently selected tidget in the tree.
+     * @param event not used.
+     * @param param not used.
+     */
     onDelete(event, param) {
         const currents = this.tree.get_selected(true)
         currents.map(node => this.tree.delete_node(node))
@@ -178,12 +259,23 @@ class MiTree {
         return false
     }
 
+    /**
+     * Show the tidget form associated with the newly selected tidget in the
+     * tree.
+     * @param event
+     * @param event.data This object.
+     * @param {Object} data
+     */
     onSelect(event, data) {
         const selected = data.instance.get_node(data.selected[0])
         event.data.hideForms()
         event.data.showForm(".miedit-forms ." + selected.type, selected)
     }
 
+    /**
+     * @param event
+     * @param param not used.
+     */
     onSubmit(event, param) {
         // Save node values
         const currents = this.tree.get_selected(true)
@@ -191,13 +283,29 @@ class MiTree {
     }
 }
 
+/**
+ * Prepare actions to be executed by extracting all needed information from the
+ * MiTree.serialize() method.
+ *
+ * @typedef {Object} Action
+ * @property {string} type Name of the action
+ * @property {Object} data URIfied data of the action
+ * @property {Action[]} children
+ *
+ * @param {Object[]} objs Objects as returned by MiTree.serialize()
+ * @return {Action[]}
+ */
 function mieditActions(objs) {
+    /**
+     * Converts URI query parameters to an object. We need it because jstree
+     * stores custom values in URI query parameters.
+     * @param {string} query
+     * @return {Object}
+     */
     function parseQuery(query) {
         const queryParsed = {}
 
-        if(query === undefined) {
-            return queryParsed
-        }
+        if(query === undefined) return queryParsed
 
         for(let arg of query.split("&")) {
             if(arg.indexOf("=") === -1) {
