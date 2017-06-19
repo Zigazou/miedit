@@ -31,6 +31,8 @@ class MinitelMosaic {
         this.drawGrid()
         this.drawBackground()
 
+        new SimpleRibbon(document.getElementById("mosaic-ribbon"))
+
         this.drawing.addEventListener("mouseup", e => this.onMouseUp(e))
         this.drawing.addEventListener("mousedown", e => this.onMouseDown(e))
         this.drawing.addEventListener("mousemove", e => this.onMouseMove(e))
@@ -111,6 +113,10 @@ class MinitelMosaic {
         }
 
         return string
+    }
+
+    onImportEditTf(event, param) {
+        
     }
 
     onToolChange(event, param) {

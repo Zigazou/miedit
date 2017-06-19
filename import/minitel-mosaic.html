@@ -7,94 +7,122 @@
       <canvas class="mosaic-grid"></canvas>
     </div>
   </div>
-  <div class="mosaic-styles">
-    <div class="mosaic-colors">
-      <button class="mosaic-btn" data-param="-1" data-call="onColorChange">
-        <img src="icon/color-bg-transparent.svg" /><br/>Erase<br/>-
-      </button>
-      <button class="mosaic-btn" data-param="0" data-call="onColorChange">
-        <img src="icon/color-bg-0.svg" /><br/>Black<br/>0%
-      </button>
-      <button class="mosaic-btn" data-param="4" data-call="onColorChange">
-        <img src="icon/color-bg-4.svg" /><br/>Blue<br/>40%
-      </button>
-      <button class="mosaic-btn" data-param="1" data-call="onColorChange">
-        <img src="icon/color-bg-1.svg" /><br/>Red<br/>50%
-      </button>
-      <button class="mosaic-btn" data-param="5" data-call="onColorChange">
-        <img src="icon/color-bg-5.svg" /><br/>Magenta<br/>60%
-      </button>
-      <button class="mosaic-btn" data-param="2" data-call="onColorChange">
-        <img src="icon/color-bg-2.svg" /><br/>Green<br/>70%
-      </button>
-      <button class="mosaic-btn" data-param="6" data-call="onColorChange">
-        <img src="icon/color-bg-6.svg" /><br/>Cyan<br/>80%
-      </button>
-      <button class="mosaic-btn" data-param="3" data-call="onColorChange">
-        <img src="icon/color-bg-3.svg" /><br/>Yellow<br/>90%
-      </button>
-      <button class="mosaic-btn" data-param="7" data-call="onColorChange">
-        <img src="icon/color-bg-7.svg" /><br/>White<br/>40%
-      </button>
+  <div class="simple-ribbon" id="mosaic-ribbon">
+    <h2>Mosaic editor</h2>
+    
+    <h3 class="file">File</h3>
+    <div class="backstage">
+      <form data-call="onImportEditTf">
+        <label for="import-edit-tf">Import edit.tf URL:</label>
+        <input type="text" id="import-edit-tf" name="url"></input>
+        <input type="submit" value="Import">
+        </input>
+      </form>
     </div>
 
-    <div class="mosaic-tools">
-      <button class="mosaic-large" data-param="pencil" data-call="onToolChange">
-        <img src="icon/graphics-pencil.svg" /> Pencil
-      </button><br/>
-      <button class="mosaic-large" data-param="fill" data-call="onToolChange">
-        <img src="icon/graphics-fill.svg" /> Fill
-      </button>
+    <h3 class="first">Colors</h3>
+    <div>
+      <div>
+        <h4>Colors</h4>
+        <button class="large" data-param="-1" data-call="onColorChange">
+          <img src="icon/color-bg-transparent.svg" /><br/>Erase
+        </button>
+        <button class="large" data-param="0" data-call="onColorChange">
+          <img src="icon/color-bg-0.svg" /><br/>Black<br/>0%
+        </button>
+        <button class="large" data-param="4" data-call="onColorChange">
+          <img src="icon/color-bg-4.svg" /><br/>Blue<br/>40%
+        </button>
+        <button class="large" data-param="1" data-call="onColorChange">
+          <img src="icon/color-bg-1.svg" /><br/>Red<br/>50%
+        </button>
+        <button class="large" data-param="5" data-call="onColorChange">
+          <img src="icon/color-bg-5.svg" /><br/>Magenta<br/>60%
+        </button>
+        <button class="large" data-param="2" data-call="onColorChange">
+          <img src="icon/color-bg-2.svg" /><br/>Green<br/>70%
+        </button>
+        <button class="large" data-param="6" data-call="onColorChange">
+          <img src="icon/color-bg-6.svg" /><br/>Cyan<br/>80%
+        </button>
+        <button class="large" data-param="3" data-call="onColorChange">
+          <img src="icon/color-bg-3.svg" /><br/>Yellow<br/>90%
+        </button>
+        <button class="large" data-param="7" data-call="onColorChange">
+          <img src="icon/color-bg-7.svg" /><br/>White<br/>40%
+        </button>
+      </div>
+
+      <hr/>
+
+      <div>
+        <h4>Tool</h4>
+        <button class="large" data-param="pencil" data-call="onToolChange">
+          <img src="icon/graphics-pencil.svg" /><br/>Pencil
+        </button>
+        <button class="large" data-param="fill" data-call="onToolChange">
+          <img src="icon/graphics-fill.svg" /><br/>Fill
+        </button>
+      </div>
+
+      <hr/>
+
+      <div>
+        <h4>Separated</h4>
+        <button class="large" data-call="onNormalMosaic">
+          <img src="icon/effect-separated-off.svg" /><br/>Full
+        </button>
+        <button class="large" data-call="onSeparatedMosaic">
+          <img src="icon/effect-separated-on.svg" /><br/>Separated
+        </button>
+      </div>
     </div>
 
-    <div class="mosaic-separated">
-      <button class="mosaic-large" data-call="onNormalMosaic">
-        <img src="icon/effect-separated-off.svg" /> Full
-      </button><br/>
-      <button class="mosaic-large" data-call="onSeparatedMosaic">
-        <img src="icon/effect-separated-on.svg" /> Separated
-      </button>
+    <h3>Move</h3>
+    <div>
+      <div>
+        <h4>Move</h4>
+        <button class="large" data-param='{"x":-1,"y":-1}' data-call="onMoveGraphics">
+          <img src="icon/graphics-move-up-left.svg" /><br/>up<br/>left
+        </button>
+        <button class="large" data-param='{"x":0,"y":-1}' data-call="onMoveGraphics">
+          <img src="icon/graphics-move-up.svg" /><br/>up
+        </button>
+        <button class="large" data-param='{"x":1,"y":-1}' data-call="onMoveGraphics">
+          <img src="icon/graphics-move-up-right.svg" /><br/>up<br/>right
+        </button>
+        <button class="large" data-param='{"x":-1,"y":0}' data-call="onMoveGraphics">
+          <img src="icon/graphics-move-left.svg" /><br/>left
+        </button>
+        <button class="large" data-param="center" data-call="onMoveGraphics">
+          <img src="icon/graphics-move-center.svg" /><br/>center
+        </button>
+        <button class="large" data-param='{"x":1,"y":0}' data-call="onMoveGraphics">
+          <img src="icon/graphics-move-right.svg" /><br/>right
+        </button>
+        <button class="large" data-param='{"x":-1,"y":1}' data-call="onMoveGraphics">
+          <img src="icon/graphics-move-down-left.svg" /><br/>down<br/>left
+        </button>
+        <button class="large" data-param='{"x":0,"y":1}' data-call="onMoveGraphics">
+          <img src="icon/graphics-move-down.svg" /><br/>down
+        </button>
+        <button class="large" data-param='{"x":1,"y":1}' data-call="onMoveGraphics">
+          <img src="icon/graphics-move-down-right.svg" /><br/>down<br/>right
+        </button>
+      </div>
     </div>
 
-    <div class="mosaic-offset">
-      <button data-param='{"x":-1,"y":-1}' data-call="onMoveGraphics">
-        <img src="icon/graphics-move-up-left.svg" />
-      </button>
-      <button data-param='{"x":0,"y":-1}' data-call="onMoveGraphics">
-        <img src="icon/graphics-move-up.svg" />
-      </button>
-      <button data-param='{"x":1,"y":-1}' data-call="onMoveGraphics">
-        <img src="icon/graphics-move-up-right.svg" />
-      </button>
-      <br/>
-      <button data-param='{"x":-1,"y":0}' data-call="onMoveGraphics">
-        <img src="icon/graphics-move-left.svg" />
-      </button>
-      <button data-param="center" data-call="onMoveGraphics">
-        <img src="icon/graphics-move-center.svg" />
-      </button>
-      <button data-param='{"x":1,"y":0}' data-call="onMoveGraphics">
-        <img src="icon/graphics-move-right.svg" />
-      </button>
-      <br/>
-      <button data-param='{"x":-1,"y":1}' data-call="onMoveGraphics">
-        <img src="icon/graphics-move-down-left.svg" />
-      </button>
-      <button data-param='{"x":0,"y":1}' data-call="onMoveGraphics">
-        <img src="icon/graphics-move-down.svg" />
-      </button>
-      <button data-param='{"x":1,"y":1}' data-call="onMoveGraphics">
-        <img src="icon/graphics-move-down-right.svg" />
-      </button>
-    </div>
-
+    <h3>Next</h3>
     <div class="mosaic-exit">
-      <button class="mosaic-btn" value="save" data-call="onSaveGraphics">
-        <img src="icon/save.svg" /><br/>Save<br/>graphics
-      </button>
-      <button class="mosaic-btn" value="exit" data-call="onExitGraphics">
-        <img src="icon/exit.svg" /><br/>Ignore<br/>changes
-      </button>
+      <div>
+        <h4>Action</h4>
+        <button class="large" value="save" data-call="onSaveGraphics">
+          <img src="icon/save.svg" /><br/>Save<br/>graphics
+        </button>
+        <button class="large" value="exit" data-call="onExitGraphics">
+          <img src="icon/exit.svg" /><br/>Ignore<br/>changes
+        </button>
+      </div>
     </div>
   </div>
 </div>

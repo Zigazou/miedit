@@ -148,7 +148,7 @@
 }
 
 .simple-ribbon h3.file+div {
-    padding: 0;
+    padding: 1em;
     margin-top: 0.3em;
     border-top: 0.1em solid #1f48a1;
     background: linear-gradient(left, #4488e5 15%, #ffffff 100%);
