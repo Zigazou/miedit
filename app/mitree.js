@@ -153,7 +153,7 @@ class MiTree {
                 "_disabled": false,
                 "label": "Rename",
                 "icon": "./icon/edit-rename.svg",
-                "action": function (data) {
+                "action": data => {
                     const inst = $.jstree.reference(data.reference)
                     const obj = inst.get_node(data.reference)
                     inst.edit(obj)
@@ -166,7 +166,7 @@ class MiTree {
                 "_disabled": false,
                 "label": "Delete",
                 "icon": "./icon/edit-delete.svg",
-                "action": function (data) {
+                "action": data => {
                     const inst = $.jstree.reference(data.reference)
                     const obj = inst.get_node(data.reference)
                     if(inst.is_selected(obj)) {
@@ -174,6 +174,7 @@ class MiTree {
                     } else {
                         inst.delete_node(obj)
                     }
+                    this.hideForms()
                 }
             }
         }
