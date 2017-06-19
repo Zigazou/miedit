@@ -131,3 +131,14 @@ select { height: 2.6em; }
     position: absolute;
 }
 
+/* Tree group open/close */
+.jstree-default i.jstree-node,
+.jstree-default i.jstree-icon,
+.jstree-default i.jstree-file,
+.jstree-default i.jstree-folder,
+#jstree-dnd.jstree-default .jstree-ok,
+#jstree-dnd.jstree-default .jstree-er {
+    background-image: url(../icon/32px.svg);
+    background-repeat: no-repeat;
+}
+
