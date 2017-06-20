@@ -26,6 +26,16 @@ class MiEditPage {
 
         const canvas = container.find("#minitel-screen")[0]
         this.miscreen = new MinitelScreen(canvas)
+
+        const events = [
+            "value_changed.mitree",
+            "move_node.jstree",
+            "delete_node.jstree"
+        ]
+
+        this.mitree.treeWidget.on(events.join(" "), event => {
+            this.onRunFast(event)
+        })
     }
 
     onSave(event, param) {

@@ -153,6 +153,18 @@ class PageMemory {
     }
 
     /**
+     * Clear the page
+     */
+    clear() {
+        for(let y = 1; y < this.grid.rows; y++) {
+            for(let x = 0; x < this.grid.cols; x++) {
+                this.memory[y][x] = new MosaicCell()
+            }
+            this.changed[y] = true
+        }
+    }
+
+    /**
      * Get blink state.
      * @return {boolean}
      */

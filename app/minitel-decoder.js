@@ -123,12 +123,7 @@ class MinitelDecoder {
 
     clear(range) {
         if(range === "page") {
-            for(let j = 1; j < this.pm.grid.rows; j++) {
-                for(let i = 0; i < this.pm.grid.cols; i++) {
-                    this.pm.set(i, j, new MosaicCell())
-                }
-            }
-
+            this.pm.clear()
             this.pm.cursor.x = 0
             this.pm.cursor.y = 1
             this.resetCurrent()

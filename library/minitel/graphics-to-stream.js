@@ -24,12 +24,13 @@ Minitel.graphicsToStream = function(string, col, row) {
             "g": 0,
             "h": 0,
             "-": 0,
+            "*": -1
         }
 
         for(let char of sextet) cardinals[char]++
 
         // Find most often used color
-        let fg = Object.keys(cardinals)[0]
+        let fg = "*"
         for(let key in cardinals) {
             if(cardinals[key] > cardinals[fg]) fg = key
         }
@@ -37,7 +38,7 @@ Minitel.graphicsToStream = function(string, col, row) {
         delete cardinals[fg]
 
         // Find second most often used color
-        let bg = Object.keys(cardinals)[0]
+        let bg = "*"
         for(let key in cardinals) {
             if(cardinals[key] > cardinals[bg]) bg = key
         }
@@ -66,11 +67,13 @@ Minitel.graphicsToStream = function(string, col, row) {
             [bg, fg] = twoColors(sextet)
         }
 
-        let char = ""
+        let char = 0
+        let bit = 1
         for(let c of sextet) {
-            char = (Minitel.color2int[c] === bg ? "0" : "1") + char
+            if(Minitel.color2int[c] !== bg) char += bit
+            bit *= 2
         }
-        char = 0x20 + parseInt(char, 2)
+        char = 0x20 + char
 
         if(separated) {
             return [0x1b, 0x40 + fg, 0x1b, 0x50 + bg, 0x1b, 0x5a, char]
@@ -171,9 +174,9 @@ Minitel.graphicsToStream = function(string, col, row) {
             0x1f,
             0x40 + y / 3 + row,
             0x40 + col + startX + 1,
-            0x0e
+            0x0e,
+            codes
         ])
-        stream.push(codes)
     }
 
     return stream

@@ -15,11 +15,13 @@ const inputNumberButton = {
         bPlus.addEventListener("click", event => {
             event.preventDefault()
             element.stepUp()
+            element.dispatchEvent(new Event("input"))
         })
 
         bMinus.addEventListener("click", event => {
             event.preventDefault()
             element.stepDown()
+            element.dispatchEvent(new Event("input"))
         })
     },
 

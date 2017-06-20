@@ -30,7 +30,6 @@ class MiTree {
         /**
          * The jQuery object pointing to the DOM element of the actual tree.
          * @member {jQuery}
-         * @private
          */
         this.treeWidget = container.find(".miedit-tree")
 
@@ -278,10 +277,11 @@ class MiTree {
      * @param event
      * @param param not used.
      */
-    onSubmit(event, param) {
+    onChange(event, param) {
         // Save node values
         const currents = this.tree.get_selected(true)
         currents[0].data["miedit-value"] = $(event.target).serialize()
+        this.treeWidget.trigger("value_changed.mitree")
     }
 }
 
