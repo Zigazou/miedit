@@ -4,6 +4,7 @@ var Minitel = Minitel || {}
 /** 
  * Convert a Ceefax row to a Minitel row
  * @param {number[]} row Ceefax codes for one row
+ * @return {Stream}
  */
 Minitel.convertCeefaxRow = function(row) {
     /**
@@ -153,6 +154,185 @@ Minitel.convertCeefaxRow = function(row) {
     return destination.optimizeRow().trimRow()
 }
 
+/** 
+ * Draw a Ceefax row in an array of numbers
+ * @param {number[]} row Ceefax codes for one row
+ * @return {number[][]}
+ */
+Minitel.drawCeefaxRow = function(row) {
+    /**
+     * Draw a character in the array
+     * @param {number[][]} array Array on which pixels will be drawn
+     * @param {number} col Column
+     * @param {number} fg Foreground color (0-7)
+     * @param {number} bg Background color (0-7)
+     * @param {boolean} sep Separated or not
+     * @param {integer} char Character code
+     */
+    function drawPixels(array, col, fg, bg, sep, char) {
+        const bits = ("000000" + (char - 0x20).toString(2)).slice(-6)
+        let pos = 0
+        for(let y = 2; y >= 0; y--) {
+            for(let x = (col + 1) * 2 - 1; x >= col * 2; x--) {
+                array[y][x] = {
+                    color: bits[pos] === "0" ? bg : fg,
+                    separated: sep
+                }
+
+                pos++
+            }
+        }
+    }
+
+    const destination = [[], [], []]
+    let gfx = false
+    let hold = false
+    let held = 0x20
+
+    let next = { fg: 7, bg: 0, sep: false }
+    let current = { fg: 7, bg: 0, sep: false }
+    let col = -1
+    for(let c of row) {
+        col++
+        switch(c) {
+            // Set text mode and color
+            case 0x01: case 0x02: case 0x03: case 0x04: case 0x05: case 0x06:
+            case 0x07:
+                gfx = false
+                next.fg = c
+                break
+
+            // Ignore...
+            case 0x08: case 0x09: case 0x0b: case 0x0c: case 0x0d: break
+            case 0x0a: case 0x0e: case 0x0f: case 0x10: break
+
+            // Set graphics mode and color
+            case 0x11: case 0x12: case 0x13: case 0x14: case 0x15: case 0x16:
+            case 0x17:
+                gfx = true
+                next.fg = c - 0x10
+                break
+
+            case 0x18: break
+
+            // Set continuous graphics
+            case 0x19:
+                next.sep = false
+                break
+
+            // Set separated graphics
+            case 0x1a:
+                next.sep = true
+                break
+
+            // Set black background
+            case 0x1c:
+                next.bg = 0
+                break
+
+            // Swap foreground and background colors
+            case 0x1d:
+                [next.bg, next.fg] = [next.fg, next.bg]
+                break
+
+            // Hold graphics
+            case 0x1e:
+                hold = true
+                break
+
+            // Release graphics            
+            case 0x1f:
+                hold = false
+                break
+        }
+
+        // Handles attributes
+        if(c < 0x20) {
+            if(hold || held != 0x20) {
+                if(c === 0x1d) {
+                    // Swap colors must be applied before held character
+                    current = { fg: next.fg, bg: next.bg, sep: next.sep }
+                    drawPixels(
+                        destination,
+                        col,
+                        current.fg, current.bg, current.sep,
+                        held
+                    )
+                } else {
+                    // Held character is inserted before new attributes
+                    drawPixels(
+                        destination,
+                        col,
+                        current.fg, current.bg, current.sep,
+                        held
+                    )
+                    current = { fg: next.fg, bg: next.bg, sep: next.sep }
+                }
+            } else {
+                // Apply attributes before space
+                current = { fg: next.fg, bg: next.bg, sep: next.sep }
+                drawPixels(
+                    destination,
+                    col,
+                    current.fg, current.bg, current.sep,
+                    0x20
+                )
+            }
+
+            if(!hold) held = 0x20
+
+            continue
+        }
+
+        // Every alpha characters is ignored
+        if(!gfx) {
+            drawPixels(
+                destination,
+                col,
+                current.fg, current.bg, current.sep,
+                0x20
+            )
+            continue
+        }
+
+        // In graphics mode capital letters are still characters
+        if(c >= 0x40 && c <=0x5f) {
+            drawPixels(
+                destination,
+                col,
+                current.fg, current.bg, current.sep,
+                0x20
+            )
+            if(hold && c & 0x20) held = c
+            continue
+        }
+
+        // Convert Teletext mosaic chars to Minitel mosaic chars
+        if(c >= 0x60) {
+            drawPixels(
+                destination,
+                col,
+                current.fg, current.bg, current.sep,
+                c - 0x20
+            )
+            if(hold && c & 0x20) held = c - 0x20
+            continue
+        }
+
+        // Everything else is copied as is
+        drawPixels(
+            destination,
+            col,
+            current.fg, current.bg, current.sep,
+            c
+        )
+        if(hold && c & 0x20) held = c
+    }
+
+    return destination
+}
+
+
 /**
  * @param {string} url URL to decode
  * @return {number[][]} An array of row containing codes
@@ -199,6 +379,23 @@ Minitel.decodeEditTfURL = function(url) {
     }
 
     return decoded
+}
+
+Minitel.drawCeefax = function(url) {
+    const page = Minitel.decodeEditTfURL(url)
+
+    if(page === null) return null
+
+    // Trim the first line
+    page.shift()
+
+    let destination = []
+    let ignoreNext = false
+    for(let row of page) {
+        destination = destination.concat(Minitel.drawCeefaxRow(row))
+    }
+
+    return destination
 }
 
 Minitel.ceefaxToStream = function(url) {
