@@ -33,7 +33,7 @@ Minitel.Stream = class {
          * An array of integer codes
          * @member {number[]}
          */
-        this.items = []
+        this.items = new Array(10000)
         this.length = 0
     }
 
@@ -42,36 +42,39 @@ Minitel.Stream = class {
      * @param item Any value to insert in the queue.
      */
     push(item) {
+        let toPush = undefined
+
         if(typeof item === "number") {
             // Number
-            this._pushValue(item)
+            toPush = item
         } else if(typeof item === "string" && item.length === 1) {
             // String
-            this._pushValue(item.charCodeAt(0))
+            toPush = item.charCodeAt(0)
         } else if(item instanceof Minitel.Stream) {
             // Stream
-            this.items = this.items.concat(item.items)
-        } else if(typeof item[Symbol.iterator] === "function") {
+            for(let i = 0; i < item.length; i++) {
+                this.items[this.length] = item.items[i]
+                this.length++
+            }
+        } else if(item !== undefined && typeof item[Symbol.iterator] === "function") {
             // Iterable object
             for(let value of item) this.push(value)
         }
-        this.length = this.items.length
-    }
 
-    /**
-     * In
-     * @param {number} value An integer value to insert in the queue
-     * @private
-     */
-    _pushValue(value) {
-        if(Minitel.specialChars[value]) {
-            // Convert special characters to Minitel codes
-            Minitel.specialChars[value].map(v => this.items.push(v))
-        } else if(value > 0x7f) {
-            // Minitel does not understand values above 0x7f 
-            return
-        } else {
-            this.items.push(value)
+        if(toPush !== undefined) {
+            if(Minitel.specialChars[toPush]) {
+                // Convert special characters to Minitel codes
+                Minitel.specialChars[toPush].map(v => {
+                    this.items[this.length] = v
+                    this.length++
+                })
+            } else if(toPush > 0x7f) {
+                // Minitel does not understand values above 0x7f 
+                return
+            } else {
+                this.items[this.length] = toPush
+                this.length++
+            }
         }
     }
 
