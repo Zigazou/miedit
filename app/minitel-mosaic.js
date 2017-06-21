@@ -117,7 +117,6 @@ class MinitelMosaic {
 
     onImportEditTf(event, param) {
         this.bitmap = Minitel.drawCeefax(event.target[0].value)
-        console.log(this.bitmap)
         this.refresh()
     }
 

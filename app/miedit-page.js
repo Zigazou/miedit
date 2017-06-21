@@ -70,6 +70,7 @@ class MiEditPage {
 
     onSaveGraphics(event, param) {
         this.inputGraphics.value = this.graphics.toString()
+        this.inputGraphics.dispatchEvent(new Event("input"))
         this.graphics.root.classList.add("hidden")
     }
 
