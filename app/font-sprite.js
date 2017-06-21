@@ -64,6 +64,20 @@ class FontSprite {
         this.spriteSheetColors = []
 
         /**
+         * Coordinates are pre-computed.
+         * @member
+         * @private
+         */
+        this.allCoordinates = []
+
+        /**
+         * How many sprites.
+         * @member {number}
+         * @private
+         */
+        this.spriteNumber = 0
+
+        /**
          * Indicates whether the sprite sheet can be used or not.
          * @member {boolean}
          */
@@ -98,7 +112,26 @@ class FontSprite {
             this.spriteSheetColors[color] = canvas
         }
 
+        this.generateCoordinates()
+
         this.isReady = true
+    }
+
+    /**
+     * Pre-computes all coordinates
+     *
+     * @private
+     */
+    generateCoordinates() {
+        this.spriteNumber = this.grid.cols * this.grid.rows
+        for(let ord = 0; ord < this.spriteNumber; ord++) {
+            this.allCoordinates.push({
+                "x": Math.floor(ord / this.grid.rows) * this.char.width,
+                "y": (ord % this.grid.rows) * this.char.height,
+            })
+        }
+
+        return 
     }
 
     /**
@@ -115,10 +148,7 @@ class FontSprite {
             ord = this.grid.cols * this.grid.rows - 1
         }
 
-        return {
-            "x": Math.floor(ord / this.grid.rows) * this.char.width,
-            "y": (ord % this.grid.rows) * this.char.height,
-        }
+        return this.allCoordinates[ord]
     }
 
     /**
@@ -136,7 +166,8 @@ class FontSprite {
      * @param {boolean} underline
      */
     writeChar(ctx, ord, x, y, part, mult, color, underline) {
-        const srcCoords = this.toCoordinates(ord)
+        if(ord < 0 || ord >= this.spriteNumber) ord = this.spriteNumber - 1
+        const srcCoords = this.allCoordinates[ord]
 
         const offset = {
             x: Math.floor(part.x * this.char.width / mult.width),
