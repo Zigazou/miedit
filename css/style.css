@@ -117,9 +117,16 @@ a>.jstree-icon {
 }
 
 .migrid {
-    padding: 2em;
+    padding: 9em;
     background-color: black;
     text-align: center;
+}
+
+.migrid canvas {
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    transform: scale(2, 2);
 }
 
 select { height: 2.6em; }

@@ -19,10 +19,6 @@
  * @property {number} width Width in pixels of a character.
  * @property {number} height Height in pixels of a character.
  *
- * @typedef {Object} Zoom
- * @property {number} x Horizontal multiplier.
- * @property {number} y Vertical multiplier.
- *
  */
 
 /**
@@ -33,11 +29,10 @@ class FontSprite {
      * @param {string} sheetURL The URL of the sprite sheet to use.
      * @param {Grid} grid How the sprite sheet is organized.
      * @param {Char} char Character characteristics.
-     * @param {Object} zoom Zoom values.
      * @param {string[]} colors The color palette containing the hex colors to
      *                          use.
      */
-    constructor(sheetURL, grid, char, zoom, colors) {
+    constructor(sheetURL, grid, char, colors) {
         /**
          * How the sprite sheet is organized.
          * @member {Grid}

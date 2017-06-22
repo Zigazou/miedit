@@ -13,20 +13,19 @@ class MinitelScreen {
      * @param {HTMLCanvasElement} canvas
      */
     constructor(canvas) {
-        const zoom = { x: 2, y: 2 }
         const grid = { cols: Minitel.columns, rows: Minitel.rows }
         const char = { width: Minitel.charWidth, height: Minitel.charHeight }
 
         // Resize canvas based on Minitel characteristics
-        canvas.width = char.width * grid.cols * zoom.x
-        canvas.height = char.height * grid.rows * zoom.y
+        canvas.width = char.width * grid.cols
+        canvas.height = char.height * grid.rows
 
         /**
          * The page memory
          * @member {PageMemory}
          * @private
          */
-        this.pageMemory = new PageMemory(grid, char, zoom, canvas)
+        this.pageMemory = new PageMemory(grid, char, canvas)
 
         /**
          * The decoder

@@ -15,9 +15,6 @@
  * @property {number} width Width in pixels of a character.
  * @property {number} height Height in pixels of a character.
  *
- * @typedef {Object} Zoom
- * @property {number} x Horizontal multiplier.
- * @property {number} y Vertical multiplier.
  */
 
 /**
@@ -27,11 +24,10 @@ class PageMemory {
     /**
      * @param {Object} grid How the page is organized.
      * @param {Object} char Character characteristics.
-     * @param {Object} zoom Zoom values.
      * @param {HTMLCanvasElement} canvas The canvas which will be used as the
      *                                   screen.
      */
-    constructor(grid, char, zoom, canvas) {
+    constructor(grid, char, canvas) {
         const frameRate = 50 // Frame per second
 
         /**
@@ -45,12 +41,6 @@ class PageMemory {
          * @private
          */
         this.char = char
-
-        /**
-         * @member {Zoom}
-         * @private
-         */
-        this.zoom = zoom
 
         /**
          * @member {HTMLCanvasElement}
@@ -182,13 +172,12 @@ class PageMemory {
 
         ctx.imageSmoothingEnabled = false
         ctx.mozImageSmoothingEnabled = false
-        ctx.scale(this.zoom.x, this.zoom.y)
         ctx.fillStyle = "#000000"
         ctx.fillRect(
             0,
             0,
-            this.char.width * this.grid.cols * this.zoom.x,
-            this.char.height * this.grid.rows * this.zoom.y
+            this.char.width * this.grid.cols,
+            this.char.height * this.grid.rows
         )
 
         return ctx
@@ -204,7 +193,6 @@ class PageMemory {
             url,
             { cols: 8, rows: 16 },
             this.char,
-            this.zoom,
             this.colors
         )
     }

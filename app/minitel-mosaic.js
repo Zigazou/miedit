@@ -1,4 +1,3 @@
-"use strict"
 class MinitelMosaic {
     constructor(root, zoom) {
         this.pixelsPerWidth = 2
