@@ -19,8 +19,8 @@ class MinitelMosaic {
         this.bitmap = []
         this.fullChars = "abcdefgh"
         this.sepChars = "ABCDEFGH"
-        this.primaryGrid = "#808000"
-        this.secondaryGrid = "#404000"
+        this.primaryGrid = "#D0D000"
+        this.secondaryGrid = "#707000"
         this.tool = "pencil"
 
         this.root = root
@@ -355,11 +355,11 @@ class MinitelMosaic {
 
     drawBackground() {
         const skew = 500
-        const inc = 20
+        const inc = 4
 
         const ctx = this.background.getContext("2d")
-        ctx.lineWidth = 10 / this.zoom
-        ctx.strokeStyle = "#202020"
+        ctx.lineWidth = 1 / this.zoom
+        ctx.strokeStyle = "#404040"
         ctx.beginPath()
         for(let x = -skew; x < this.canvas.width; x += inc) {
             ctx.moveTo(x, 0)
