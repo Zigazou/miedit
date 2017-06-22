@@ -42,82 +42,64 @@ class MinitelDecoder {
     }
 
     moveCursor(direction) {
-        switch(direction) {
-            case "char":
-                this.pm.cursor.x += this.current.mult.width
-                if(this.pm.cursor.x >= this.pm.grid.cols) {
-                    if(this.pm.cursor.y == 0) {
-                        // No overflow on status line
-                        this.pm.cursor.x = this.pm.grid.cols - 1
-                    } else {
-                        // Go to start of next row
-                        this.pm.cursor.x = 0
-                        for(let i = 0; i < this.current.mult.height; i++) {
-                            this.moveCursor("down")
-                        }
-                    }
-                }
-
-                break
-
-            case "left":
-                this.pm.cursor.x--
-                if(this.pm.cursor.x < 0) {
-                    this.pm.cursor.x = this.pm.grid.cols - 1
-                    this.moveCursor("up")
-                }
-
-                break
-
-            case "right":
-                this.pm.cursor.x++
-                if(this.pm.cursor.x >= this.pm.grid.cols) {
-                    this.pm.cursor.x = 0
-                    this.moveCursor("down")
-                }
-
-                break
-
-            case "up":
-                if(this.pm.cursor.y == 0) break
-
-                this.pm.cursor.y--
-
+        if(direction === "char") {
+            this.pm.cursor.x += this.current.mult.width
+            if(this.pm.cursor.x >= this.pm.grid.cols) {
                 if(this.pm.cursor.y == 0) {
-                    if(this.pageMode) {
-                        this.pm.cursor.y = this.pm.grid.rows - 1
-                    } else {
-                        this.pm.cursor.y = 1
-                        this.pm.scroll("down")
+                    // No overflow on status line
+                    this.pm.cursor.x = this.pm.grid.cols - 1
+                } else {
+                    // Go to start of next row
+                    this.pm.cursor.x = 0
+                    for(let i = 0; i < this.current.mult.height; i++) {
+                        this.moveCursor("down")
                     }
                 }
-                break
+            }
+        } else if(direction === "left") {
+            this.pm.cursor.x--
+            if(this.pm.cursor.x < 0) {
+                this.pm.cursor.x = this.pm.grid.cols - 1
+                this.moveCursor("up")
+            }
+        } else if(direction === "right") {
+            this.pm.cursor.x++
+            if(this.pm.cursor.x >= this.pm.grid.cols) {
+                this.pm.cursor.x = 0
+                this.moveCursor("down")
+            }
+        } else if(direction === "up") {
+            if(this.pm.cursor.y == 0) return;
 
-            case "down":
-                if(this.pm.cursor.y == 0) break
+            this.pm.cursor.y--
 
-                this.pm.cursor.y++
-
-                if(this.pm.cursor.y == this.pm.grid.rows) {
-                    if(this.pageMode) {
-                        this.pm.cursor.y = 1
-                    } else {
-                        this.pm.cursor.y = this.pm.grid.rows - 1
-                        this.pm.scroll("up")
-                    }
+            if(this.pm.cursor.y == 0) {
+                if(this.pageMode) {
+                    this.pm.cursor.y = this.pm.grid.rows - 1
+                } else {
+                    this.pm.cursor.y = 1
+                    this.pm.scroll("down")
                 }
-                break
+            }
+        } else if(direction === "down") {
+            if(this.pm.cursor.y == 0) return;
 
+            this.pm.cursor.y++
 
-            case "firstColumn":
-                this.pm.cursor.x = 0
-                break
-
-            case "home":
-                this.pm.cursor.x = 0
-                this.pm.cursor.y = 1
-                this.resetCurrent()
-                break
+            if(this.pm.cursor.y == this.pm.grid.rows) {
+                if(this.pageMode) {
+                    this.pm.cursor.y = 1
+                } else {
+                    this.pm.cursor.y = this.pm.grid.rows - 1
+                    this.pm.scroll("up")
+                }
+            }
+        } else if(direction === "firstColumn") {
+            this.pm.cursor.x = 0
+        } else if(direction === "home") {
+            this.pm.cursor.x = 0
+            this.pm.cursor.y = 1
+            this.resetCurrent()
         }
     }
 

@@ -54,7 +54,14 @@ Element.prototype.autocallback = function(that) {
         )
 
         formInputs.map(input => {
-            input.addEventListener("input", event => {
+            let eventType = "input"
+
+            if(input.type === "radio" || input.type === "checkbox") {
+                // Radio/check boxes do not fire "input" events
+                eventType = "change"
+            }
+
+            input.addEventListener(eventType, event => {
                 that[handler]({target: element}, param)
             })
         })

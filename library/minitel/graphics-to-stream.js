@@ -5,7 +5,8 @@ Minitel.graphicsToStream = function(string, col, row) {
     function isSeparated(sextet) {
         let separated = 0
         let full = 0
-        for(let c of sextet) {
+        for(let i = 0; i < 6; i++) {
+            let c = sextet[i]
             if(c >= "a" && c <= "h") full++
             if(c >= "A" && c <= "H") separated++
         }

@@ -215,33 +215,27 @@ class PageMemory {
      * @param {string} direction "up" or "down"
      */
     scroll(direction) {
-        const newRow = []
+        const newRow = new Array(this.grid.cols)
         for(let col = 0; col < this.grid.cols; col++) {
             newRow[col] = new MosaicCell()
         }
 
-        switch(direction) {
-            case "up":
-                for(let row = 2; row < this.grid.rows; row++) {
-                    this.memory[row] = this.memory[row + 1];
-                    this.changed[row] = true;
-                }
+        if(direction === "up") {
+            for(let row = 2; row < this.grid.rows; row++) {
+                this.memory[row] = this.memory[row + 1];
+                this.changed[row] = true;
+            }
 
-                this.memory[this.grid.rows - 1] = newRow
-                this.changed[this.grid.rows - 1] = true
+            this.memory[this.grid.rows - 1] = newRow
+            this.changed[this.grid.rows - 1] = true
+        } else if(direction === "down") {
+            for(let row = this.grid.rows - 1; row > 1; row--) {
+                this.memory[row] = this.memory[row - 1]
+                this.changed[row] = true
+            }
 
-                break
-
-            case "down":
-                for(let row = this.grid.rows - 1; row > 1; row--) {
-                    this.memory[row] = this.memory[row - 1]
-                    this.changed[row] = true
-                }
-
-                this.memory[1] = newRow
-                this.changed[1] = true
-
-                break
+            this.memory[1] = newRow
+            this.changed[1] = true
         }
     }
 
