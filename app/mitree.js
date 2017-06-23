@@ -61,9 +61,26 @@ class MiTree {
             if(child !== "content-group") widgetTypes[child].valid_children = []
         })
 
+        this.widgetTypes = widgetTypes
+        this.loadTree(nodes)
+
+        // Disable default behaviour of forms
+        container.find("form").submit(e => { e.preventDefault() })
+
+        container.get()[0].autocallback(this)
+
+        ribbon.root.autocallback(this)
+
+        container.find(".info-block").each(function() {
+            $(this).text(this.pageName)
+        })
+    }
+
+    loadTree(nodes) {
+        this.treeWidget.jstree("destroy")
         this.treeWidget.jstree({
             "core": { "check_callback": true, "data": nodes },
-            "types": widgetTypes,
+            "types": this.widgetTypes,
             "contextmenu": {
                 "show_at_node": false,
                 "items": this.contextualMenu()
@@ -71,18 +88,7 @@ class MiTree {
             "plugins": [ "dnd" , "types", "contextmenu" ],
         })
         this.tree = $.jstree.reference(this.treeWidget)
-
-        // Disable default behaviour of forms
-        container.find("form").submit(e => { e.preventDefault() })
-
-        container.get()[0].autocallback(this)
         this.treeWidget.on("select_node.jstree", this, this.onSelect)
-
-        ribbon.root.autocallback(this)
-
-        container.find(".info-block").each(function() {
-            $(this).text(this.pageName)
-        })
     }
 
     /**

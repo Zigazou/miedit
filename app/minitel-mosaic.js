@@ -1,15 +1,31 @@
+/**
+ * @file MinitelMosaic
+ * @author Frédéric BISSON <zigazou@free.fr>
+ * @version 1.0
+ */
+
+/**
+ * @class MinitelMosaic
+ */
 class MinitelMosaic {
+    /**
+     * @param {HTMLCanvasElement} root
+     * @param {number} zoom
+     */
     constructor(root, zoom) {
         this.pixelsPerWidth = 2
         this.pixelsPerHeight = 3
+
         this.canvas = {
             width: Minitel.columns * Minitel.charWidth,
             height: (Minitel.rows - 1) * Minitel.charHeight
         }
+
         this.resolution = {
             width: Minitel.columns * this.pixelsPerWidth,
             height: (Minitel.rows - 1) * this.pixelsPerHeight
         }
+
         this.zoom = zoom
         this.isDrawing = false
         this.previous = { x: undefined, y: undefined }
@@ -256,19 +272,16 @@ class MinitelMosaic {
 
         coords.x = x * (Minitel.charWidth / this.pixelsPerWidth)
         coords.width = Minitel.charWidth / this.pixelsPerWidth
-        coords.y = Math.floor(y / 3) * Minitel.charHeight
-        switch(y % 3) {
-            case 0:
-                coords.height = 3
-                break
-            case 1:
-                coords.y += 3
-                coords.height = 4
-                break
-            case 2:
-                coords.y += 7
-                coords.height = 3
-                break
+        coords.y = Math.floor(y / this.pixelsPerHeight) * Minitel.charHeight
+        const vPosition = y % this.pixelsPerHeight
+        if(vPosition === 0) {
+            coords.height = 3
+        } else if(vPosition === 1) {
+            coords.y += 3
+            coords.height = 4
+        } else if(vPosition === 2) {
+            coords.y += 7
+            coords.height = 3
         }
 
         if(separated && color >= 0) {
@@ -385,12 +398,12 @@ class MinitelMosaic {
 
     drawError() {
         function hasError(colors) {
-            let fg = undefined
-            let bg = undefined
+            let fg = 1000
+            let bg = 1000
             for(let color of colors) {
-                if(fg === undefined) {
+                if(fg === 1000) {
                     fg = color
-                } else if(bg === undefined && fg !== color) {
+                } else if(bg === 1000 && fg !== color) {
                     bg = color
                 } else if(fg !== color && bg !== color) {
                     return true
@@ -443,8 +456,6 @@ class MinitelMosaic {
         ctx.beginPath()
 
         ctx.lineWidth = 1 / this.zoom
-        ctx.imageSmoothingEnabled = false
-        ctx.mozImageSmoothingEnabled = false
 
         ctx.strokeStyle = this.secondaryGrid
         for(let x = Minitel.charWidth / this.pixelsPerWidth;

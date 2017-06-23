@@ -5,13 +5,28 @@
   <!-- File tab -->
   <h3 class="file">File</h3>
   <div>
-    <div class="backstage">
+    <div>
+      <h4>Save</h4>
       <form data-call="onSave">
-        <label for="page-name">Editing page:</label>
-        <input type="text" id="page-name" name="page"></input>
+        <label for="save-page-name">Editing page:</label>
+        <input type="text" id="save-page-name" name="page"></input>
         <input type="submit" value="Save">
         </input>
       </form>
+      <p>Note: this will only save in this browser</p>
+    </div>
+
+    <hr/>
+
+    <div>
+      <h4>Import/Export</h4>
+      <button class="large" data-call="onImport">
+        <img src="icon/file-import.svg" /><br/>Import
+      </button>
+
+      <button class="large" data-call="onExport">
+        <img src="icon/file-export.svg" /><br/>Export
+      </button>
     </div>
   </div>
 
