@@ -6,10 +6,11 @@
     width: 100%;
     height: 100%;
     display: block;
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: black;
 }
 
 .mosaic-canvases { text-align: center; }
+
 .center {
     display: inline-block;
     position: relative;
@@ -17,7 +18,7 @@
 
 .hidden { display: none; }
 
-.mosaic-drawing, .mosaic-grid, .mosaic-overlay {
+.mosaic-drawing, .mosaic-grid, .mosaic-overlay, .mosaic-error {
     position: absolute;
     top: 0;
     left: 0;
@@ -25,11 +26,12 @@
     height: 100%;
 }
 
+.mosaic-grid, .mosaic-overlay, .mosaic-error { pointer-events: none }
+
 .mosaic-overlay {
     background-repeat: no-repeat;
     background-size: auto 100%;
     background-position: center center;
-    opacity: 0.5;
 }
 
 .cursor-pencil { cursor: url(../icon/graphics-pencil.svg) 0 32, pointer }

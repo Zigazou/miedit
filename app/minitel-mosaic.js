@@ -21,7 +21,9 @@ class MinitelMosaic {
         this.sepChars = "ABCDEFGH"
         this.primaryGrid = "#D0D000"
         this.secondaryGrid = "#707000"
+        this.errorColor = "#FFFFFF"
         this.tool = "pencil"
+        this.pointsToCheck = new Set()
 
         this.root = root
         this.configureDOMElements()
@@ -80,6 +82,8 @@ class MinitelMosaic {
                 i++
             }
         }
+
+        this.drawError()
     }
 
     refresh() {
@@ -93,6 +97,8 @@ class MinitelMosaic {
                 this.drawPoint(x, y, pixel.color, pixel.separated)
             }
         }
+
+        this.drawError()
     }
 
     toString() {
@@ -234,11 +240,10 @@ class MinitelMosaic {
         this.background = this.root.getElementsByClassName("mosaic-background")[0]
         this.drawing = this.root.getElementsByClassName("mosaic-drawing")[0]
         this.grid = this.root.getElementsByClassName("mosaic-grid")[0]
-        this.grid.style = "pointer-events: none"
         this.overlay = this.root.getElementsByClassName("mosaic-overlay")[0]
-        this.overlay.style = "pointer-events: none"
+        this.error = this.root.getElementsByClassName("mosaic-error")[0]
 
-        for(let obj of [ this.background, this.drawing, this.grid ]) {
+        for(let obj of [ this.background, this.drawing, this.grid, this.error ]) {
             obj.width  = this.canvas.width * this.zoom
             obj.height = this.canvas.height * this.zoom
             const ctx = obj.getContext("2d")
@@ -290,6 +295,11 @@ class MinitelMosaic {
             ctx.fillStyle = Minitel.colors[color]
             ctx.fillRect(coords.x, coords.y, coords.width, coords.height)
         }
+
+        this.pointsToCheck.add(
+            Math.floor(y / this.pixelsPerHeight) * 1000 +
+            Math.floor(x / this.pixelsPerWidth)
+        )
     }
 
     drawLine(first, last, color, separated) {
@@ -319,6 +329,8 @@ class MinitelMosaic {
                 y0 += sy
             }
         }
+
+        this.drawError()
     }
 
     fillArea(startPoint, finalColor, separated) {
@@ -351,6 +363,8 @@ class MinitelMosaic {
                 stack.push({ x: point.x, y: point.y + 1 })
             }
         }
+
+        this.drawError()
     }
 
     drawBackground() {
@@ -367,6 +381,59 @@ class MinitelMosaic {
         }
         ctx.stroke()
         ctx.closePath()
+    }
+
+    drawError() {
+        function hasError(colors) {
+            let fg = undefined
+            let bg = undefined
+            for(let color of colors) {
+                if(fg === undefined) {
+                    fg = color
+                } else if(bg === undefined && fg !== color) {
+                    bg = color
+                } else if(fg !== color && bg !== color) {
+                    return true
+                }
+            }
+
+            return false
+        }
+
+        const ctx = this.error.getContext("2d")
+
+        ctx.clearRect(0, 0, this.error.width, this.error.height)
+
+        ctx.lineWidth = 1
+        ctx.strokeStyle = this.errorColor
+
+        this.pointsToCheck.forEach(value => {
+            const x = (value % 1000) * this.pixelsPerWidth
+            const y = Math.floor(value / 1000) * this.pixelsPerHeight
+            const points = [
+                this.bitmap[y][x].color,
+                this.bitmap[y][x + 1].color,
+                this.bitmap[y + 1][x].color,
+                this.bitmap[y + 1][x + 1].color,
+                this.bitmap[y + 2][x].color,
+                this.bitmap[y + 2][x + 1].color
+            ]
+
+            if(hasError(points)) {
+                ctx.beginPath()
+
+                const coords = this.convertCoordinates(x, y, 0, false)
+                ctx.rect(
+                    coords.x, coords.y,
+                    Minitel.charWidth, Minitel.charHeight
+                )
+
+                ctx.stroke()
+                ctx.closePath()
+            } else {
+                this.pointsToCheck.delete(value)
+            }
+        })
     }
 
     drawGrid() {
