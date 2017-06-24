@@ -96,12 +96,14 @@
     height: 7.2em;
 }
 
-.simple-ribbon button {
+.simple-ribbon button, .simple-ribbon a {
     padding: 0.4em 0.6em;
     border: 0.1em solid transparent;
     border-radius: 0.3em;
     background-color: transparent;
     line-height: 1;
+    text-decoration: none;
+    color: black;
 }
 
 .simple-ribbon button.large {
@@ -117,7 +119,7 @@
     text-align: left;
 }
 
-.simple-ribbon button:hover {
+.simple-ribbon button:hover, .simple-ribbon a:hover {
     border: 0.1em solid #F1C43F;
     background-color: #fdeeb3;
     cursor: pointer;

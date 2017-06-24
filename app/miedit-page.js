@@ -41,7 +41,6 @@ class MiEditPage {
     }
 
     onSave(event, param) {
-        event.preventDefault()
         const objSave = {
             "thumbnail": this.miscreen.generateThumbnail(320, 250),
             "tree": this.mitree.serialize()
@@ -50,14 +49,12 @@ class MiEditPage {
     }
 
     onImport(event, param) {
-        event.preventDefault()
         const value = window.prompt("Paste the code in the field", "")
         const obj = JSON.parse(value)
         if(obj !== null) this.mitree.loadTree(obj.tree)
     }
 
     onExport(event, param) {
-        event.preventDefault()
         const objSave = {
             "thumbnail": this.miscreen.generateThumbnail(320, 250),
             "tree": this.mitree.serialize()
@@ -66,14 +63,32 @@ class MiEditPage {
         window.prompt("Copy the following code", JSON.stringify(objSave))
     }
 
+    onCompile(event, param) {
+        const link = document.getElementById("link-download-vdt")
+
+        const actions = mieditActions(this.mitree.serialize())
+        const bytes = Minitel.actionsToStream(actions, 0, 0).toArray()
+        const vdt = String.fromCharCode.apply(null, bytes)
+
+        const time = new Date()
+        const timeString = ("0" + time.getHours()).slice(-2)   + ":"
+                         + ("0" + time.getMinutes()).slice(-2) + ":"
+                         + ("0" + time.getSeconds()).slice(-2)
+
+        link.href = "data:text/plain;charset=ascii,"
+                  + encodeURIComponent(vdt)
+        link.setAttribute("download", this.pageName + ".vdt")
+        link.innerHTML = "Download VDT [" + timeString + "]"
+    }
+
     onRunSlow(event, param) {
         const actions = mieditActions(this.mitree.serialize())
-        this.miscreen.send(Minitel.actionsToStream(actions, 0, 0).items)
+        this.miscreen.send(Minitel.actionsToStream(actions, 0, 0).toArray())
     }
 
     onRunFast(event) {
         const actions = mieditActions(this.mitree.serialize())
-        this.miscreen.directSend(Minitel.actionsToStream(actions, 0, 0).items)
+        this.miscreen.directSend(Minitel.actionsToStream(actions, 0, 0).toArray())
     }
 
     onEditGraphics(event, param) {

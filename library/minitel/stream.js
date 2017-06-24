@@ -37,6 +37,10 @@ Minitel.Stream = class {
         this.length = 0
     }
 
+    toArray() {
+        return this.items.slice(0, this.length)
+    }
+
     /**
      * 
      * @param item Any value to insert in the queue.

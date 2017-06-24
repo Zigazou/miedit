@@ -28,6 +28,7 @@ Element.prototype.autocallback = function(that) {
 
         // Apply callback to the event
         element.addEventListener(tagEvents[tagName], event => {
+            event.preventDefault()
             that[handler](event, param)
         })
     })
@@ -62,6 +63,7 @@ Element.prototype.autocallback = function(that) {
             }
 
             input.addEventListener(eventType, event => {
+                event.preventDefault()
                 that[handler]({target: element}, param)
             })
         })
