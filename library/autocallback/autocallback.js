@@ -7,9 +7,7 @@ Element.prototype.autocallback = function(that) {
     }
 
     // Handles data-call attributes
-    const dataCalls = Array.prototype.slice.call(
-        this.querySelectorAll("[data-call]")
-    )
+    const dataCalls = [].slice.call(this.querySelectorAll("[data-call]"))
 
     dataCalls.map(element => {
         // The specified handler must exist
@@ -34,9 +32,7 @@ Element.prototype.autocallback = function(that) {
     })
 
     // Handles data-change attributes
-    const dataChanges = Array.prototype.slice.call(
-        this.querySelectorAll("[data-change]")
-    )
+    const dataChanges = [].slice.call(this.querySelectorAll("[data-change]"))
 
     dataChanges.map(element => {
         // The specified handler must exist

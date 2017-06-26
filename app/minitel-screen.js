@@ -53,7 +53,7 @@ class MinitelScreen {
          */
         this.timer = undefined
 
-        this.initRefresh(Minitel.B1200, 20)
+        this.initRefresh(Minitel.B1200, 25)
     }
 
     /**
@@ -66,9 +66,9 @@ class MinitelScreen {
         // Stop any existing timer
         if(this.timer) window.clearInterval(this.timer)
 
-        // Minitel uses 10 bits for each code (7 bit of data, 1 parity bit and
-        // 2 stop bits)
-        this.chunkSize = (bandwidth / 10) / (1000 / rate)
+        // Minitel uses 9 bits for each code (7 bit of data, 1 parity bit and
+        // 1 stop bit)
+        this.chunkSize = (bandwidth / 9) / (1000 / rate)
         this.timer = window.setInterval(() => { this.sendChunk() }, rate)
     }
 
