@@ -51,14 +51,14 @@ Element.prototype.autocallback = function(that) {
 
         // Apply callback to the event
         const formInputs = Array.prototype.slice.call(
-            element.querySelectorAll("input, textarea")
+            element.querySelectorAll("input, textarea, select")
         )
 
         formInputs.map(input => {
             let eventType = "input"
 
-            if(input.type === "radio" || input.type === "checkbox") {
-                // Radio/check boxes do not fire "input" events
+            if(["radio", "checkbox", "select"].indexOf(input.localName) >= 0) {
+                // Radio/check boxes/select do not fire "input" events
                 eventType = "change"
             }
 
