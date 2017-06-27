@@ -5,36 +5,34 @@ class MiEditManage {
         this.container = container
         this.mistorage = new MiStorage("page")
 
-        const inside = $('<table class="table"></table>')
-        inside.append($("<tr><th>Thumbnail</th><th>Page</th><th>Actions</th></tr>"))
+        const inside = $('<div class="page-list"></div>')
         this.mistorage.keys().forEach(key => {
             const page = this.mistorage.load(key)
-            const img = page !== null && page.thumbnail ? page.thumbnail : ""
-            inside.append($(this.page_list_item(key, img, key)))
+            const img = page !== null && page.thumbnail
+                      ? page.thumbnail
+                      : "image/missing-thumbnail.svg"
+
+            inside.append($(this.pageListItem(key, img, key)))
         })
 
         this.container.append(inside)
     }
 
-    page_list_item(page_title, thumbnail, key) {
+    pageListItem(pageTitle, thumbnail, key) {
         return `
-          <tr class="page-list-item">
-            <td><img src="${thumbnail}" width="160" height="125"/></td>
-            <td>${page_title}</td>
-            <td>
-              <a href="miedit-page.html?page=${key}" class="btn btn-primary">
-                edit
-              </a>
-              <a href="miedit-delete.html?page=${key}" class="btn btn-danger">
-                delete
-              </a>
-              <a href="miedit-duplicate.html?page=${key}" class="btn btn-primary">
-                duplicate
-              </a>
-            </td>
-          </tr>`
+          <div class="page-list-item">
+            <h2>${pageTitle}</h2>
+            <div class="thumbnail">
+              <img src="${thumbnail}" width="160" height="125"/>
+            </div>
+            <div class="actions">
+              <a href="miedit-page.html?page=${key}">edit</a>
+              -
+              <a href="miedit-delete.html?page=${key}">delete</a>
+            </div>
+          </div>`
     }
 }
 
-mieditmanage = new MiEditManage($('#miedit'))
+new MiEditManage($('#miedit'))
 
