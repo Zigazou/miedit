@@ -64,7 +64,8 @@ class MiEditPage {
     }
 
     onCompile(event, param) {
-        const link = document.getElementById("link-download-vdt")
+        const dlLink = document.getElementById("link-download-vdt")
+        const vwLink = document.getElementById("link-view-vdt")
 
         const actions = mieditActions(this.mitree.serialize())
         const bytes = Minitel.actionsToStream(actions, 0, 0).toArray()
@@ -75,10 +76,16 @@ class MiEditPage {
                          + ("0" + time.getMinutes()).slice(-2) + ":"
                          + ("0" + time.getSeconds()).slice(-2)
 
-        link.href = "data:text/plain;charset=ascii,"
-                  + encodeURIComponent(vdt)
-        link.setAttribute("download", this.pageName + ".vdt")
-        link.innerHTML = "Download VDT [" + timeString + "]"
+        // Download VDT link
+        dlLink.href = "data:text/plain;charset=ascii,"
+                    + encodeURIComponent(vdt)
+        dlLink.setAttribute("download", this.pageName + ".vdt")
+        dlLink.innerHTML = "Download VDT [" + timeString + "]"
+
+        // View VDT link
+        vwLink.href = "minitel-viewer.html"
+                    + "?stream=" + encodeURIComponent(vdt)
+        vwLink.innerHTML = "View VDT [" + timeString + "]"
     }
 
     onRunSlow(event, param) {
