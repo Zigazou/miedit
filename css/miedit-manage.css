@@ -6,6 +6,8 @@ body {
     color: #fff;
 }
 
+a { color: #fff; }
+
 .page-list-item {
     float: left;
     text-align: center;
@@ -26,5 +28,10 @@ body {
     white-space: nowrap;
 }
 
-.page-list-item a { color: #fff; }
+button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
 
+.page-list-item a { text-decoration: none; }

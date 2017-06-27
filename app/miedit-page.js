@@ -21,7 +21,6 @@ class MiEditPage {
         )
 
         this.ribbon.root.autocallback(this)
-        container.find("#page-name").val(pageName)
         container.find(".content-graphics")[0].autocallback(this)
         container.find(".mosaic-exit")[0].autocallback(this)
 
@@ -41,6 +40,17 @@ class MiEditPage {
     }
 
     onSave(event, param) {
+        if(this.pageName === undefined) {
+            const value = window.prompt("Type in the name of this new page", "")
+            if(value === null) return
+            if(value.trim() === "") {
+                alert("No page name, saving ignored")
+                return
+            }
+
+            this.pageName = value
+        }
+
         const objSave = {
             "thumbnail": this.miscreen.generateThumbnail(320, 250),
             "tree": this.mitree.serialize()
