@@ -83,68 +83,6 @@ Minitel.graphicsToStream = function(string, col, row) {
         }
     }
 
-    function optimizeRow(row) {
-        let bg = 0x50
-        let fg = 0x47
-        let separated = false
-        let char = 0x00
-        let count = 0
-
-        const optimized = []
-        for(let i = 0; i < row.length; i++) {
-            let moveRight = row[i] === 0x09
-            let changeFG = row[i] === 0x1b
-                        && row[i + 1] >= 0x40
-                        && row[i + 1] <= 0x47
-                        && row[i + 1] !== fg
-            let changeBG = row[i] === 0x1b
-                        && row[i + 1] >= 0x50
-                        && row[i + 1] <= 0x57
-                        && row[i + 1] !== bg
-            let changeSep = row[i] === 0x1b
-                         && (   (row[i + 1] === 0x5a && !separated)
-                             || (row[i + 1] === 0x59 && separated))
-            let changeChar = row[i] >= 0x20 && row[i] !== char
-
-            if(count > 0 && (moveRight || changeFG || changeBG || changeSep || changeChar)) {
-                if(count == 1) {
-                    optimized.push(char)
-                } else {
-                    optimized.push(0x12, 0x40 + count)
-                }
-                count = 0
-            }
-
-            if(moveRight) {
-                optimized.push(0x09)
-            } else if(changeFG) {
-                // Change foreground color
-                fg = row[i + 1]
-                optimized.push(0x1b, fg)
-            } else if(changeBG) {
-                // Change background color
-                bg = row[i + 1]
-                optimized.push(0x1b, bg)
-            } else if(changeSep) {
-                // Change separated
-                separated = !separated
-                optimized.push(0x1b, row[i + 1])
-            } else if(changeChar) {
-                // Change character
-                optimized.push(row[i])
-                char = row[i]
-            } else if(row[i] >= 0x20) {
-                // Same character
-                count++
-            }
-
-            if(row[i] === 0x1b) i++
-        }
-        if(count > 0) optimized.push(0x12, 0x40 + count)
-
-        return optimized
-    }
-
     const stream = new Minitel.Stream()
     for(let y = 0; y <= 72 - row * 3; y += 3) {
         // Converts pixels to mosaic characters

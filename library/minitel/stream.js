@@ -138,11 +138,13 @@ Minitel.Stream = class {
      * @return {Stream} An optimized version of the current stream
      */
     optimizeRow(moveFirst) {
+        function identity(x) { return x }
         let bg = moveFirst ? 0x50 : -1
         let fg = moveFirst ? 0x47 : -1
         let separated = false
         let char = 0x00
         let count = 0
+        let currentSet = -1
 
         const optimized = new Minitel.Stream()
         for(let i = 0; i < this.length; i++) {
@@ -159,10 +161,12 @@ Minitel.Stream = class {
                       && (   (this.items[i + 1] === 0x5a && !separated)
                           || (this.items[i + 1] === 0x59 && separated))
             let chgChar = this.items[i] >= 0x20 && this.items[i] !== char
+            let chgSet = (this.items[i] === 0x0e && currentSet !== 0x0e)
+                      || (this.items[i] === 0x0f && currentSet !== 0x0f) 
 
-            const anyChange = moveRight || chgFG || chgBG || chgSep || chgChar
+            const changes = [ moveRight, chgFG, chgBG, chgSep, chgChar, chgSet ]
 
-            if(count > 0 && anyChange) {
+            if(count > 0 && changes.some(identity)) {
                 if(count == 1) {
                     optimized.push(char)
                 } else {
@@ -186,13 +190,20 @@ Minitel.Stream = class {
                 separated = !separated
                 optimized.push([0x1b, this.items[i + 1]])
             } else if(chgChar) {
+                if(currentSet !== -1) {
+                    optimized.push(currentSet)
+                    currentSet = -1
+                }
+
                 // Change character
                 optimized.push(this.items[i])
                 char = this.items[i]
+            } else if(chgSet) {
+                currentSet = this.items[i]
             } else if(this.items[i] >= 0x20) {
                 // Same character
                 count++
-            } else if(this.items[i] !== 0x1b) {
+            } else if([0x1b, 0x0e, 0x0f].indexOf(this.items[i]) < 0) {
                 optimized.push(this.items[i])
             }
 
