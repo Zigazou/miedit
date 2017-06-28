@@ -160,7 +160,7 @@ Minitel.graphicsToStream = function(string, col, row) {
             codes.push(sextet2char(sextet))
         }
 
-        codes = codes.optimizeRow().trimRow()
+        codes = codes.optimizeRow(true).trimRow()
 
         // Get rid of empty characters at the beginning
         let startX = 0

@@ -131,11 +131,15 @@ Minitel.Stream = class {
     /**
      * Generates an optimized version of the current stream. It won't properly
      * work when used on anything else than a row.
+     *
+     * @param {boolean} moveFirst If True, the row is considered to be preceded
+     *                            by a locate command. If false, the row is part
+     *                            of a bigger stream.
      * @return {Stream} An optimized version of the current stream
      */
-    optimizeRow() {
-        let bg = 0x50
-        let fg = 0x47
+    optimizeRow(moveFirst) {
+        let bg = moveFirst ? 0x50 : -1
+        let fg = moveFirst ? 0x47 : -1
         let separated = false
         let char = 0x00
         let count = 0
