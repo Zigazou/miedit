@@ -1,14 +1,15 @@
 "use strict"
 window.addEventListener("load", function(event) {
     const canvas = document.getElementById("minitel-screen")
+    const viewer = document.getElementById("minitel-viewer")
     const screen = new MinitelScreen(canvas)
     const stream = queryParameters("stream")
 
     function findBestScaling() {
-        if(window.innerWidth/window.innerHeight > canvas.width/canvas.height) {
-            canvas.classList.add("scale-height")
+        if(window.innerWidth/window.innerHeight > 2065/2160) {
+            viewer.classList.add("scale-height")
         } else {
-            canvas.classList.remove("scale-height")
+            viewer.classList.remove("scale-height")
         }
     }
 

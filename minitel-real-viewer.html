@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Minitel real viewer</title>
+    <link rel="stylesheet" href="css/minitel-real-viewer.css" />
+  </head>
+  <body>
+    <div id="minitel-viewer">
+      <div id="minitel-container">
+        <canvas id="minitel-screen" />
+      </div>
+      <div id="minitel-glass"></div>
+    </div>
+    <script src="library/query-parameters/query-parameters.js"></script>
+    <script src="library/finite-stack/finite-stack.js"></script>
+
+    <script src="library/minitel/constant.js"></script>
+    <script src="library/minitel/stream.js"></script>
+
+    <script src="app/font-sprite.js"></script>
+    <script src="app/page-cell.js"></script>
+    <script src="app/page-memory.js"></script>
+    <script src="app/minitel-decoder.js"></script>
+    <script src="app/minitel-screen.js"></script>
+    
+    <script src="app/minitel-real-viewer.js"></script>
+  </body>
+</html>

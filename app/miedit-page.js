@@ -76,6 +76,7 @@ class MiEditPage {
     onCompile(event, param) {
         const dlLink = document.getElementById("link-download-vdt")
         const vwLink = document.getElementById("link-view-vdt")
+        const rlLink = document.getElementById("link-real-vdt")
 
         const actions = mieditActions(this.mitree.serialize())
         const bytes = Minitel.actionsToStream(actions, 0, 0).toArray()
@@ -96,6 +97,11 @@ class MiEditPage {
         vwLink.href = "minitel-viewer.html"
                     + "?stream=" + encodeURIComponent(vdt)
         vwLink.innerHTML = "View VDT [" + timeString + "]"
+
+        // View VDT link
+        rlLink.href = "minitel-real-viewer.html"
+                    + "?stream=" + encodeURIComponent(vdt)
+        rlLink.innerHTML = "Real view VDT [" + timeString + "]"
     }
 
     onRunSlow(event, param) {
