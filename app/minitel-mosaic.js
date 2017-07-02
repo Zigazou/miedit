@@ -43,7 +43,7 @@ class MinitelMosaic {
 
         this.root = root
         this.configureDOMElements()
-        this.setCursor()
+        this.setCursor("", this.tool)
 
         this.drawGrid()
         this.drawBackground()
@@ -57,10 +57,9 @@ class MinitelMosaic {
         this.root.autocallback(this)
     }
 
-    setCursor() {
-        this.drawing.classList.remove("cursor-pencil")
-        this.drawing.classList.remove("cursor-fill")
-        this.drawing.classList.add("cursor-" + this.tool)
+    setCursor(oldTool, newTool) {
+        this.drawing.classList.remove("cursor-" + oldTool)
+        this.drawing.classList.add("cursor-" + newTool)
     }
 
     reset(string, background) {
@@ -142,8 +141,8 @@ class MinitelMosaic {
     }
 
     onToolChange(event, param) {
+        this.setCursor(this.tool, param)
         this.tool = param
-        this.setCursor()
     }
 
     onColorChange(event, param) {
@@ -159,16 +158,22 @@ class MinitelMosaic {
         this.separated = true
     }
 
-    onMouseUp(event) {
-        event.preventDefault()
-        this.isDrawing = false
-    }
-
-    onMouseDown(event) {
-        event.preventDefault()
+    callHandler(event, actionType) {
         const point = this.translate(event)
 
-        if(this.tool === "pencil") {
+        const handlerName = "onTool"
+                          + this.tool[0].toUpperCase()
+                          + this.tool.substr(1)
+
+        if(this[handlerName]) this[handlerName](actionType, point, event)
+    }
+
+    onMouseUp(event) { this.callHandler(event, "up") }
+    onMouseDown(event) { this.callHandler(event, "down") }
+    onMouseMove(event) { this.callHandler(event, "move") }
+
+    onToolPencil(actionType, point, event) {
+        if(actionType === "down") {
             this.isDrawing = true
             
             if(event.shiftKey && this.lastPoint.x !== undefined) {
@@ -178,22 +183,58 @@ class MinitelMosaic {
             }
 
             this.lastPoint = { x: point.x, y: point.y }
-        } else if(this.tool === "fill") {
+        } else if(actionType === "move" && this.isDrawing) {
+            this.drawLine(this.previous, point, this.color, this.separated)
+            this.lastPoint = { x: point.x, y: point.y }
+        } else if(actionType === "up") {
+            this.isDrawing = false
+        }
+
+        if(actionType === "move") this.previous = { x: point.x, y: point.y }
+    }
+
+    onToolFill(actionType, point, event) {
+        if(actionType === "down") {
             this.fillArea(point, this.color, this.separated)
         }
     }
 
-    onMouseMove(event) {
-        event.preventDefault()
+    onToolCircle(actionType, point, event) {
+        if(actionType === "down") {
+            this.isDrawing = true
+            this.previous = point
+        } else if(actionType === "move" && this.isDrawing) {
+            const radius = Math.sqrt(
+                Math.pow(point.realX - this.previous.realX, 2) +
+                Math.pow(point.realY - this.previous.realY, 2)
+            )
 
-        const point = this.translate(event)
+            const ctx = this.preview.getContext("2d")
+            ctx.beginPath()
+            ctx.clearRect(0, 0, this.preview.width, this.preview.height)
+            ctx.strokeStyle = Minitel.colors[this.color]
+            ctx.arc(
+                this.previous.realX, this.previous.realY,
+                radius, 0, 2 * Math.PI,
+                false
+            )
+            ctx.stroke()
+            ctx.closePath()
+        } else if(actionType === "up") {
+            this.isDrawing = false
 
-        if(this.isDrawing) {
-            this.drawLine(this.previous, point, this.color, this.separated)
-            this.lastPoint = { x: point.x, y: point.y }
+            const radius = Math.floor(Math.sqrt(
+                Math.pow(point.realX - this.previous.realX, 2) +
+                Math.pow(point.realY - this.previous.realY, 2)
+            ) / this.zoom)
+
+            const ctx = this.preview.getContext("2d")
+            ctx.beginPath()
+            ctx.clearRect(0, 0, this.preview.width, this.preview.height)
+            ctx.closePath()
+
+            this.drawCircle(this.previous, radius, this.color, this.separated)
         }
-
-        this.previous = { x: point.x, y: point.y }
     }
 
     shiftUp(offset) {
@@ -248,23 +289,43 @@ class MinitelMosaic {
         const charHeight = Minitel.charHeight * this.zoom / this.pixelsPerHeight
         const col = Math.floor((event.clientX - rect.left) / charWidth)
         const row = Math.floor((event.clientY - rect.top) / charHeight)
+        const realX = Math.floor((event.clientX - rect.left) / this.zoom)
+        const realY = Math.floor((event.clientY - rect.top) / this.zoom)
 
-        return({ "x": col, "y": row })
+        return({
+            "x": col,
+            "y": row,
+            "realX": realX,
+            "realY": realY
+        })
     }
 
     configureDOMElements() {
         this.background = this.root.getElementsByClassName("mosaic-background")[0]
         this.drawing = this.root.getElementsByClassName("mosaic-drawing")[0]
+        this.preview = this.root.getElementsByClassName("mosaic-preview")[0]
         this.grid = this.root.getElementsByClassName("mosaic-grid")[0]
         this.overlay = this.root.getElementsByClassName("mosaic-overlay")[0]
         this.error = this.root.getElementsByClassName("mosaic-error")[0]
 
-        for(let obj of [ this.background, this.drawing, this.grid, this.error ]) {
+        const canvases = [
+            this.background,
+            this.drawing,
+            this.preview,
+            this.grid,
+            this.error
+        ]
+
+        for(let obj of canvases) {
             obj.width  = this.canvas.width * this.zoom
             obj.height = this.canvas.height * this.zoom
             const ctx = obj.getContext("2d")
             ctx.scale(this.zoom, this.zoom)
         }
+
+        // Configure preview layer
+        const ctx = this.preview.getContext("2d")
+        ctx.lineWidth = 2
     }
 
     convertCoordinates(x, y, color, separated) {
@@ -294,6 +355,9 @@ class MinitelMosaic {
     }
 
     drawPoint(x, y, color, separated) {
+        if(x < 0 || x > this.resolution.width || y < 0 || y > this.resolution.height) {
+            return
+        }
         const ctx = this.drawing.getContext("2d")
         const coords = this.convertCoordinates(x, y, color, separated)
 
@@ -341,6 +405,46 @@ class MinitelMosaic {
                 err += dx
                 y0 += sy
             }
+        }
+
+        this.drawError()
+    }
+
+    drawCircle(center, radius, color, separated) {
+        // Minitel mosaic pixels are not square...
+        const [width, height] = [ radius, Math.floor(radius * 1.25) ]
+
+        let [a2, b2] = [ width * width, height * height ]
+        let [fa2, fb2] = [ 4 * a2, 4 * b2 ]
+        let [x, y] = [ 0, 0 ]
+        let sigma = 0
+
+        y = height
+        sigma = 2 * b2 + a2 * (1 - 2 * height)
+        for (x = 0; b2 * x <= a2 * y; x++) {
+            this.drawPoint(center.x + x, center.y + y, color, separated)
+            this.drawPoint(center.x - x, center.y + y, color, separated)
+            this.drawPoint(center.x + x, center.y - y, color, separated)
+            this.drawPoint(center.x - x, center.y - y, color, separated)
+            if(sigma >= 0) {
+                sigma += fa2 * (1 - y)
+                y--
+            }
+            sigma += b2 * (4 * x + 6)
+        }
+
+        x = width
+        sigma = 2 * a2 + b2 * (1 - 2 * width)
+        for (y = 0; a2 * y <= b2 * x; y++) {
+            this.drawPoint(center.x + x, center.y + y, color, separated)
+            this.drawPoint(center.x - x, center.y + y, color, separated)
+            this.drawPoint(center.x + x, center.y - y, color, separated)
+            this.drawPoint(center.x - x, center.y - y, color, separated)
+            if(sigma >= 0) {
+                sigma += fb2 * (1 - x)
+                x--
+            }
+            sigma += a2 * (4 * y + 6)
         }
 
         this.drawError()

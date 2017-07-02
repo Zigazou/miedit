@@ -18,7 +18,7 @@
 
 .hidden { display: none; }
 
-.mosaic-drawing, .mosaic-grid, .mosaic-overlay, .mosaic-error {
+.mosaic-drawing, .mosaic-grid, .mosaic-overlay, .mosaic-error, .mosaic-preview {
     position: absolute;
     top: 0;
     left: 0;
@@ -26,7 +26,9 @@
     height: 100%;
 }
 
-.mosaic-grid, .mosaic-overlay, .mosaic-error { pointer-events: none }
+.mosaic-grid, .mosaic-overlay, .mosaic-error, .mosaic-preview {
+    pointer-events: none
+}
 
 .mosaic-overlay {
     background-repeat: no-repeat;
@@ -37,4 +39,4 @@
 
 .cursor-pencil { cursor: url(../icon/graphics-pencil.svg) 0 32, pointer }
 .cursor-fill { cursor: url(../icon/graphics-fill.svg) 3 28, pointer }
-
+.cursor-circle { cursor: url(../icon/graphics-circle.svg) 16 16, pointer }

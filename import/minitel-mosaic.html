@@ -3,6 +3,7 @@
     <div class="center">
       <canvas class="mosaic-background"></canvas>
       <canvas class="mosaic-drawing"></canvas>
+      <canvas class="mosaic-preview"></canvas>
       <div class="mosaic-overlay"></div>
       <canvas class="mosaic-grid"></canvas>
       <canvas class="mosaic-error"></canvas>
@@ -13,12 +14,27 @@
     
     <h3 class="file">File</h3>
     <div class="backstage">
-      <form data-call="onImportEditTf">
-        <label for="import-edit-tf">Import edit.tf URL:</label>
-        <input type="text" id="import-edit-tf" name="url"></input>
-        <input type="submit" value="Import">
-        </input>
-      </form>
+      <div>
+        <h4>Import</h4>
+        <form data-call="onImportEditTf">
+          <label for="import-edit-tf">Import edit.tf URL:</label>
+          <input type="text" id="import-edit-tf" name="url"></input>
+          <input type="submit" value="Import">
+          </input>
+        </form>
+      </div>
+
+      <hr/>
+
+      <div class="mosaic-exit">
+        <h4>Action</h4>
+        <button class="large" value="save" data-call="onSaveGraphics">
+          <img src="icon/save.svg" /><br/>Save<br/>graphics
+        </button>
+        <button class="large" value="exit" data-call="onExitGraphics">
+          <img src="icon/exit.svg" /><br/>Ignore<br/>changes
+        </button>
+      </div>
     </div>
 
     <h3 class="first">Colors</h3>
@@ -57,24 +73,28 @@
       <hr/>
 
       <div>
-        <h4>Tool</h4>
-        <button class="large" data-param="pencil" data-call="onToolChange">
-          <img src="icon/graphics-pencil.svg" /><br/>Pencil
-        </button>
-        <button class="large" data-param="fill" data-call="onToolChange">
-          <img src="icon/graphics-fill.svg" /><br/>Fill
-        </button>
-      </div>
-
-      <hr/>
-
-      <div>
         <h4>Separated</h4>
         <button class="large" data-call="onNormalMosaic">
           <img src="icon/effect-separated-off.svg" /><br/>Full
         </button>
         <button class="large" data-call="onSeparatedMosaic">
           <img src="icon/effect-separated-on.svg" /><br/>Separated
+        </button>
+      </div>
+    </div>
+
+    <h3 class="first">Tools</h3>
+    <div>
+      <div>
+        <h4>Tools</h4>
+        <button class="large" data-param="pencil" data-call="onToolChange">
+          <img src="icon/graphics-pencil.svg" /><br/>Pencil
+        </button>
+        <button class="large" data-param="circle" data-call="onToolChange">
+          <img src="icon/graphics-circle.svg" /><br/>Circle
+        </button>
+        <button class="large" data-param="fill" data-call="onToolChange">
+          <img src="icon/graphics-fill.svg" /><br/>Fill
         </button>
       </div>
     </div>
@@ -109,19 +129,6 @@
         </button>
         <button class="large" data-param='{"x":1,"y":1}' data-call="onMoveGraphics">
           <img src="icon/graphics-move-down-right.svg" /><br/>down<br/>right
-        </button>
-      </div>
-    </div>
-
-    <h3>Next</h3>
-    <div class="mosaic-exit">
-      <div>
-        <h4>Action</h4>
-        <button class="large" value="save" data-call="onSaveGraphics">
-          <img src="icon/save.svg" /><br/>Save<br/>graphics
-        </button>
-        <button class="large" value="exit" data-call="onExitGraphics">
-          <img src="icon/exit.svg" /><br/>Ignore<br/>changes
         </button>
       </div>
     </div>

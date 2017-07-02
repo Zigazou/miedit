@@ -171,7 +171,6 @@ class PageMemory {
         const ctx = this.canvas.getContext("2d")
 
         ctx.imageSmoothingEnabled = false
-        ctx.mozImageSmoothingEnabled = false
         ctx.fillStyle = "#000000"
         ctx.fillRect(
             0,
