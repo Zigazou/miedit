@@ -40,5 +40,5 @@
 .cursor-pencil { cursor: url(../icon/graphics-pencil.svg) 0 32, pointer }
 .cursor-fill { cursor: url(../icon/graphics-fill.svg) 3 28, pointer }
 .cursor-circle { cursor: url(../icon/graphics-circle.svg) 16 16, pointer }
-.cursor-curve { cursor: url(../icon/graphics-curve.svg) 16 16, pointer }
+.cursor-curve { cursor: url(../icon/graphics-curve.svg) 12 6, pointer }
 
