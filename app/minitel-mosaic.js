@@ -53,6 +53,7 @@ class MinitelMosaic {
         this.drawing.addEventListener("mouseup", e => this.onMouseUp(e))
         this.drawing.addEventListener("mousedown", e => this.onMouseDown(e))
         this.drawing.addEventListener("mousemove", e => this.onMouseMove(e))
+        this.drawing.addEventListener("mouseout", e => this.onMouseOut(e))
 
         this.root.autocallback(this)
     }
@@ -171,6 +172,7 @@ class MinitelMosaic {
     onMouseUp(event) { this.callHandler(event, "up") }
     onMouseDown(event) { this.callHandler(event, "down") }
     onMouseMove(event) { this.callHandler(event, "move") }
+    onMouseOut(event) { this.callHandler(event, "out") }
 
     onToolPencil(actionType, point, event) {
         if(actionType === "down") {
@@ -186,7 +188,7 @@ class MinitelMosaic {
         } else if(actionType === "move" && this.isDrawing) {
             this.drawLine(this.previous, point, this.color, this.separated)
             this.lastPoint = { x: point.x, y: point.y }
-        } else if(actionType === "up") {
+        } else if(actionType === "up" || actionType === "out") {
             this.isDrawing = false
         }
 
@@ -220,7 +222,9 @@ class MinitelMosaic {
             )
             ctx.stroke()
             ctx.closePath()
-        } else if(actionType === "up") {
+        } else if(   this.isDrawing
+                  && (actionType === "up" || actionType === "out")
+            ) {
             this.isDrawing = false
 
             const radius = Math.floor(Math.sqrt(
@@ -234,6 +238,52 @@ class MinitelMosaic {
             ctx.closePath()
 
             this.drawCircle(this.previous, radius, this.color, this.separated)
+        }
+    }
+
+    onToolCurve(actionType, point, event) {
+        if(actionType === "down" && this.startPoint === undefined) {
+            this.startPoint = point
+        } else if(actionType === "move" && this.startPoint !== undefined) {
+            const ctx = this.preview.getContext("2d")
+            ctx.beginPath()
+            ctx.clearRect(0, 0, this.preview.width, this.preview.height)
+            ctx.strokeStyle = Minitel.colors[this.color]
+
+            if(this.endPoint === undefined) {
+                ctx.moveTo(this.startPoint.realX, this.startPoint.realY)
+                ctx.quadraticCurveTo(
+                    this.startPoint.realX, this.startPoint.realY,
+                    point.realX, point.realY
+                )
+            } else {
+                ctx.moveTo(this.startPoint.realX, this.startPoint.realY)
+                ctx.quadraticCurveTo(
+                    point.realX, point.realY,
+                    this.endPoint.realX, this.endPoint.realY
+                )
+            }
+
+            ctx.stroke()
+            ctx.closePath()
+        } else if(   actionType === "up"
+                  && this.startPoint !== undefined
+                  && this.endPoint === undefined
+            ) {
+            this.endPoint = point
+        } else if(actionType === "down" && this.endPoint !== undefined) {
+            const ctx = this.preview.getContext("2d")
+            ctx.beginPath()
+            ctx.clearRect(0, 0, this.preview.width, this.preview.height)
+            ctx.closePath()
+
+            this.drawCurve(
+                this.startPoint, this.endPoint, point,
+                this.color, this.separated
+            )
+
+            this.startPoint = undefined
+            this.endPoint = undefined
         }
     }
 
@@ -355,9 +405,12 @@ class MinitelMosaic {
     }
 
     drawPoint(x, y, color, separated) {
-        if(x < 0 || x > this.resolution.width || y < 0 || y > this.resolution.height) {
+        if(   x < 0 || x >= this.resolution.width
+           || y < 0 || y >= this.resolution.height
+        ) {
             return
         }
+
         const ctx = this.drawing.getContext("2d")
         const coords = this.convertCoordinates(x, y, color, separated)
 
@@ -448,6 +501,30 @@ class MinitelMosaic {
         }
 
         this.drawError()
+    }
+
+    drawCurve(start, end, control, color, separated) {
+        let next = start
+        let previous = start
+        for(let t = 0.1; t < 1; t += 0.1) {
+            const omt = 1 - t
+
+            next = {
+                "x": Math.floor(
+                    omt * omt * start.x +
+                    2 * omt * t * control.x +
+                    t * t * end.x
+                ),
+                "y": Math.floor(
+                    omt * omt * start.y +
+                    2 * omt * t * control.y +
+                    t * t * end.y
+                )
+            }
+
+            this.drawLine(previous, next, color, separated)
+            previous = next
+        }
     }
 
     fillArea(startPoint, finalColor, separated) {
