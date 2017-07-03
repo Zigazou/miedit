@@ -41,4 +41,6 @@
 .cursor-fill { cursor: url(../icon/graphics-fill.svg) 3 28, pointer }
 .cursor-circle { cursor: url(../icon/graphics-circle.svg) 16 16, pointer }
 .cursor-curve { cursor: url(../icon/graphics-curve.svg) 12 6, pointer }
+.cursor-copy { cursor: url(../icon/graphics-copy.svg) 7 6, pointer }
+.cursor-paste { cursor: url(../icon/graphics-paste.svg) 16 16, pointer }
 

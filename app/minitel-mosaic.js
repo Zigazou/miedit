@@ -40,6 +40,13 @@ class MinitelMosaic {
         this.errorColor = "#FFFFFF"
         this.tool = "pencil"
         this.pointsToCheck = new Set()
+        this.clipboard = {
+            "bitmap": [],
+            "realX": 0,
+            "realY": 0,
+            "realWidth": 0,
+            "realHeight": 0
+        }
 
         this.root = root
         this.configureDOMElements()
@@ -287,6 +294,76 @@ class MinitelMosaic {
         }
     }
 
+    onToolCopy(actionType, point, event) {
+        if(actionType === "down") {
+            this.isDrawing = true
+            this.startPoint = point
+        } else if(actionType === "move" && this.isDrawing) {
+            const fromCoords = this.convertCoordinates(
+                this.startPoint.x, this.startPoint.y, 0, false
+            )
+
+            const toCoords = this.convertCoordinates(
+                point.x, point.y, 0, false
+            )
+
+            const ctx = this.preview.getContext("2d")
+            ctx.beginPath()
+            ctx.clearRect(0, 0, this.preview.width, this.preview.height)
+            ctx.strokeStyle = "#FFFFFF"
+            ctx.rect(
+                fromCoords.x, fromCoords.y,
+                toCoords.x - fromCoords.x, toCoords.y - fromCoords.y
+            )
+            ctx.stroke()
+            ctx.closePath()
+        } else if(actionType === "up") {
+            this.isDrawing = false
+            const ctx = this.preview.getContext("2d")
+            ctx.beginPath()
+            ctx.clearRect(0, 0, this.preview.width, this.preview.height)
+            ctx.closePath()
+            this.copyRect(this.startPoint, point)
+        }
+    }
+
+    onToolPaste(actionType, point, event) {
+        if(actionType === "down") {
+            point.x = Math.floor(point.x - this.clipboard.width / 2)
+            point.y = Math.floor(point.y - this.clipboard.height / 2)
+        
+            this.pasteRect(point)
+        } else if(actionType === "move") {
+            const fromCoords = this.convertCoordinates(
+                Math.floor(point.x - this.clipboard.width / 2),
+                Math.floor(point.y - this.clipboard.height / 2),
+                0, false
+            )
+
+            const toCoords = this.convertCoordinates(
+                Math.floor(point.x + this.clipboard.width / 2),
+                Math.floor(point.y + this.clipboard.height / 2),
+                0, false
+            )
+
+            const ctx = this.preview.getContext("2d")
+            ctx.beginPath()
+            ctx.clearRect(0, 0, this.preview.width, this.preview.height)
+            ctx.strokeStyle = "#FFFFFF"
+            ctx.rect(
+                fromCoords.x, fromCoords.y,
+                toCoords.x - fromCoords.x, toCoords.y - fromCoords.y
+            )
+            ctx.stroke()
+            ctx.closePath()
+        } else if(actionType === "out") {
+            const ctx = this.preview.getContext("2d")
+            ctx.beginPath()
+            ctx.clearRect(0, 0, this.preview.width, this.preview.height)
+            ctx.closePath()
+        }
+    }
+
     shiftUp(offset) {
         for(let i = 0; i < offset; i++) {
             this.bitmap.push(this.bitmap.shift())
@@ -404,6 +481,46 @@ class MinitelMosaic {
         return coords
     }
 
+    copyRect(start, end) {
+        const yStart = Math.floor(Math.min(start.y, end.y))
+        const yEnd = Math.floor(Math.max(start.y, end.y))
+        const xStart = Math.floor(Math.min(start.x, end.x))
+        const xEnd = Math.floor(Math.max(start.x, end.x))
+
+        this.clipboard.bitmap = []
+
+        this.clipboard.width = xEnd - xStart
+        this.clipboard.height = yEnd - yStart
+
+        for(let y = yStart; y < yEnd; y++) {
+            const row = []
+            for(let x = xStart; x < xEnd; x++) {
+                const pixel = this.bitmap[y][x]
+                row.push({
+                    color: pixel.color,
+                    separated: pixel.separated,
+                })
+            }
+
+            this.clipboard.bitmap.push(row)
+        }
+    }
+
+    pasteRect(destination) {
+        let y = destination.y
+        for(let row of this.clipboard.bitmap) {
+            let x = destination.x
+            for(let pixel of row) {
+                if(pixel.color >= 0) {
+                    this.drawPoint(x, y, pixel.color, pixel.separated)
+                }
+                x++
+            }
+            y++
+        }
+        this.drawError()
+    }
+
     drawPoint(x, y, color, separated) {
         if(   x < 0 || x >= this.resolution.width
            || y < 0 || y >= this.resolution.height
@@ -506,7 +623,7 @@ class MinitelMosaic {
     drawCurve(start, end, control, color, separated) {
         let next = start
         let previous = start
-        for(let t = 0.1; t < 1; t += 0.1) {
+        for(let t = 0.05; t <= 1.05; t += 0.05) {
             const omt = 1 - t
 
             next = {
