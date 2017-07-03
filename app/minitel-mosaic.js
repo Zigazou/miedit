@@ -41,11 +41,9 @@ class MinitelMosaic {
         this.tool = "pencil"
         this.pointsToCheck = new Set()
         this.clipboard = {
-            "bitmap": [],
-            "realX": 0,
-            "realY": 0,
-            "realWidth": 0,
-            "realHeight": 0
+            bitmap: [],
+            width: 0,
+            height: 0,
         }
 
         this.root = root
@@ -487,10 +485,16 @@ class MinitelMosaic {
         const xStart = Math.floor(Math.min(start.x, end.x))
         const xEnd = Math.floor(Math.max(start.x, end.x))
 
+        const [ width, height ] = [ xEnd - xStart, yEnd - yStart ]
+
+        if(width === 0 || height === 0) {
+            return
+        }
+
         this.clipboard.bitmap = []
 
-        this.clipboard.width = xEnd - xStart
-        this.clipboard.height = yEnd - yStart
+        this.clipboard.width = width
+        this.clipboard.height = height
 
         for(let y = yStart; y < yEnd; y++) {
             const row = []
@@ -507,6 +511,10 @@ class MinitelMosaic {
     }
 
     pasteRect(destination) {
+        if(this.clipboard.width === 0 || this.clipboard.height === 0) {
+            return
+        }
+
         let y = destination.y
         for(let row of this.clipboard.bitmap) {
             let x = destination.x
