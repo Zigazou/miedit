@@ -27,7 +27,6 @@ class MinitelMosaic {
         }
 
         this.zoom = zoom
-        this.isDrawing = false
         this.color = 7
         this.separated = false
         this.bitmap = []
@@ -190,7 +189,7 @@ class MinitelMosaic {
 
     onToolPencil(actionType, point, event) {
         if(actionType === "down") {
-            this.isDrawing = true
+            this.tool.isDrawing = true
 
             let origin = event.shiftKey && this.tool.last.x !== undefined
                        ? this.tool.last
@@ -199,11 +198,11 @@ class MinitelMosaic {
             this.drawLine(origin, point, this.color, this.separated)
 
             this.tool.last = { x: point.x, y: point.y }
-        } else if(actionType === "move" && this.isDrawing) {
+        } else if(actionType === "move" && this.tool.isDrawing) {
             this.drawLine(this.tool.previous, point, this.color, this.separated)
             this.tool.last = { x: point.x, y: point.y }
         } else if(actionType === "up" || actionType === "out") {
-            this.isDrawing = false
+            this.tool.isDrawing = false
         }
 
         if(actionType === "move") {
@@ -219,9 +218,9 @@ class MinitelMosaic {
 
     onToolCircle(actionType, point, event) {
         if(actionType === "down") {
-            this.isDrawing = true
+            this.tool.isDrawing = true
             this.tool.center = point
-        } else if(actionType === "move" && this.isDrawing) {
+        } else if(actionType === "move" && this.tool.isDrawing) {
             const radius = Math.sqrt(
                 Math.pow(point.realX - this.tool.center.realX, 2) +
                 Math.pow(point.realY - this.tool.center.realY, 2)
@@ -236,10 +235,10 @@ class MinitelMosaic {
                 )
                 ctx.stroke()
             })
-        } else if(   this.isDrawing
+        } else if(   this.tool.isDrawing
                   && (actionType === "up" || actionType === "out")
             ) {
-            this.isDrawing = false
+            this.tool.isDrawing = false
 
             const radius = Math.floor(Math.sqrt(
                 Math.pow(point.realX - this.tool.center.realX, 2) +
@@ -297,9 +296,9 @@ class MinitelMosaic {
 
     onToolCopy(actionType, point, event) {
         if(actionType === "down") {
-            this.isDrawing = true
+            this.tool.isDrawing = true
             this.tool.start = point
-        } else if(actionType === "move" && this.isDrawing) {
+        } else if(actionType === "move" && this.tool.isDrawing) {
             const fromCoords = this.convertCoordinates(
                 this.tool.start.x, this.tool.start.y, 0, false
             )
@@ -317,7 +316,7 @@ class MinitelMosaic {
                 ctx.stroke()
             })
         } else if(actionType === "up") {
-            this.isDrawing = false
+            this.tool.isDrawing = false
             this.previewDo()
             this.copyRect(this.tool.start, point)
         }

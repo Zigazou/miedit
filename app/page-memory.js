@@ -241,7 +241,6 @@ class PageMemory {
 
         const ctx = thumbnail.getContext("2d")
         ctx.imageSmoothingEnabled = false
-        ctx.mozImageSmoothingEnabled = false
 
         ctx.drawImage(this.canvas, 0, 0, width, height)
 
