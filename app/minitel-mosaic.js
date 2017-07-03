@@ -28,8 +28,6 @@ class MinitelMosaic {
 
         this.zoom = zoom
         this.isDrawing = false
-        this.previous = { x: undefined, y: undefined }
-        this.lastPoint = { x: undefined, y: undefined }
         this.color = 7
         this.separated = false
         this.bitmap = []
@@ -38,7 +36,7 @@ class MinitelMosaic {
         this.primaryGrid = "#D0D000"
         this.secondaryGrid = "#707000"
         this.errorColor = "#FFFFFF"
-        this.tool = "pencil"
+        this.tool = { name: "pencil" }
         this.pointsToCheck = new Set()
         this.clipboard = {
             bitmap: [],
@@ -48,7 +46,7 @@ class MinitelMosaic {
 
         this.root = root
         this.configureDOMElements()
-        this.setCursor("", this.tool)
+        this.setCursor("", this.tool.name)
 
         this.drawGrid()
         this.drawBackground()
@@ -147,8 +145,8 @@ class MinitelMosaic {
     }
 
     onToolChange(event, param) {
-        this.setCursor(this.tool, param)
-        this.tool = param
+        this.setCursor(this.tool.name, param)
+        this.tool = { name: param }
     }
 
     onColorChange(event, param) {
@@ -164,12 +162,23 @@ class MinitelMosaic {
         this.separated = true
     }
 
+    previewDo(func) {
+        const ctx = this.preview.getContext("2d")
+        ctx.clearRect(0, 0, this.preview.width, this.preview.height)
+        if(func) {
+            ctx.beginPath()
+            func(ctx)
+            ctx.stroke()
+            ctx.closePath()
+        }
+    }
+
     callHandler(event, actionType) {
         const point = this.translate(event)
 
         const handlerName = "onTool"
-                          + this.tool[0].toUpperCase()
-                          + this.tool.substr(1)
+                          + this.tool.name[0].toUpperCase()
+                          + this.tool.name.substr(1)
 
         if(this[handlerName]) this[handlerName](actionType, point, event)
     }
@@ -182,22 +191,24 @@ class MinitelMosaic {
     onToolPencil(actionType, point, event) {
         if(actionType === "down") {
             this.isDrawing = true
-            
-            if(event.shiftKey && this.lastPoint.x !== undefined) {
-                this.drawLine(this.lastPoint, point, this.color, this.separated)
-            } else {
-                this.drawLine(this.previous, point, this.color, this.separated)
-            }
 
-            this.lastPoint = { x: point.x, y: point.y }
+            let origin = event.shiftKey && this.tool.last.x !== undefined
+                       ? this.tool.last
+                       : this.tool.previous
+
+            this.drawLine(origin, point, this.color, this.separated)
+
+            this.tool.last = { x: point.x, y: point.y }
         } else if(actionType === "move" && this.isDrawing) {
-            this.drawLine(this.previous, point, this.color, this.separated)
-            this.lastPoint = { x: point.x, y: point.y }
+            this.drawLine(this.tool.previous, point, this.color, this.separated)
+            this.tool.last = { x: point.x, y: point.y }
         } else if(actionType === "up" || actionType === "out") {
             this.isDrawing = false
         }
 
-        if(actionType === "move") this.previous = { x: point.x, y: point.y }
+        if(actionType === "move") {
+            this.tool.previous = { x: point.x, y: point.y }
+        }
     }
 
     onToolFill(actionType, point, event) {
@@ -209,85 +220,77 @@ class MinitelMosaic {
     onToolCircle(actionType, point, event) {
         if(actionType === "down") {
             this.isDrawing = true
-            this.previous = point
+            this.tool.center = point
         } else if(actionType === "move" && this.isDrawing) {
             const radius = Math.sqrt(
-                Math.pow(point.realX - this.previous.realX, 2) +
-                Math.pow(point.realY - this.previous.realY, 2)
+                Math.pow(point.realX - this.tool.center.realX, 2) +
+                Math.pow(point.realY - this.tool.center.realY, 2)
             )
 
-            const ctx = this.preview.getContext("2d")
-            ctx.beginPath()
-            ctx.clearRect(0, 0, this.preview.width, this.preview.height)
-            ctx.strokeStyle = Minitel.colors[this.color]
-            ctx.arc(
-                this.previous.realX, this.previous.realY,
-                radius, 0, 2 * Math.PI,
-                false
-            )
-            ctx.stroke()
-            ctx.closePath()
+            this.previewDo(ctx => {
+                ctx.strokeStyle = Minitel.colors[this.color]
+                ctx.arc(
+                    this.tool.center.realX, this.tool.center.realY,
+                    radius, 0, 2 * Math.PI,
+                    false
+                )
+                ctx.stroke()
+            })
         } else if(   this.isDrawing
                   && (actionType === "up" || actionType === "out")
             ) {
             this.isDrawing = false
 
             const radius = Math.floor(Math.sqrt(
-                Math.pow(point.realX - this.previous.realX, 2) +
-                Math.pow(point.realY - this.previous.realY, 2)
+                Math.pow(point.realX - this.tool.center.realX, 2) +
+                Math.pow(point.realY - this.tool.center.realY, 2)
             ) / this.zoom)
 
-            const ctx = this.preview.getContext("2d")
-            ctx.beginPath()
-            ctx.clearRect(0, 0, this.preview.width, this.preview.height)
-            ctx.closePath()
+            this.previewDo()
 
-            this.drawCircle(this.previous, radius, this.color, this.separated)
+            this.drawCircle(
+                this.tool.center, radius, this.color, this.separated
+            )
         }
     }
 
     onToolCurve(actionType, point, event) {
-        if(actionType === "down" && this.startPoint === undefined) {
-            this.startPoint = point
-        } else if(actionType === "move" && this.startPoint !== undefined) {
-            const ctx = this.preview.getContext("2d")
-            ctx.beginPath()
-            ctx.clearRect(0, 0, this.preview.width, this.preview.height)
-            ctx.strokeStyle = Minitel.colors[this.color]
+        if(actionType === "down" && this.tool.start === undefined) {
+            this.tool.start = point
+        } else if(actionType === "move" && this.tool.start !== undefined) {
+            this.previewDo(ctx => {
+                ctx.strokeStyle = Minitel.colors[this.color]
 
-            if(this.endPoint === undefined) {
-                ctx.moveTo(this.startPoint.realX, this.startPoint.realY)
-                ctx.quadraticCurveTo(
-                    this.startPoint.realX, this.startPoint.realY,
-                    point.realX, point.realY
-                )
-            } else {
-                ctx.moveTo(this.startPoint.realX, this.startPoint.realY)
-                ctx.quadraticCurveTo(
-                    point.realX, point.realY,
-                    this.endPoint.realX, this.endPoint.realY
-                )
-            }
+                if(this.endPoint === undefined) {
+                    ctx.moveTo(this.tool.start.realX, this.tool.start.realY)
+                    ctx.quadraticCurveTo(
+                        this.tool.start.realX, this.tool.start.realY,
+                        point.realX, point.realY
+                    )
+                } else {
+                    ctx.moveTo(this.tool.start.realX, this.tool.start.realY)
+                    ctx.quadraticCurveTo(
+                        point.realX, point.realY,
+                        this.endPoint.realX, this.endPoint.realY
+                    )
+                }
 
-            ctx.stroke()
-            ctx.closePath()
+                ctx.stroke()
+            })
         } else if(   actionType === "up"
-                  && this.startPoint !== undefined
+                  && this.tool.start !== undefined
                   && this.endPoint === undefined
             ) {
             this.endPoint = point
         } else if(actionType === "down" && this.endPoint !== undefined) {
-            const ctx = this.preview.getContext("2d")
-            ctx.beginPath()
-            ctx.clearRect(0, 0, this.preview.width, this.preview.height)
-            ctx.closePath()
+            this.previewDo()
 
             this.drawCurve(
-                this.startPoint, this.endPoint, point,
+                this.tool.start, this.endPoint, point,
                 this.color, this.separated
             )
 
-            this.startPoint = undefined
+            this.tool.start = undefined
             this.endPoint = undefined
         }
     }
@@ -295,33 +298,28 @@ class MinitelMosaic {
     onToolCopy(actionType, point, event) {
         if(actionType === "down") {
             this.isDrawing = true
-            this.startPoint = point
+            this.tool.start = point
         } else if(actionType === "move" && this.isDrawing) {
             const fromCoords = this.convertCoordinates(
-                this.startPoint.x, this.startPoint.y, 0, false
+                this.tool.start.x, this.tool.start.y, 0, false
             )
 
             const toCoords = this.convertCoordinates(
                 point.x, point.y, 0, false
             )
 
-            const ctx = this.preview.getContext("2d")
-            ctx.beginPath()
-            ctx.clearRect(0, 0, this.preview.width, this.preview.height)
-            ctx.strokeStyle = "#FFFFFF"
-            ctx.rect(
-                fromCoords.x, fromCoords.y,
-                toCoords.x - fromCoords.x, toCoords.y - fromCoords.y
-            )
-            ctx.stroke()
-            ctx.closePath()
+            this.previewDo(ctx => {
+                ctx.strokeStyle = "#FFFFFF"
+                ctx.rect(
+                    fromCoords.x, fromCoords.y,
+                    toCoords.x - fromCoords.x, toCoords.y - fromCoords.y
+                )
+                ctx.stroke()
+            })
         } else if(actionType === "up") {
             this.isDrawing = false
-            const ctx = this.preview.getContext("2d")
-            ctx.beginPath()
-            ctx.clearRect(0, 0, this.preview.width, this.preview.height)
-            ctx.closePath()
-            this.copyRect(this.startPoint, point)
+            this.previewDo()
+            this.copyRect(this.tool.start, point)
         }
     }
 
@@ -344,21 +342,16 @@ class MinitelMosaic {
                 0, false
             )
 
-            const ctx = this.preview.getContext("2d")
-            ctx.beginPath()
-            ctx.clearRect(0, 0, this.preview.width, this.preview.height)
-            ctx.strokeStyle = "#FFFFFF"
-            ctx.rect(
-                fromCoords.x, fromCoords.y,
-                toCoords.x - fromCoords.x, toCoords.y - fromCoords.y
-            )
-            ctx.stroke()
-            ctx.closePath()
+            this.previewDo(ctx => {
+                ctx.strokeStyle = "#FFFFFF"
+                ctx.rect(
+                    fromCoords.x, fromCoords.y,
+                    toCoords.x - fromCoords.x, toCoords.y - fromCoords.y
+                )
+                ctx.stroke()
+            })
         } else if(actionType === "out") {
-            const ctx = this.preview.getContext("2d")
-            ctx.beginPath()
-            ctx.clearRect(0, 0, this.preview.width, this.preview.height)
-            ctx.closePath()
+            this.previewDo()
         }
     }
 
