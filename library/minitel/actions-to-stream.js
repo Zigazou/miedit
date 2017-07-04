@@ -85,5 +85,3 @@ Minitel.actionsToStream = function(actions, offsetX, offsetY) {
 
     return stream
 }
-
-

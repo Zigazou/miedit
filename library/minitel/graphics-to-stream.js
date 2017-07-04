@@ -85,7 +85,7 @@ Minitel.graphicsToStream = function(string, col, row) {
 
     const stream = new Minitel.Stream()
 
-    if(string.length !== 80 * 72) return stream
+    if(string === undefined || string.length !== 80 * 72) return stream
 
     for(let y = 0; y <= 72 - row * 3; y += 3) {
         // Converts pixels to mosaic characters
