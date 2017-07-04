@@ -503,6 +503,7 @@ class MinitelMosaic {
         coords.x = x * (Minitel.charWidth / this.pixelsPerWidth)
         coords.width = Minitel.charWidth / this.pixelsPerWidth
         coords.y = Math.floor(y / this.pixelsPerHeight) * Minitel.charHeight
+
         const vPosition = y % this.pixelsPerHeight
         if(vPosition === 0) {
             coords.height = 3
@@ -536,7 +537,6 @@ class MinitelMosaic {
         }
 
         this.clipboard.bitmap = []
-
         this.clipboard.width = width
         this.clipboard.height = height
 
