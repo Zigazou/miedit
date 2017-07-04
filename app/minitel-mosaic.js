@@ -48,7 +48,6 @@ class MinitelMosaic {
         this.setCursor("", this.tool.name)
 
         this.drawGrid()
-        this.drawBackground()
 
         new SimpleRibbon(document.getElementById("mosaic-ribbon"))
 
@@ -216,7 +215,7 @@ class MinitelMosaic {
         }
     }
 
-    onToolCircle(actionType, point, event) {
+    onToolCircle(actionType, point, event, filled) {
         if(actionType === "down") {
             this.tool.isDrawing = true
             this.tool.center = point
@@ -233,7 +232,12 @@ class MinitelMosaic {
                     radius, 0, 2 * Math.PI,
                     false
                 )
-                ctx.stroke()
+                if(filled) {
+                    ctx.fillStyle = Minitel.colors[this.color]
+                    ctx.fill()
+                } else {
+                    ctx.stroke()
+                }
             })
         } else if(   this.tool.isDrawing
                   && (actionType === "up" || actionType === "out")
@@ -248,9 +252,13 @@ class MinitelMosaic {
             this.previewDo()
 
             this.drawCircle(
-                this.tool.center, radius, this.color, this.separated
+                this.tool.center, radius, this.color, this.separated, filled
             )
         }
+    }
+
+    onToolFilledCircle(actionType, point, event) {
+        this.onToolCircle(actionType, point, event, true)
     }
 
     onToolCurve(actionType, point, event) {
@@ -418,7 +426,6 @@ class MinitelMosaic {
     }
 
     configureDOMElements() {
-        this.background = this.root.getElementsByClassName("mosaic-background")[0]
         this.drawing = this.root.getElementsByClassName("mosaic-drawing")[0]
         this.preview = this.root.getElementsByClassName("mosaic-preview")[0]
         this.grid = this.root.getElementsByClassName("mosaic-grid")[0]
@@ -426,7 +433,6 @@ class MinitelMosaic {
         this.error = this.root.getElementsByClassName("mosaic-error")[0]
 
         const canvases = [
-            this.background,
             this.drawing,
             this.preview,
             this.grid,
@@ -580,7 +586,7 @@ class MinitelMosaic {
         this.drawError()
     }
 
-    drawCircle(center, radius, color, separated) {
+    drawCircle(center, radius, color, separated, filled) {
         // Minitel mosaic pixels are not square...
         const [width, height] = [ radius, Math.floor(radius * 1.25) ]
 
@@ -592,10 +598,18 @@ class MinitelMosaic {
         y = height
         sigma = 2 * b2 + a2 * (1 - 2 * height)
         for (x = 0; b2 * x <= a2 * y; x++) {
-            this.drawPoint(center.x + x, center.y + y, color, separated)
-            this.drawPoint(center.x - x, center.y + y, color, separated)
-            this.drawPoint(center.x + x, center.y - y, color, separated)
-            this.drawPoint(center.x - x, center.y - y, color, separated)
+            if(filled) {
+                for(let lx = -x; lx <= x; lx++) {
+                    this.drawPoint(center.x + lx, center.y + y, color, separated)
+                    this.drawPoint(center.x + lx, center.y - y, color, separated)
+                }
+            } else {            
+                this.drawPoint(center.x + x, center.y + y, color, separated)
+                this.drawPoint(center.x - x, center.y + y, color, separated)
+                this.drawPoint(center.x + x, center.y - y, color, separated)
+                this.drawPoint(center.x - x, center.y - y, color, separated)
+            }
+
             if(sigma >= 0) {
                 sigma += fa2 * (1 - y)
                 y--
@@ -606,10 +620,18 @@ class MinitelMosaic {
         x = width
         sigma = 2 * a2 + b2 * (1 - 2 * width)
         for (y = 0; a2 * y <= b2 * x; y++) {
-            this.drawPoint(center.x + x, center.y + y, color, separated)
-            this.drawPoint(center.x - x, center.y + y, color, separated)
-            this.drawPoint(center.x + x, center.y - y, color, separated)
-            this.drawPoint(center.x - x, center.y - y, color, separated)
+            if(filled) {
+                for(let lx = -x; lx <= x; lx++) {
+                    this.drawPoint(center.x + lx, center.y + y, color, separated)
+                    this.drawPoint(center.x + lx, center.y - y, color, separated)
+                }
+            } else {            
+                this.drawPoint(center.x + x, center.y + y, color, separated)
+                this.drawPoint(center.x - x, center.y + y, color, separated)
+                this.drawPoint(center.x + x, center.y - y, color, separated)
+                this.drawPoint(center.x - x, center.y - y, color, separated)
+            }
+
             if(sigma >= 0) {
                 sigma += fb2 * (1 - x)
                 x--
@@ -658,7 +680,7 @@ class MinitelMosaic {
                && Math.abs(points[i + 2].x - points[i].x) === 1
                && Math.abs(points[i + 2].y - points[i].y) === 1) {
                i++
-           }
+            }
         }
 
         this.drawError()
@@ -696,22 +718,6 @@ class MinitelMosaic {
         }
 
         this.drawError()
-    }
-
-    drawBackground() {
-        const skew = 500
-        const inc = 4
-
-        const ctx = this.background.getContext("2d")
-        ctx.lineWidth = 1 / this.zoom
-        ctx.strokeStyle = "#404040"
-        ctx.beginPath()
-        for(let x = -skew; x < this.canvas.width; x += inc) {
-            ctx.moveTo(x, 0)
-            ctx.lineTo(x + skew, this.canvas.height)
-        }
-        ctx.stroke()
-        ctx.closePath()
     }
 
     drawError() {

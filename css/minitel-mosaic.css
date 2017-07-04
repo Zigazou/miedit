@@ -6,10 +6,12 @@
     width: 100%;
     height: 100%;
     display: block;
-    background-color: black;
+    background-color: #404040;
 }
 
-.mosaic-canvases { text-align: center; }
+.mosaic-canvases {
+    text-align: center;
+}
 
 .center {
     display: inline-block;
@@ -18,10 +20,13 @@
 
 .hidden { display: none; }
 
-.mosaic-drawing, .mosaic-grid, .mosaic-overlay, .mosaic-error, .mosaic-preview {
+.mosaic-grid, .mosaic-overlay, .mosaic-error, .mosaic-preview {
     position: absolute;
     top: 0;
     left: 0;
+}
+
+.mosaic-overlay {
     width: 100%;
     height: 100%;
 }
@@ -40,6 +45,7 @@
 .cursor-pencil { cursor: url(../icon/graphics-pencil.svg) 0 32, pointer }
 .cursor-fill { cursor: url(../icon/graphics-fill.svg) 3 28, pointer }
 .cursor-circle { cursor: url(../icon/graphics-circle.svg) 16 16, pointer }
+.cursor-filledCircle { cursor: url(../icon/graphics-filled-circle.svg) 16 16, pointer }
 .cursor-curve { cursor: url(../icon/graphics-curve.svg) 12 6, pointer }
 .cursor-copy { cursor: url(../icon/graphics-copy.svg) 7 6, pointer }
 .cursor-paste { cursor: url(../icon/graphics-paste.svg) 16 16, pointer }
