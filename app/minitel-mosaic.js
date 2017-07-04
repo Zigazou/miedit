@@ -621,27 +621,47 @@ class MinitelMosaic {
     }
 
     drawCurve(start, end, control, color, separated) {
-        let next = start
-        let previous = start
-        for(let t = 0.05; t <= 1.05; t += 0.05) {
-            const omt = 1 - t
-
-            next = {
-                "x": Math.floor(
-                    omt * omt * start.x +
-                    2 * omt * t * control.x +
-                    t * t * end.x
+        function quadBezier(step) {
+            return {
+                "x": Math.round(
+                    Math.pow(1 - step, 2) * start.x +
+                    2 * (1 - step) * step * control.x +
+                    Math.pow(step, 2) * end.x
                 ),
-                "y": Math.floor(
-                    omt * omt * start.y +
-                    2 * omt * t * control.y +
-                    t * t * end.y
+                "y": Math.round(
+                    Math.pow(1 - step, 2) * start.y +
+                    2 * (1 - step) * step * control.y +
+                    Math.pow(step, 2) * end.y
                 )
             }
-
-            this.drawLine(previous, next, color, separated)
-            previous = next
         }
+
+        const increment = 0.001
+        let previous = start
+        const points = []
+        for(let t = increment; t <= 1 + increment; t += increment) {
+            const point = quadBezier(t)
+
+            // Increment is small enough to not let appear gaps but this can
+            // generate duplicates
+            if(previous.x === point.x && previous.y === point.y) continue
+
+            points.push(point)
+            previous = point
+        }
+
+        for(let i = 0; i < points.length; i++) {
+            this.drawPoint(points[i].x, points[i].y, color, separated)
+
+            // Three successive points must not form an "L"
+            if(   points[i + 2]
+               && Math.abs(points[i + 2].x - points[i].x) === 1
+               && Math.abs(points[i + 2].y - points[i].y) === 1) {
+               i++
+           }
+        }
+
+        this.drawError()
     }
 
     fillArea(startPoint, finalColor, separated) {
