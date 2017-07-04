@@ -602,162 +602,38 @@ class MinitelMosaic {
     }
 
     drawLine(first, last, color, separated) {
-        // Bresenham algorithm
-        let x0 = first.x
-        let y0 = first.y
-        let x1 = last.x
-        let y1 = last.y
-        const dx = Math.abs(x1 - x0)
-        const dy = Math.abs(y1 - y0)
-        const sx = (x0 < x1) ? 1 : -1
-        const sy = (y0 < y1) ? 1 : -1
-        let err = dx - dy
-
-        while(true) {
-            this.drawPoint(x0, y0, color, separated)
-
-            if(x0 === x1 && y0 === y1) break
-            let e2 = 2 * err
-            if(e2 > -dy) {
-                err -= dy
-                x0 += sx
-            }
-
-            if(e2 < dx) {
-                err += dx
-                y0 += sy
-            }
-        }
+        Drawing.line(first, last).map(point => {
+            this.drawPoint(point.x, point.y, color, separated)
+        })
 
         this.drawError()
     }
 
     drawCircle(center, radius, color, separated, filled) {
+        const draw = filled ? Drawing.filledCircle : Drawing.circle
+
         // Minitel mosaic pixels are not square...
-        const [width, height] = [ radius, Math.floor(radius * 1.25) ]
-
-        let [a2, b2] = [ width * width, height * height ]
-        let [fa2, fb2] = [ 4 * a2, 4 * b2 ]
-        let [x, y] = [ 0, 0 ]
-        let sigma = 0
-
-        y = height
-        sigma = 2 * b2 + a2 * (1 - 2 * height)
-        for (x = 0; b2 * x <= a2 * y; x++) {
-            if(filled) {
-                for(let lx = -x; lx <= x; lx++) {
-                    this.drawPoint(center.x + lx, center.y + y, color, separated)
-                    this.drawPoint(center.x + lx, center.y - y, color, separated)
-                }
-            } else {            
-                this.drawPoint(center.x + x, center.y + y, color, separated)
-                this.drawPoint(center.x - x, center.y + y, color, separated)
-                this.drawPoint(center.x + x, center.y - y, color, separated)
-                this.drawPoint(center.x - x, center.y - y, color, separated)
-            }
-
-            if(sigma >= 0) {
-                sigma += fa2 * (1 - y)
-                y--
-            }
-            sigma += b2 * (4 * x + 6)
-        }
-
-        x = width
-        sigma = 2 * a2 + b2 * (1 - 2 * width)
-        for (y = 0; a2 * y <= b2 * x; y++) {
-            if(filled) {
-                for(let lx = -x; lx <= x; lx++) {
-                    this.drawPoint(center.x + lx, center.y + y, color, separated)
-                    this.drawPoint(center.x + lx, center.y - y, color, separated)
-                }
-            } else {            
-                this.drawPoint(center.x + x, center.y + y, color, separated)
-                this.drawPoint(center.x - x, center.y + y, color, separated)
-                this.drawPoint(center.x + x, center.y - y, color, separated)
-                this.drawPoint(center.x - x, center.y - y, color, separated)
-            }
-
-            if(sigma >= 0) {
-                sigma += fb2 * (1 - x)
-                x--
-            }
-            sigma += a2 * (4 * y + 6)
-        }
+        draw(center, radius, 1.25).map(point => {
+            this.drawPoint(point.x, point.y, color, separated)
+        })
 
         this.drawError()
     }
 
     drawRect(start, end, color, separated, filled) {
-        if(filled) {
-            let [ fromX, fromY, toX, toY ] = [ 0, 0, 0, 0 ]
-            if(start.x < end.x) {
-                [ fromX, toX ] = [ start.x, end.x ]
-            } else {
-                [ fromX, toX ] = [ end.x, start.x ]
-            }
-            
-            if(start.y < end.y) {
-                [ fromY, toY ] = [ start.y, end.y ]
-            } else {
-                [ fromY, toY ] = [ end.y, start.y ]
-            }
-            
-            for(let y = fromY; y <= toY; y++) {
-                for(let x = fromX; x <= toX; x++) {
-                    this.drawPoint(x, y, color, separated)
-                }
-            }
-
-            this.drawError()
-        } else {
-            this.drawLine(start, { x: end.x, y: start.y }, color, separated)
-            this.drawLine(start, { x: start.x, y: end.y }, color, separated)
-            this.drawLine(end, { x: end.x, y: start.y }, color, separated)
-            this.drawLine(end, { x: start.x, y: end.y }, color, separated)
-        }
+        const draw = filled ? Drawing.filledRectangle : Drawing.rectangle
+        
+        draw(start, end).map(point => {
+            this.drawPoint(point.x, point.y, color, separated)
+        })
+        
+        this.drawError()
     }
 
     drawCurve(start, end, control, color, separated) {
-        function quadBezier(step) {
-            return {
-                "x": Math.round(
-                    Math.pow(1 - step, 2) * start.x +
-                    2 * (1 - step) * step * control.x +
-                    Math.pow(step, 2) * end.x
-                ),
-                "y": Math.round(
-                    Math.pow(1 - step, 2) * start.y +
-                    2 * (1 - step) * step * control.y +
-                    Math.pow(step, 2) * end.y
-                )
-            }
-        }
-
-        const increment = 0.001
-        let previous = start
-        const points = []
-        for(let t = increment; t <= 1 + increment; t += increment) {
-            const point = quadBezier(t)
-
-            // Increment is small enough to not let appear gaps but this can
-            // generate duplicates
-            if(previous.x === point.x && previous.y === point.y) continue
-
-            points.push(point)
-            previous = point
-        }
-
-        for(let i = 0; i < points.length; i++) {
-            this.drawPoint(points[i].x, points[i].y, color, separated)
-
-            // Three successive points must not form an "L"
-            if(   points[i + 2]
-               && Math.abs(points[i + 2].x - points[i].x) === 1
-               && Math.abs(points[i + 2].y - points[i].y) === 1) {
-               i++
-            }
-        }
+        Drawing.quadBezierCurve(start, end, control).map(point => {
+            this.drawPoint(point.x, point.y, color, separated)
+        })
 
         this.drawError()
     }
