@@ -192,6 +192,8 @@ class MinitelMosaic {
 
             this.undo.index--
         }
+
+        this.drawError()
     }
 
     doRedo() {
@@ -206,6 +208,8 @@ class MinitelMosaic {
                 )
             }
         }
+
+        this.drawError()
     }
 
     onImportEditTf(event, param) {
