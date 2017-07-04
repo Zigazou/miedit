@@ -362,6 +362,52 @@ class MinitelMosaic {
         }
     }
 
+    onToolRectangle(actionType, point, event, filled) {
+        if(actionType === "down") {
+            this.tool.isDrawing = true
+            this.tool.start = point
+        } else if(actionType === "move" && this.tool.isDrawing) {
+            const fromCoords = this.convertCoordinates(
+                this.tool.start.x, this.tool.start.y, 0, false
+            )
+
+            const toCoords = this.convertCoordinates(
+                point.x, point.y, 0, false
+            )
+
+            this.previewDo(ctx => {
+                if(filled) {
+                    ctx.fillStyle = Minitel.colors[this.color]
+                    ctx.fillRect(
+                        this.tool.start.realX,
+                        this.tool.start.realY,
+                        point.realX - this.tool.start.realX,
+                        point.realY - this.tool.start.realY
+                    )
+                } else {
+                    ctx.strokeStyle = Minitel.colors[this.color]
+                    ctx.rect(
+                        this.tool.start.realX,
+                        this.tool.start.realY,
+                        point.realX - this.tool.start.realX,
+                        point.realY - this.tool.start.realY
+                    )
+                    ctx.stroke()
+                }
+            })
+        } else if(actionType === "up") {
+            this.tool.isDrawing = false
+            this.previewDo()
+            this.drawRect(
+                this.tool.start, point, this.color, this.separated, filled
+            )
+        }
+    }
+
+    onToolFilledRectangle(actionType, point, event) {
+        this.onToolRectangle(actionType, point, event, true)
+    }
+
     shiftUp(offset) {
         for(let i = 0; i < offset; i++) {
             this.bitmap.push(this.bitmap.shift())
@@ -640,6 +686,36 @@ class MinitelMosaic {
         }
 
         this.drawError()
+    }
+
+    drawRect(start, end, color, separated, filled) {
+        if(filled) {
+            let [ fromX, fromY, toX, toY ] = [ 0, 0, 0, 0 ]
+            if(start.x < end.x) {
+                [ fromX, toX ] = [ start.x, end.x ]
+            } else {
+                [ fromX, toX ] = [ end.x, start.x ]
+            }
+            
+            if(start.y < end.y) {
+                [ fromY, toY ] = [ start.y, end.y ]
+            } else {
+                [ fromY, toY ] = [ end.y, start.y ]
+            }
+            
+            for(let y = fromY; y <= toY; y++) {
+                for(let x = fromX; x <= toX; x++) {
+                    this.drawPoint(x, y, color, separated)
+                }
+            }
+
+            this.drawError()
+        } else {
+            this.drawLine(start, { x: end.x, y: start.y }, color, separated)
+            this.drawLine(start, { x: start.x, y: end.y }, color, separated)
+            this.drawLine(end, { x: end.x, y: start.y }, color, separated)
+            this.drawLine(end, { x: start.x, y: end.y }, color, separated)
+        }
     }
 
     drawCurve(start, end, control, color, separated) {
