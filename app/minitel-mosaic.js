@@ -43,6 +43,8 @@ class MinitelMosaic {
             height: 0,
         }
 
+        this.clearUndo()
+
         this.root = root
         this.configureDOMElements()
         this.setCursor("", this.tool.name)
@@ -59,12 +61,23 @@ class MinitelMosaic {
         this.root.autocallback(this)
     }
 
+    clearUndo() {
+        this.undo = {
+            stack: [],
+            current: [],
+            active: false,
+            index: -1
+        }
+    }
+
     setCursor(oldTool, newTool) {
         this.drawing.classList.remove("cursor-" + oldTool)
         this.drawing.classList.add("cursor-" + newTool)
     }
 
     reset(string, background) {
+        this.clearUndo()
+
         this.overlay.style.backgroundImage = "url(" + background + ")"
 
         const pixelCount = this.resolution.width * this.resolution.height
@@ -137,6 +150,64 @@ class MinitelMosaic {
         return string
     }
 
+    startUndo() {
+        this.undo.current = []
+        this.undo.active = true
+    }
+
+    stopUndo() {
+        if(this.undo.active) {
+            this.undo.active = false
+            this.pushUndo(this.undo.current)
+            this.undo.current = []
+        }
+    }
+
+    pushUndo(points) {
+        if(this.undo.index > 0) {
+            const remaining = this.undo.stack.length - this.undo.index - 1
+            
+            for(let i = 0; i < remaining; i++) {
+                this.undo.stack.pop()
+            }
+        }
+
+        this.undo.stack.push(points)
+
+        if(this.undo.stack.length > 100) this.undo.stack.shift()
+
+        this.undo.index = this.undo.stack.length - 1        
+    }
+
+    doUndo() {
+        if(this.undo.stack[this.undo.index]) {
+            for(let point of this.undo.stack[this.undo.index]) {
+                this.drawPoint(
+                    point.x,
+                    point.y,
+                    point.color,
+                    point.separated
+                )
+            }
+
+            this.undo.index--
+        }
+    }
+
+    doRedo() {
+        if(this.undo.stack[this.undo.index + 1]) {
+            this.undo.index++
+            for(let point of this.undo.stack[this.undo.index]) {
+                this.drawPoint(
+                    point.x,
+                    point.y,
+                    point.newColor,
+                    point.newSeparated
+                )
+            }
+        }
+    }
+
     onImportEditTf(event, param) {
         this.bitmap = Minitel.drawCeefax(event.target[0].value)
         this.refresh()
@@ -186,13 +257,17 @@ class MinitelMosaic {
     onMouseMove(event) { this.callHandler(event, "move") }
     onMouseOut(event) { this.callHandler(event, "out") }
 
+    onUndo(event, param) { this.doUndo() }
+    onRedo(event, param) { this.doRedo() }
+
     onToolPencil(actionType, point, event) {
         if(actionType === "down") {
+            this.startUndo()
             this.tool.isDrawing = true
 
-            let origin = event.shiftKey && this.tool.last.x !== undefined
-                       ? this.tool.last
-                       : this.tool.previous
+            const origin = event.shiftKey && this.tool.last.x !== undefined
+                         ? this.tool.last
+                         : this.tool.previous
 
             this.drawLine(origin, point, this.color, this.separated)
 
@@ -201,6 +276,7 @@ class MinitelMosaic {
             this.drawLine(this.tool.previous, point, this.color, this.separated)
             this.tool.last = { x: point.x, y: point.y }
         } else if(actionType === "up" || actionType === "out") {
+            this.stopUndo()
             this.tool.isDrawing = false
         }
 
@@ -211,7 +287,9 @@ class MinitelMosaic {
 
     onToolFill(actionType, point, event) {
         if(actionType === "down") {
+            this.startUndo()
             this.fillArea(point, this.color, this.separated)
+            this.stopUndo()
         }
     }
 
@@ -251,9 +329,11 @@ class MinitelMosaic {
 
             this.previewDo()
 
+            this.startUndo()
             this.drawCircle(
                 this.tool.center, radius, this.color, this.separated, filled
             )
+            this.stopUndo()
         }
     }
 
@@ -292,10 +372,12 @@ class MinitelMosaic {
         } else if(actionType === "down" && this.endPoint !== undefined) {
             this.previewDo()
 
+            this.startUndo()
             this.drawCurve(
                 this.tool.start, this.endPoint, point,
                 this.color, this.separated
             )
+            this.stopUndo()
 
             this.tool.start = undefined
             this.endPoint = undefined
@@ -311,9 +393,7 @@ class MinitelMosaic {
                 this.tool.start.x, this.tool.start.y, 0, false
             )
 
-            const toCoords = this.convertCoordinates(
-                point.x, point.y, 0, false
-            )
+            const toCoords = this.convertCoordinates(point.x, point.y, 0, false)
 
             this.previewDo(ctx => {
                 ctx.strokeStyle = "#FFFFFF"
@@ -334,8 +414,10 @@ class MinitelMosaic {
         if(actionType === "down") {
             point.x = Math.floor(point.x - this.clipboard.width / 2)
             point.y = Math.floor(point.y - this.clipboard.height / 2)
-        
+
+            this.startUndo()        
             this.pasteRect(point)
+            this.stopUndo()
         } else if(actionType === "move") {
             const fromCoords = this.convertCoordinates(
                 Math.floor(point.x - this.clipboard.width / 2),
@@ -376,31 +458,24 @@ class MinitelMosaic {
             )
 
             this.previewDo(ctx => {
-                if(filled) {
-                    ctx.fillStyle = Minitel.colors[this.color]
-                    ctx.fillRect(
-                        this.tool.start.realX,
-                        this.tool.start.realY,
-                        point.realX - this.tool.start.realX,
-                        point.realY - this.tool.start.realY
-                    )
-                } else {
-                    ctx.strokeStyle = Minitel.colors[this.color]
-                    ctx.rect(
-                        this.tool.start.realX,
-                        this.tool.start.realY,
-                        point.realX - this.tool.start.realX,
-                        point.realY - this.tool.start.realY
-                    )
-                    ctx.stroke()
-                }
+                ctx.fillStyle = Minitel.colors[this.color]
+                ctx.strokeStyle = Minitel.colors[this.color]
+                ctx[filled ? "fillRect" : "rect"](
+                    this.tool.start.realX,
+                    this.tool.start.realY,
+                    point.realX - this.tool.start.realX,
+                    point.realY - this.tool.start.realY
+                )
+                ctx.stroke()
             })
         } else if(actionType === "up") {
             this.tool.isDrawing = false
             this.previewDo()
+            this.startUndo()
             this.drawRect(
                 this.tool.start, point, this.color, this.separated, filled
             )
+            this.stopUndo()
         }
     }
 
@@ -559,17 +634,27 @@ class MinitelMosaic {
             return
         }
 
+        const points = []
         let y = destination.y
         for(let row of this.clipboard.bitmap) {
             let x = destination.x
             for(let pixel of row) {
                 if(pixel.color >= 0) {
-                    this.drawPoint(x, y, pixel.color, pixel.separated)
+                    points.push({
+                        x: x, y: y,
+                        color: pixel.color,
+                        separated: pixel.separated
+                    })
                 }
                 x++
             }
             y++
         }
+
+        points.map(point => {
+            this.drawPoint(point.x, point.y, point.color, point.separated)
+        })
+
         this.drawError()
     }
 
@@ -582,6 +667,17 @@ class MinitelMosaic {
 
         const ctx = this.drawing.getContext("2d")
         const coords = this.convertCoordinates(x, y, color, separated)
+
+        if(this.undo.active) {
+            this.undo.current.unshift({
+                x: x,
+                y: y,
+                color: this.bitmap[y][x].color,
+                separated: this.bitmap[y][x].separated,
+                newColor: color,
+                newSeparated: separated
+            })
+        }
 
         this.bitmap[y][x] = {
             color: color,
@@ -622,7 +718,7 @@ class MinitelMosaic {
 
     drawRect(start, end, color, separated, filled) {
         const draw = filled ? Drawing.filledRectangle : Drawing.rectangle
-        
+
         draw(start, end).map(point => {
             this.drawPoint(point.x, point.y, color, separated)
         })
@@ -643,6 +739,7 @@ class MinitelMosaic {
         if(finalColor === startColor) return
 
         const stack = [startPoint]
+        const points = []
 
         while(stack.length !== 0) {
             let point = stack.shift()
