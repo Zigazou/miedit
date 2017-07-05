@@ -212,27 +212,46 @@ class MinitelMosaic {
         this.drawError()
     }
 
+    changeTool(newToolName) {
+        this.setCursor(this.tool.name, newToolName)
+        this.tool = { name: newToolName }
+    }
+
     onImportEditTf(event, param) {
         this.bitmap = Minitel.drawCeefax(event.target[0].value)
         this.refresh()
     }
 
-    onToolChange(event, param) {
-        this.setCursor(this.tool.name, param)
-        this.tool = { name: param }
-    }
+    onToolChange(event, param) { this.changeTool(param) }
 
     onColorChange(event, param) {
         event.preventDefault()
         this.color = parseInt(param)
     }
 
-    onNormalMosaic(event) {
-        this.separated = false
+    onNormalMosaic(event) { this.separated = false }
+    onSeparatedMosaic(event) { this.separated = true }
+
+    onText(event, param) {
+        document.getElementById("graphics-text-form").classList.add("visible")
     }
 
-    onSeparatedMosaic(event) {
-        this.separated = true
+    onSetText(event, param) {
+        document.getElementById("graphics-text-form")
+                .classList.remove("visible")
+
+        const form = event.target
+
+        this.clipboard = Drawing.text(
+            form["text-value"].value,
+            form["text-font"].value,
+            parseInt(form["text-size"].value),
+            this.color,
+            this.separated,
+            form["text-compress"].checked
+        )
+    
+        this.changeTool("paste")
     }
 
     previewDo(func) {

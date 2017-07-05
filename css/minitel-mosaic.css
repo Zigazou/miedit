@@ -1,3 +1,35 @@
+/* Font definitions */
+@font-face { font-family: BigFatBlack; src: url(../font/draw/bigfatblack/BigFatBlack.ttf); }
+@font-face { font-family: Genown; src: url(../font/draw/genown/GENOWN_V.TTF); }
+@font-face { font-family: GreenFlame; src: url(../font/draw/greenflame/GreenFlame.ttf); }
+@font-face { font-family: EleventhSquare; src: url(../font/draw/eleventhsquare/Eleventh-Square.ttf); }
+@font-face { font-family: PressStart2P; src: url(../font/draw/pressstart2p/PressStart2P.ttf); }
+
+.sample-bigfatblack { font-family: BigFatBlack; }
+.sample-genown { font-family: Genown; }
+.sample-greenflame { font-family: GreenFlame; }
+.sample-eleventhsquare { font-family: EleventhSquare; }
+.sample-pressstart2p { font-family: PressStart2P; }
+
+#graphics-text-form {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1em;
+    background: linear-gradient(#ffffff, #eaedf1);
+    border-bottom: 0.1em solid #8b9097;
+    box-shadow: #8b9097 0 0.1em 0.3em;
+}
+
+#graphics-text-form .sample {
+    font-size: 125%;
+    vertical-align: sub;
+}
+#graphics-text-form form>div { margin-bottom: 1em; }
+#graphics-text-form.visible { display: block; }
+
 .mosaic-root {
     position: fixed;
     z-index: 1;
@@ -42,6 +74,7 @@
     opacity: 0.5;
 }
 
+/* Cursors for each tool */
 .cursor-pencil {
     cursor: url(../icon/graphics-pencil.svg) 0 32,
     pointer
