@@ -245,6 +245,7 @@ class MinitelMosaic {
         this.clipboard = Drawing.text(
             form["text-value"].value,
             form["text-font"].value,
+            form["text-style"].value,
             parseInt(form["text-size"].value),
             this.color,
             this.separated,
