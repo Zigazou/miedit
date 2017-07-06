@@ -43,6 +43,8 @@ class MinitelMosaic {
             height: 0,
         }
 
+        this.pointSize = 1
+
         this.clearUndo()
 
         this.root = root
@@ -107,7 +109,7 @@ class MinitelMosaic {
                     separated = true
                 }
 
-                this.drawPoint(x, y, color, separated)
+                this.drawPoint(x, y, color, separated, 1)
 
                 i++
             }
@@ -124,7 +126,7 @@ class MinitelMosaic {
             for(let x = 0; x < this.resolution.width; x++) {
                 const pixel = this.bitmap[y][x]
                 if(pixel.color < 0) continue
-                this.drawPoint(x, y, pixel.color, pixel.separated)
+                this.drawPoint(x, y, pixel.color, pixel.separated, 1)
             }
         }
 
@@ -186,7 +188,8 @@ class MinitelMosaic {
                     point.x,
                     point.y,
                     point.color,
-                    point.separated
+                    point.separated,
+                    1
                 )
             }
 
@@ -204,7 +207,8 @@ class MinitelMosaic {
                     point.x,
                     point.y,
                     point.newColor,
-                    point.newSeparated
+                    point.newSeparated,
+                    1
                 )
             }
         }
@@ -222,6 +226,7 @@ class MinitelMosaic {
         this.refresh()
     }
 
+    onPointSize(event, param) { this.pointSize = parseInt(param) }
     onToolChange(event, param) { this.changeTool(param) }
 
     onColorChange(event, param) {
@@ -293,11 +298,16 @@ class MinitelMosaic {
                          ? this.tool.last
                          : this.tool.previous
 
-            this.drawLine(origin, point, this.color, this.separated)
+            this.drawLine(
+                origin, point, this.color, this.separated, this.pointSize
+            )
 
             this.tool.last = { x: point.x, y: point.y }
         } else if(actionType === "move" && this.tool.isDrawing) {
-            this.drawLine(this.tool.previous, point, this.color, this.separated)
+            this.drawLine(
+                this.tool.previous, point,
+                this.color, this.separated, this.pointSize
+            )
             this.tool.last = { x: point.x, y: point.y }
         } else if(actionType === "up" || actionType === "out") {
             this.stopUndo()
@@ -355,7 +365,8 @@ class MinitelMosaic {
 
             this.startUndo()
             this.drawCircle(
-                this.tool.center, radius, this.color, this.separated, filled
+                this.tool.center, radius,
+                this.color, this.separated, filled, this.pointSize
             )
             this.stopUndo()
         }
@@ -399,7 +410,7 @@ class MinitelMosaic {
             this.startUndo()
             this.drawCurve(
                 this.tool.start, this.endPoint, point,
-                this.color, this.separated
+                this.color, this.separated, this.pointSize
             )
             this.stopUndo()
 
@@ -497,7 +508,8 @@ class MinitelMosaic {
             this.previewDo()
             this.startUndo()
             this.drawRect(
-                this.tool.start, point, this.color, this.separated, filled
+                this.tool.start, point,
+                this.color, this.separated, filled, this.pointSize
             )
             this.stopUndo()
         }
@@ -676,83 +688,105 @@ class MinitelMosaic {
         }
 
         points.map(point => {
-            this.drawPoint(point.x, point.y, point.color, point.separated)
+            this.drawPoint(point.x, point.y, point.color, point.separated, 1)
         })
 
         this.drawError()
     }
 
-    drawPoint(x, y, color, separated) {
-        if(   x < 0 || x >= this.resolution.width
-           || y < 0 || y >= this.resolution.height
-        ) {
-            return
+    drawPoint(x, y, color, separated, pointSize) {
+        const resolutionWidth = this.resolution.width
+        const resolutionHeight = this.resolution.height
+
+        function validPoint(xy) {
+            const [x, y] = xy
+            return x >= 0
+                && x < resolutionWidth
+                && y >= 0
+                && y < resolutionHeight
         }
+
+        const potentialPoints = [ [x, y] ]
+        if(pointSize === 2) {
+            potentialPoints.push([x + 1, y], [x + 1, y + 1], [x, y + 1])
+        } else if(pointSize === 3) {
+            potentialPoints.push([x + 1, y], [x - 1, y], [x, y - 1], [x, y + 1])
+        }
+
+        const points = potentialPoints.filter(validPoint)
+
+        if(points.length === 0) return
 
         const ctx = this.drawing.getContext("2d")
-        const coords = this.convertCoordinates(x, y, color, separated)
 
-        if(this.undo.active) {
-            this.undo.current.unshift({
-                x: x,
-                y: y,
-                color: this.bitmap[y][x].color,
-                separated: this.bitmap[y][x].separated,
-                newColor: color,
-                newSeparated: separated
-            })
+        for(let [x, y] of points) {
+            if(this.undo.active) {
+                this.undo.current.unshift({
+                    x: x,
+                    y: y,
+                    color: this.bitmap[y][x].color,
+                    separated: this.bitmap[y][x].separated,
+                    newColor: color,
+                    newSeparated: separated
+                })
+            }
+
+            this.bitmap[y][x] = {
+                color: color,
+                separated: separated,
+            }
+
+            const coords = this.convertCoordinates(x, y, color, separated)
+            if(color < 0) {
+                ctx.clearRect(coords.x, coords.y, coords.width, coords.height)
+            } else {
+                ctx.fillStyle = Minitel.colors[color]
+                ctx.fillRect(coords.x, coords.y, coords.width, coords.height)
+            }
+
+            this.pointsToCheck.add(
+                Math.floor(y / this.pixelsPerHeight) * 1000 +
+                Math.floor(x / this.pixelsPerWidth)
+            )
         }
-
-        this.bitmap[y][x] = {
-            color: color,
-            separated: separated,
-        }
-
-        if(color < 0) {
-            ctx.clearRect(coords.x, coords.y, coords.width, coords.height)
-        } else {
-            ctx.fillStyle = Minitel.colors[color]
-            ctx.fillRect(coords.x, coords.y, coords.width, coords.height)
-        }
-
-        this.pointsToCheck.add(
-            Math.floor(y / this.pixelsPerHeight) * 1000 +
-            Math.floor(x / this.pixelsPerWidth)
-        )
     }
 
-    drawLine(first, last, color, separated) {
+    drawLine(first, last, color, separated, pointSize) {
         Drawing.line(first, last).map(point => {
-            this.drawPoint(point.x, point.y, color, separated)
+            this.drawPoint(point.x, point.y, color, separated, pointSize)
         })
 
         this.drawError()
     }
 
-    drawCircle(center, radius, color, separated, filled) {
+    drawCircle(center, radius, color, separated, filled, pointSize) {
         const draw = filled ? Drawing.filledCircle : Drawing.circle
 
         // Minitel mosaic pixels are not square...
         draw(center, radius, 1.25).map(point => {
-            this.drawPoint(point.x, point.y, color, separated)
+            this.drawPoint(
+                point.x, point.y, color, separated, filled ? 1 : pointSize
+            )
         })
 
         this.drawError()
     }
 
-    drawRect(start, end, color, separated, filled) {
+    drawRect(start, end, color, separated, filled, pointSize) {
         const draw = filled ? Drawing.filledRectangle : Drawing.rectangle
 
         draw(start, end).map(point => {
-            this.drawPoint(point.x, point.y, color, separated)
+            this.drawPoint(
+                point.x, point.y, color, separated, filled ? 1 : pointSize
+            )
         })
         
         this.drawError()
     }
 
-    drawCurve(start, end, control, color, separated) {
+    drawCurve(start, end, control, color, separated, pointSize) {
         Drawing.quadBezierCurve(start, end, control).map(point => {
-            this.drawPoint(point.x, point.y, color, separated)
+            this.drawPoint(point.x, point.y, color, separated, pointSize)
         })
 
         this.drawError()
@@ -771,7 +805,7 @@ class MinitelMosaic {
             const color = this.bitmap[point.y][point.x].color
             if(color !== startColor) continue
 
-            this.drawPoint(point.x, point.y, finalColor, separated)
+            this.drawPoint(point.x, point.y, finalColor, separated, 1)
 
             if(point.x > 0) {
                 stack.push({ x: point.x - 1, y: point.y })

@@ -161,10 +161,8 @@ Minitel.Stream = class {
                       && (   (this.items[i + 1] === 0x5a && !separated)
                           || (this.items[i + 1] === 0x59 && separated))
             let chgChar = this.items[i] >= 0x20 && this.items[i] !== char
-            let chgSet = (this.items[i] === 0x0e && currentSet !== 0x0e)
-                      || (this.items[i] === 0x0f && currentSet !== 0x0f) 
 
-            const changes = [ moveRight, chgFG, chgBG, chgSep, chgChar, chgSet ]
+            const changes = [ moveRight, chgFG, chgBG, chgSep, chgChar ]
 
             if(count > 0 && changes.some(identity)) {
                 if(count == 1) {
@@ -198,12 +196,10 @@ Minitel.Stream = class {
                 // Change character
                 optimized.push(this.items[i])
                 char = this.items[i]
-            } else if(chgSet) {
-                currentSet = this.items[i]
             } else if(this.items[i] >= 0x20) {
                 // Same character
                 count++
-            } else if([0x1b, 0x0e, 0x0f].indexOf(this.items[i]) < 0) {
+            } else if([0x1b].indexOf(this.items[i]) < 0) {
                 optimized.push(this.items[i])
             }
 

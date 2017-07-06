@@ -379,7 +379,7 @@ Minitel.decodeEditTfURL = function(url) {
     for(let i = 0; i < codes.length; i += 40) {
         decoded.push(codes.slice(i, i + 40))
     }
-console.log(decoded)
+
     return decoded
 }
 
