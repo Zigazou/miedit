@@ -53,11 +53,11 @@ Minitel.convertCeefaxRow = function(row) {
                 break
 
             // Ignore...
-            case 0x0a: case 0x0e: case 0x0f: case 0x10: break
+            case 0x0a: case 0x0e: case 0x0f: break
 
             // Set graphics mode and color
-            case 0x11: case 0x12: case 0x13: case 0x14: case 0x15: case 0x16:
-            case 0x17:
+            case 0x10: case 0x11: case 0x12: case 0x13: case 0x14: case 0x15:
+            case 0x16: case 0x17:
                 gfx = true
                 fg = c - 0x10
                 control.push(0x0e)
@@ -88,7 +88,8 @@ Minitel.convertCeefaxRow = function(row) {
 
             // Swap foreground and background colors
             case 0x1d:
-                [bg, fg] = [fg, bg]
+                //[bg, fg] = [fg, bg]
+                bg = fg
                 setColors(control, fg, bg, sep && gfx)
                 break
 
@@ -106,7 +107,7 @@ Minitel.convertCeefaxRow = function(row) {
         // Handles attributes
         if(c < 0x20) {
             if(hold || held != 0x20) {
-                if(c === 0x1d) {
+                if(c === 0x1d || c === 0x1c) {
                     // Swap colors must be applied before held character
                     destination.push(control)
                     destination.push(held)
@@ -204,11 +205,11 @@ Minitel.drawCeefaxRow = function(row) {
 
             // Ignore...
             case 0x08: case 0x09: case 0x0b: case 0x0c: case 0x0d: break
-            case 0x0a: case 0x0e: case 0x0f: case 0x10: break
+            case 0x0a: case 0x0e: case 0x0f: break
 
             // Set graphics mode and color
-            case 0x11: case 0x12: case 0x13: case 0x14: case 0x15: case 0x16:
-            case 0x17:
+            case 0x10: case 0x11: case 0x12: case 0x13: case 0x14: case 0x15:
+            case 0x16: case 0x17:
                 gfx = true
                 next.fg = c - 0x10
                 break
@@ -232,7 +233,8 @@ Minitel.drawCeefaxRow = function(row) {
 
             // Swap foreground and background colors
             case 0x1d:
-                [next.bg, next.fg] = [next.fg, next.bg]
+                //[next.bg, next.fg] = [next.fg, next.bg]
+                next.bg = next.fg
                 break
 
             // Hold graphics
@@ -249,7 +251,7 @@ Minitel.drawCeefaxRow = function(row) {
         // Handles attributes
         if(c < 0x20) {
             if(hold || held != 0x20) {
-                if(c === 0x1d) {
+                if(c === 0x1d || c === 0x1c) {
                     // Swap colors must be applied before held character
                     current = { fg: next.fg, bg: next.bg, sep: next.sep }
                     drawPixels(
@@ -377,7 +379,7 @@ Minitel.decodeEditTfURL = function(url) {
     for(let i = 0; i < codes.length; i += 40) {
         decoded.push(codes.slice(i, i + 40))
     }
-
+console.log(decoded)
     return decoded
 }
 
