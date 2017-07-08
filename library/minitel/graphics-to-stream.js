@@ -3,18 +3,15 @@ var Minitel = Minitel || {}
 
 Minitel.graphicsToStream = function(string, col, row) {
     function isSeparated(sextet) {
-        let separated = 0
-        let full = 0
-        for(let i = 0; i < 6; i++) {
-            let c = sextet[i]
-            if(c >= "a" && c <= "h") full++
-            if(c >= "A" && c <= "H") separated++
+        for(let c of sextet) {
+            if(c >= "A" && c <= "H") return c.toLowerCase()
         }
 
-        return separated >= full
+        return undefined
     }
 
-    function twoColors(sextet) {
+    let lastBg = "-"
+    function twoColors(sextet, separatedColor) {
         const cardinals = {
             "a": 0,
             "b": 0,
@@ -49,24 +46,31 @@ Minitel.graphicsToStream = function(string, col, row) {
             bg = "-"
         }
 
-        if(cardinals[bg] === 0) bg = "-"
+        if(bg === separatedColor) {
+            const swap = fg
+            fg = bg
+            bg = swap
+        }
+
+        // Current system does not handle background color of separated mosaic
+        // when each point has foreground color
+        if(cardinals[bg] === 0) {
+            bg = lastBg
+        } else {
+            lastBg = bg
+        }
+        if(separatedColor && bg === "-") bg = "*"
+
         return [Minitel.color2int[fg], Minitel.color2int[bg]]
     }
 
     function sextet2char(sextet) {
         if(sextet === "------") return [0x09]
 
-        let separated = isSeparated(sextet)
+        const separatedColor = isSeparated(sextet)
         sextet = sextet.toLowerCase()
 
-        let fg = 7
-        let bg = 0
-
-        if(separated) {
-            [fg, bg] = twoColors(sextet)
-        } else {
-            [bg, fg] = twoColors(sextet)
-        }
+        const [fg, bg] = twoColors(sextet, separatedColor)
 
         let char = 0
         let bit = 1
@@ -76,9 +80,10 @@ Minitel.graphicsToStream = function(string, col, row) {
         }
         char = 0x20 + char
 
-        if(separated) {
+        if(separatedColor) {
             return [0x1b, 0x40 + fg, 0x1b, 0x50 + bg, 0x1b, 0x5a, char]
         } else {
+            lastBg = bg
             return [0x1b, 0x40 + fg, 0x1b, 0x50 + bg, 0x1b, 0x59, char]
         }
     }

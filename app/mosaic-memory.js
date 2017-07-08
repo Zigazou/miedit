@@ -7,7 +7,7 @@
 /**
  * @class MosaicZone
  */
-class MozaicZone {
+class MosaicZone {
     constructor(width, height, bitmap) {
         if(bitmap === undefined || bitmap.length !== width * height) {
             bitmap = new Array(width * height).fill(-1)
@@ -16,6 +16,7 @@ class MozaicZone {
         this.bitmap = bitmap
         this.width = width
         this.height = height
+
     }
 
     forEach(func) {
@@ -39,7 +40,7 @@ class MosaicMemory {
         this.width = width
         this.height = height
         this.size = width * height
-        this.memory = new Array(this.size)
+        this.memory = new Array(this.size).fill(-1)
 
         this.changedPoints = new Set()
         this.backupMemory = new Array(this.size)
@@ -52,13 +53,35 @@ class MosaicMemory {
         return true
     }
 
-    setPoint(x, y, color, separated) {
-        if(!this.validCoordinates(x, y)) return
+    getColor(x, y) {
+        const value = this.memory[x + y * this.width]
+        if(value < 0) return -1
+        return value & 0xff
+    }
 
-        const offset = x + y * this.width
-        const value = MosaicMemory.colorToValue(color, separated)
+    setPoint(x, y, color, separated, pointSize) {
+        if(pointSize === undefined || pointSize < 0 || pointSize > 3) {
+            pointSize = 1
+        }
 
-        this._setPoint(offset, value)
+        let points = undefined
+        if(pointSize === 1) {
+            points = [ [x, y] ]
+        } else if(pointSize === 2) {
+            points = [ [x, y], [x + 1, y], [x + 1, y + 1], [x, y + 1] ]
+        } else {
+            points = [ [ x, y], [x + 1, y], [x - 1, y], [x, y - 1], [x, y + 1] ]
+        }
+
+        points = points
+
+        points.filter(xy => { return this.validCoordinates(xy[0], xy[1]) })
+              .forEach(point => {
+            const offset = point[0] + point[1] * this.width
+            const value = MosaicMemory.colorToValue(color, separated)
+
+            this._setPoint(offset, value)
+        })
     }
 
     _setPoint(offset, value) {
@@ -74,12 +97,15 @@ class MosaicMemory {
 
     getChangedPoints() {
         const points = Array.from(this.changedPoints.values(), offset => {
-            const pixel = MosaicMemory.toPixel(this.backupMemory[offset])
+            const oldPixel = MosaicMemory.toPixel(this.backupMemory[offset])
+            const newPixel = MosaicMemory.toPixel(this.memory[offset])
             return {
                 x: offset % this.width,
                 y: Math.floor(offset / this.width),
-                color: pixel.color,
-                separated: pixel.separated
+                color: newPixel.color,
+                separated: newPixel.separated,
+                oldColor: oldPixel.color,
+                oldSeparated: oldPixel.separated
             }
         })
         
@@ -93,40 +119,47 @@ class MosaicMemory {
         }
 
         string.split("").forEach((char, offset) => {
-            this.memory[offset] = MosaicMemory.charToValue(char)
-        }
+            this._setPoint(offset, MosaicMemory.charToValue(char))
+        })
     }
 
     toString() {
-        return this.memory.map(MosaicMemory.toChar).join()
+        return this.memory.map(MosaicMemory.toChar).join("")
     }
 
     shiftUp(offset) {
-        for(let i = 0; i < offset; i++) {
-            this.memory.push(this.memory.shift())
-        }
+        const source = this.memory.slice()
+        this.memory.forEach((value, offset) => {
+            this._setPoint(offset, source[(offset + this.width) % this.size])
+        })
     }
 
     shiftDown(offset) {
-        for(let i = 0; i < offset; i++) {
-            this.memory.unshift(this.memory.pop())
-        }
+        const source = this.memory.slice()
+        this.memory.forEach((value, offset) => {
+            offset += this.width
+            this._setPoint(offset % this.size, source[offset - this.width])
+        })
     }
 
     shiftLeft(offset) {
-        for(let y = 0; y < this.resolution.height; y++) {
-            for(let i = 0; i < offset; i++) {
-                this.memory[y].push(this.memory[y].shift())
-            }
-        }
+        const source = this.memory.slice()
+        this.memory.forEach((value, offset) => {
+            const srcOffset = (offset + 1) % this.width === 0
+                            ? offset + 1 - this.width
+                            : offset + 1
+            this._setPoint(offset, source[srcOffset])
+        })
     }
 
     shiftRight(offset) {
-        for(let y = 0; y < this.resolution.height; y++) {
-            for(let i = 0; i < offset; i++) {
-                this.memory[y].unshift(this.memory[y].pop())
-            }
-        }
+        const source = this.memory.slice()
+        this.memory.forEach((value, offset) => {
+            const srcOffset = offset % this.width === 0
+                            ? offset - 1 + this.width
+                            : offset - 1
+            this._setPoint(offset, source[srcOffset])
+        })
     }
 
     getRect(start, end) {
@@ -135,16 +168,19 @@ class MosaicMemory {
         const xStart = Math.min(start.x, end.x)
         const xEnd = Math.max(start.x, end.x)
 
-        const [ width, height ] = [ xEnd - xStart + 1, yEnd - yStart + 1 ]
+        const width = xEnd - xStart
+        const height = yEnd / this.width - yStart / this.width
 
         if(width === 0 || height === 0) return
 
-        const rows = []
-        for(let y = yStart; y <= yEnd; y+= this.width) {
-            rows.push(this.memory.slice(y + xStart, y + xEnd))
+        const points = []
+        for(let y = yStart; y < yEnd; y+= this.width) {
+            this.memory.slice(y + xStart, y + xEnd).forEach(point => {
+                points.push(point)
+            })
         }
 
-        return new MosaicZone(width, height, rows.concat())
+        return new MosaicZone(width, height, points)
     }
 
     putRect(zone, destination) {
@@ -162,14 +198,14 @@ class MosaicMemory {
     }
 
     getArea(startX, startY) {
-        if(!this.validPoint(startX, startY) return
+        if(!this.validCoordinates(startX, startY)) return
 
         const exploring = new Set()
         const explored = new Set()
         const points = []
 
-        const startOffset = x + y * this.width
-        const startColor = this.memory[startOffset].color
+        const startOffset = startX + startY * this.width
+        const startColor = this.memory[startOffset]
 
         exploring.add(startOffset)
 
@@ -182,8 +218,8 @@ class MosaicMemory {
             if(color !== startColor) continue
 
             points.push({
-                x: x % this.width,
-                y: Math.floor(y / this.width)
+                x: offset % this.width,
+                y: Math.floor(offset / this.width)
             })
 
             const offsetUp = offset - this.width
@@ -202,7 +238,7 @@ class MosaicMemory {
             }
 
             const offsetRight = offset + 1
-            if(offsetRight % this.width !== 0 && !explored.has(offsetRight) {
+            if(offsetRight % this.width !== 0 && !explored.has(offsetRight)) {
                 exploring.add(offsetRight)
             }
         }
@@ -211,7 +247,7 @@ class MosaicMemory {
     }
 }
 
-MosaicMemory.fullCahrs = "abcdefgh"
+MosaicMemory.fullChars = "abcdefgh"
 MosaicMemory.sepChars = "ABCDEFGH"
 
 MosaicMemory.toPixel = function(value) {
