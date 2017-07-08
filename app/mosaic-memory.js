@@ -59,7 +59,7 @@ class MosaicMemory {
         return value & 0xff
     }
 
-    setPoint(x, y, color, separated, pointSize) {
+    setPoint(x, y, color, back, separated, blink, pointSize) {
         if(pointSize === undefined || pointSize < 0 || pointSize > 3) {
             pointSize = 1
         }
@@ -78,7 +78,9 @@ class MosaicMemory {
         points.filter(xy => { return this.validCoordinates(xy[0], xy[1]) })
               .forEach(point => {
             const offset = point[0] + point[1] * this.width
-            const value = MosaicMemory.colorToValue(color, separated)
+            const value = MosaicMemory.colorToValue(
+                color, back, separated, blink
+            )
 
             this._setPoint(offset, value)
         })
@@ -250,10 +252,26 @@ class MosaicMemory {
 MosaicMemory.fullChars = "abcdefgh"
 MosaicMemory.sepChars = "ABCDEFGH"
 
+/*
+ *   8   7   6   5   4   3   2   1   0
+ * .---.---.---.---.---.---.---.---.---.
+ * |TRP|BLK|SEP| background| foreground|
+ * `---'---'---'---'---'---'---'---'---’
+ *   |   |   |  \_________/ \_________/                      mask
+ *   |   |   |       |            `-------- foreground color 0x7
+ *   |   |   |       `--------------------- background color 0x38 >> 3
+ *   |   |   `----------------------------- separated        0x40
+ *   |   `--------------------------------- blink            0x80
+ *   `------------------------------------- transparent      0x100
+ */
 MosaicMemory.toPixel = function(value) {
-    if(value < 0) return { color: -1, separated: false }
-    if(value & 0x100) return { color: value & 0xff, separated: true }
-    return { color: value, separated: false }
+    return {
+        color: value & 0x100 ? 0 : value & 0x7,
+        back: value & 0x100 ? 0 : (value & 0x38) >> 3,
+        separated: value & 0x40 ? true : false,
+        blink: value & 0x80 ? true : false,
+        transparent: value & 0x100 ? true : false
+    }
 }
 
 MosaicMemory.toChar = function(value) {
@@ -263,15 +281,19 @@ MosaicMemory.toChar = function(value) {
 }
 
 MosaicMemory.pixelToValue = function(pixel) {
-    if(pixel.color < 0) return -1
-    if(pixel.separated) return pixel.color + 256
-    return pixel.color
+    return (pixel.color < 0 ? -1 : pixel.color & 0x7)
+         | (pixel.back < 0 ? -1 : (pixel.back & 0x7) << 3)
+         | (pixel.separated ? 0x40 : 0)
+         | (pixel.blink ? 0x80 : 0)
+         | (pixel.color < 0 ? 0x100 : 0)
 }
 
-MosaicMemory.colorToValue = function(color, separated) {
-    if(color < 0) return -1
-    if(separated) return color + 256
-    return color
+MosaicMemory.colorToValue = function(color, back, separated, blink) {
+    return (color < 0 ? -1 : color & 0x7)
+         | (back < 0 ? -1 : (back & 0x7) << 3)
+         | (separated ? 0x40 : 0)
+         | (blink ? 0x80 : 0)
+         | (color < 0 ? 0x100 : 0)
 }
 
 MosaicMemory.charToValue = function(char) {
