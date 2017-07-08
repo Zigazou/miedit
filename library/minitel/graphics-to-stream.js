@@ -55,12 +55,16 @@ Minitel.graphicsToStream = function(string, col, row) {
         // Current system does not handle background color of separated mosaic
         // when each point has foreground color
         if(cardinals[bg] === 0) {
-            bg = lastBg
-        } else {
-            lastBg = bg
+            if(separatedColor) {
+                bg = lastBg
+            } else {
+                const swap = fg
+                fg = bg
+                bg = swap
+            }
         }
-        if(separatedColor && bg === "-") bg = "*"
 
+        lastBg = bg
         return [Minitel.color2int[fg], Minitel.color2int[bg]]
     }
 
