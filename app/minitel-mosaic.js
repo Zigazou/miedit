@@ -29,9 +29,12 @@ class MinitelMosaic {
         this.zoom = zoom
         this.color = 7
         this.separated = false
-        this.bitmap = []
-        this.fullChars = "abcdefgh"
-        this.sepChars = "ABCDEFGH"
+
+        this.memory = new MosaicMemory(
+            this.resolution.width,
+            this.resolution.height
+        )
+
         this.primaryGrid = "#D0D000"
         this.secondaryGrid = "#707000"
         this.errorColor = "#FFFFFF"
@@ -82,38 +85,13 @@ class MinitelMosaic {
 
         this.overlay.style.backgroundImage = "url(" + background + ")"
 
-        const pixelCount = this.resolution.width * this.resolution.height
-        if(string === undefined || string.length !== pixelCount) {
-            string = "-".repeat(pixelCount)
-        }
+        this.memory.reset(string)
 
-        this.bitmap = []
-        for(let y = 0; y < this.resolution.height; y++) {
-            const row = []
-            for(let x = 0; x < this.resolution.width; x++) {
-                row.push({ color: -1, separated: false })
-            }
-            this.bitmap.push(row)
-        }
+        const pixels = this.memory.getChangedPoints()
 
-        let i = 0
-        for(let y = 0; y < this.resolution.height; y++) {
-            for(let x = 0; x < this.resolution.width; x++) {
-                const char = string[i]
-                let color = -1
-                let separated = false
-
-                color = this.fullChars.indexOf(char)
-                if(color < 0) {
-                    color = this.sepChars.indexOf(char)
-                    separated = true
-                }
-
-                this.drawPoint(x, y, color, separated, 1)
-
-                i++
-            }
-        }
+        pixels.forEach(pixel => {
+            this.drawPoint(pixel.x, pixel.y, pixel.color, pixel.separated, 1)
+        })
 
         this.drawError()
     }
@@ -134,22 +112,7 @@ class MinitelMosaic {
     }
 
     toString() {
-        let string = ""
-        for(let y = 0; y < this.resolution.height; y++) {
-            for(let x = 0; x < this.resolution.width; x++) {
-                const pixel = this.bitmap[y][x]
-
-                if(pixel.color < 0) {
-                    string += "-"
-                } else if(pixel.separated) {
-                    string += this.sepChars[pixel.color]
-                } else {
-                    string += this.fullChars[pixel.color]
-                }
-            }
-        }
-
-        return string
+        return this.memory.toString()
     }
 
     startUndo() {
@@ -695,27 +658,12 @@ class MinitelMosaic {
     }
 
     drawPoint(x, y, color, separated, pointSize) {
-        const resolutionWidth = this.resolution.width
-        const resolutionHeight = this.resolution.height
-
-        function validPoint(xy) {
-            const [x, y] = xy
-            return x >= 0
-                && x < resolutionWidth
-                && y >= 0
-                && y < resolutionHeight
-        }
-
-        const potentialPoints = [ [x, y] ]
+        const points = [ [x, y] ]
         if(pointSize === 2) {
-            potentialPoints.push([x + 1, y], [x + 1, y + 1], [x, y + 1])
+            points.push([x + 1, y], [x + 1, y + 1], [x, y + 1])
         } else if(pointSize === 3) {
-            potentialPoints.push([x + 1, y], [x - 1, y], [x, y - 1], [x, y + 1])
+            points.push([x + 1, y], [x - 1, y], [x, y - 1], [x, y + 1])
         }
-
-        const points = potentialPoints.filter(validPoint)
-
-        if(points.length === 0) return
 
         const ctx = this.drawing.getContext("2d")
 
