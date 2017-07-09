@@ -55,8 +55,7 @@ class MosaicMemory {
 
     getColor(x, y) {
         const value = this.memory[x + y * this.width]
-        if(value < 0) return -1
-        return value & 0xff
+        return (value & 0x100 ? -1 : value & 7)
     }
 
     setPoint(x, y, color, back, separated, blink, pointSize) {
@@ -105,9 +104,13 @@ class MosaicMemory {
                 x: offset % this.width,
                 y: Math.floor(offset / this.width),
                 color: newPixel.color,
+                back: newPixel.back,
                 separated: newPixel.separated,
+                blink: newPixel.blink,
                 oldColor: oldPixel.color,
-                oldSeparated: oldPixel.separated
+                oldBack: oldPixel.back,
+                oldSeparated: oldPixel.separated,
+                oldBlink: oldPixel.blink
             }
         })
         
@@ -116,13 +119,20 @@ class MosaicMemory {
     }
     
     reset(string) {
-        if(string === undefined || string.length !== this.size) {
-            string = "-".repeat(this.size)
+        if(string === undefined) {
+            string = "ai".repeat(this.size)
+        } else if(string.length === this.size) {
+            string = MosaicMemory.oldToNewFormat(string)
+        } else if(string.length !== 2 * this.size) {
+            string = "ai".repeat(this.size)
         }
 
-        string.split("").forEach((char, offset) => {
-            this._setPoint(offset, MosaicMemory.charToValue(char))
-        })
+        for(let offset = 0; offset < string.length; offset += 2) {
+            this._setPoint(
+                offset >> 1,
+                MosaicMemory.charToValue(string[offset] + string[offset + 1])
+            )
+        }
     }
 
     toString() {
@@ -249,8 +259,7 @@ class MosaicMemory {
     }
 }
 
-MosaicMemory.fullChars = "abcdefgh"
-MosaicMemory.sepChars = "ABCDEFGH"
+MosaicMemory.codeChars = "abcdefghijklmnopqrstuvwxyz012345"
 
 /*
  *   8   7   6   5   4   3   2   1   0
@@ -275,9 +284,8 @@ MosaicMemory.toPixel = function(value) {
 }
 
 MosaicMemory.toChar = function(value) {
-    if(value < 0) return "-"
-    if(value & 0x100) return MosaicMemory.sepChars[value & 0xff]
-    return MosaicMemory.fullChars[value]
+    return MosaicMemory.codeChars[value & 0x1f]
+         + MosaicMemory.codeChars[value >> 5]
 }
 
 MosaicMemory.pixelToValue = function(pixel) {
@@ -297,9 +305,46 @@ MosaicMemory.colorToValue = function(color, back, separated, blink) {
 }
 
 MosaicMemory.charToValue = function(char) {
-    if(char === "-") return -1
-    let value = MosaicMemory.fullChars.indexOf(char)
-    if(value < 0) value = 0x100 | MosaicMemory.sepChars.indexOf(char)
+    if(char.length !== 2) return 0x100
 
-    return value
+    const first = MosaicMemory.codeChars.indexOf(char[0])
+    const second = MosaicMemory.codeChars.indexOf(char[1])
+
+    if(first < 0 || second < 0) return 0x100
+    return first | (second << 5)
+}
+
+MosaicMemory.oldToNewFormat = function(oldFormat) {
+    const fullChars = "abcdefg"
+    const sepChars = "ABCDEFG"
+
+    let newFormat = ""
+    oldFormat.split("").forEach(char => {
+        const pixel = {
+            color: 0 ,
+            back: 0,
+            separated: false,
+            blink: false,
+            transparent: true
+        }
+            
+        if(char !== "-") {
+            let value = fullChars.indexOf(char)
+            if(value >= 0) {
+                pixel.color = value
+                pixel.transparent = false
+            } else {
+                value = sepChars.indexOf(char)
+                if(value >= 0) {
+                    pixel.color = value
+                    pixel.separated = true
+                    pixel.transparent = false
+                }
+            }
+        }
+ 
+        newFormat += MosaicMemory.toChar(MosaicMemory.pixelToValue(pixel))
+   })
+
+    return newFormat
 }

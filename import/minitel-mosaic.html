@@ -39,32 +39,68 @@
     <h3 class="first">Colors</h3>
     <div>
       <div>
-        <h4>Colors</h4>
-        <button class="large" data-param="-1" data-call="onColorChange">
+        <h4>Erase</h4>
+        <button class="large" data-param="-1" data-call="onErase">
           <img src="icon/color-bg-transparent.svg" /><br/>Erase
         </button>
-        <button class="large" data-param="0" data-call="onColorChange">
+      </div>
+
+      <hr/>
+
+      <div>
+        <h4>Foreground</h4>
+        <button class="large" data-param="0" data-call="onForegroundChange">
+          <img src="icon/color-fg-0.svg" /><br/>Black<br/>0%
+        </button>
+        <button class="large" data-param="4" data-call="onForegroundChange">
+          <img src="icon/color-fg-4.svg" /><br/>Blue<br/>40%
+        </button>
+        <button class="large" data-param="1" data-call="onForegroundChange">
+          <img src="icon/color-fg-1.svg" /><br/>Red<br/>50%
+        </button>
+        <button class="large" data-param="5" data-call="onForegroundChange">
+          <img src="icon/color-fg-5.svg" /><br/>Magenta<br/>60%
+        </button>
+        <button class="large" data-param="2" data-call="onForegroundChange">
+          <img src="icon/color-fg-2.svg" /><br/>Green<br/>70%
+        </button>
+        <button class="large" data-param="6" data-call="onForegroundChange">
+          <img src="icon/color-fg-6.svg" /><br/>Cyan<br/>80%
+        </button>
+        <button class="large" data-param="3" data-call="onForegroundChange">
+          <img src="icon/color-fg-3.svg" /><br/>Yellow<br/>90%
+        </button>
+        <button class="large" data-param="7" data-call="onForegroundChange">
+          <img src="icon/color-fg-7.svg" /><br/>White<br/>40%
+        </button>
+      </div>
+
+      <hr/>
+
+      <div>
+        <h4>Background</h4>
+        <button class="large" data-param="0" data-call="onBackgroundChange">
           <img src="icon/color-bg-0.svg" /><br/>Black<br/>0%
         </button>
-        <button class="large" data-param="4" data-call="onColorChange">
+        <button class="large" data-param="4" data-call="onBackgroundChange">
           <img src="icon/color-bg-4.svg" /><br/>Blue<br/>40%
         </button>
-        <button class="large" data-param="1" data-call="onColorChange">
+        <button class="large" data-param="1" data-call="onBackgroundChange">
           <img src="icon/color-bg-1.svg" /><br/>Red<br/>50%
         </button>
-        <button class="large" data-param="5" data-call="onColorChange">
+        <button class="large" data-param="5" data-call="onBackgroundChange">
           <img src="icon/color-bg-5.svg" /><br/>Magenta<br/>60%
         </button>
-        <button class="large" data-param="2" data-call="onColorChange">
+        <button class="large" data-param="2" data-call="onBackgroundChange">
           <img src="icon/color-bg-2.svg" /><br/>Green<br/>70%
         </button>
-        <button class="large" data-param="6" data-call="onColorChange">
+        <button class="large" data-param="6" data-call="onBackgroundChange">
           <img src="icon/color-bg-6.svg" /><br/>Cyan<br/>80%
         </button>
-        <button class="large" data-param="3" data-call="onColorChange">
+        <button class="large" data-param="3" data-call="onBackgroundChange">
           <img src="icon/color-bg-3.svg" /><br/>Yellow<br/>90%
         </button>
-        <button class="large" data-param="7" data-call="onColorChange">
+        <button class="large" data-param="7" data-call="onBackgroundChange">
           <img src="icon/color-bg-7.svg" /><br/>White<br/>40%
         </button>
       </div>
@@ -73,11 +109,23 @@
 
       <div>
         <h4>Separated</h4>
-        <button class="large" data-call="onNormalMosaic">
+        <button class="large" data-param="off" data-call="onSeparated">
           <img src="icon/effect-separated-off.svg" /><br/>Full
         </button>
-        <button class="large" data-call="onSeparatedMosaic">
+        <button class="large" data-param="on" data-call="onSeparated">
           <img src="icon/effect-separated-on.svg" /><br/>Separated
+        </button>
+      </div>
+
+      <hr/>
+
+      <div>
+        <h4>Blink</h4>
+        <button class="large" data-param="off" data-call="onBlink">
+          <img src="icon/effect-separated-off.svg" /><br/>Blink<br/>off
+        </button>
+        <button class="large" data-param="on" data-call="onBlink">
+          <img src="icon/effect-separated-on.svg" /><br/>Blink<br/>on
         </button>
       </div>
     </div>

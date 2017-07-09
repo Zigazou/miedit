@@ -27,8 +27,13 @@ class MinitelMosaic {
         }
 
         this.zoom = zoom
+
+        // Default state for drawing tools
         this.color = 7
+        this.back = 0
         this.separated = false
+        this.blink = false
+        this.pointSize = 1
 
         this.memory = new MosaicMemory(
             this.resolution.width,
@@ -45,7 +50,6 @@ class MinitelMosaic {
             height: 0,
         }
 
-        this.pointSize = 1
         this.pointsToCheck = new Set()
 
         this.clearUndo()
@@ -130,7 +134,9 @@ class MinitelMosaic {
                     point.x,
                     point.y,
                     point.color,
+                    point.back,
                     point.separated,
+                    point.blink,
                     1
                 )
             })
@@ -149,7 +155,9 @@ class MinitelMosaic {
                     point.x,
                     point.y,
                     point.newColor,
+                    point.newBack,
                     point.newSeparated,
+                    point.newBlink,
                     1
                 )
             })
@@ -171,13 +179,12 @@ class MinitelMosaic {
     onPointSize(event, param) { this.pointSize = parseInt(param) }
     onToolChange(event, param) { this.changeTool(param) }
 
-    onColorChange(event, param) {
-        event.preventDefault()
-        this.color = parseInt(param)
-    }
+    onErase(event, param) { this.color = -1 }
+    onForegroundChange(event, param) { this.color = parseInt(param) }
+    onBackgroundChange(event, param) { this.back = parseInt(param) }
 
-    onNormalMosaic(event) { this.separated = false }
-    onSeparatedMosaic(event) { this.separated = true }
+    onSeparated(event, param) { this.separated = param === "on" }
+    onBlink(event, param) { this.blink = param === "on" }
 
     onText(event, param) {
         document.getElementById("graphics-text-form").classList.add("visible")
@@ -245,16 +252,11 @@ class MinitelMosaic {
                          ? this.tool.last
                          : this.tool.previous
 
-            this.drawLine(
-                origin, point, this.color, this.separated, this.pointSize
-            )
+            this.drawLine(origin, point)
 
             this.tool.last = { x: point.x, y: point.y }
         } else if(actionType === "move" && this.tool.isDrawing) {
-            this.drawLine(
-                this.tool.previous, point,
-                this.color, this.separated, this.pointSize
-            )
+            this.drawLine(this.tool.previous, point)
             this.tool.last = { x: point.x, y: point.y }
         } else if(actionType === "up" || actionType === "out") {
             this.stopUndo()
@@ -311,10 +313,7 @@ class MinitelMosaic {
             this.previewDo()
 
             this.startUndo()
-            this.drawCircle(
-                this.tool.center, radius,
-                this.color, this.separated, filled, this.pointSize
-            )
+            this.drawCircle(this.tool.center, radius, filled)
             this.stopUndo()
         }
     }
@@ -355,10 +354,7 @@ class MinitelMosaic {
             this.previewDo()
 
             this.startUndo()
-            this.drawCurve(
-                this.tool.start, this.endPoint, point,
-                this.color, this.separated, this.pointSize
-            )
+            this.drawCurve(this.tool.start, this.endPoint, point)
             this.stopUndo()
 
             this.tool.start = undefined
@@ -454,10 +450,7 @@ class MinitelMosaic {
             this.tool.isDrawing = false
             this.previewDo()
             this.startUndo()
-            this.drawRect(
-                this.tool.start, point,
-                this.color, this.separated, filled, this.pointSize
-            )
+            this.drawRect(this.tool.start, point, filled)
             this.stopUndo()
         }
     }
@@ -550,6 +543,8 @@ class MinitelMosaic {
         }
 
         if(separated && color >= 0) {
+            coords.fullWidth = coords.width
+            coords.fullHeight = coords.height
             coords.width--
             coords.height--
             coords.x++
@@ -590,6 +585,12 @@ class MinitelMosaic {
         if(point.color < 0) {
             ctx.clearRect(coords.x, coords.y, coords.width, coords.height)
         } else {
+            if(point.separated) {
+                ctx.fillStyle = Minitel.colors[point.back]
+                ctx.fillRect(
+                    coords.x, coords.y, coords.fullWidth, coords.fullHeight
+                )
+            }
             ctx.fillStyle = Minitel.colors[point.color]
             ctx.fillRect(coords.x, coords.y, coords.width, coords.height)
         }
@@ -604,50 +605,85 @@ class MinitelMosaic {
         this.drawPoints()
     }
 
-    drawLine(first, last, color, separated, pointSize) {
+    drawLine(first, last) {
         Drawing.line(first, last).forEach(point => {
-            this.memory.setPoint(point.x, point.y, color, separated, pointSize)
-        })
-
-        this.drawPoints()
-    }
-
-    drawCircle(center, radius, color, separated, filled, pointSize) {
-        const draw = filled ? Drawing.filledCircle : Drawing.circle
-
-        // Minitel mosaic pixels are not square...
-        draw(center, radius, 1.25).map(point => {
             this.memory.setPoint(
-                point.x, point.y, color, separated, filled ? 1 : pointSize
+                point.x,
+                point.y,
+                this.color,
+                this.back,
+                this.separated,
+                this.blink,
+                this.pointSize
             )
         })
 
         this.drawPoints()
     }
 
-    drawRect(start, end, color, separated, filled, pointSize) {
+    drawCircle(center, radius, filled) {
+        const draw = filled ? Drawing.filledCircle : Drawing.circle
+
+        // Minitel mosaic pixels are not square...
+        draw(center, radius, 1.25).map(point => {
+            this.memory.setPoint(
+                point.x,
+                point.y,
+                this.color,
+                this.back,
+                this.separated,
+                this.blink,
+                filled ? 1 : this.pointSize
+            )
+        })
+
+        this.drawPoints()
+    }
+
+    drawRect(start, end, filled) {
         const draw = filled ? Drawing.filledRectangle : Drawing.rectangle
 
         draw(start, end).forEach(point => {
             this.memory.setPoint(
-                point.x, point.y, color, separated, filled ? 1 : pointSize
+                point.x,
+                point.y,
+                this.color,
+                this.back,
+                this.separated,
+                this.blink,
+                filled ? 1 : this.pointSize
             )
         })
         
         this.drawPoints()
     }
 
-    drawCurve(start, end, control, color, separated, pointSize) {
+    drawCurve(start, end, control) {
         Drawing.quadBezierCurve(start, end, control).forEach(point => {
-            this.memory.setPoint(point.x, point.y, color, separated, pointSize)
+            this.memory.setPoint(
+                point.x,
+                point.y,
+                this.color,
+                this.back,
+                this.separated,
+                this.blink,
+                this.pointSize
+            )
         })
 
         this.drawPoints()
     }
 
-    fillArea(start, finalColor, separated) {
+    fillArea(start) {
         this.memory.getArea(start.x, start.y).forEach(point => {
-            this.memory.setPoint(point.x, point.y, finalColor, separated)
+            this.memory.setPoint(
+                point.x,
+                point.y,
+                this.color,
+                this.back,
+                this.separated,
+                this.blink
+            )
         })
         
         this.drawPoints()
