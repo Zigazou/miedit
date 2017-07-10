@@ -277,8 +277,8 @@ MosaicMemory.codeChars = "abcdefghijklmnopqrstuvwxyz012345"
  */
 MosaicMemory.toPixel = function(value) {
     return {
-        color: value & 0x100 ? 0 : value & 0x7,
-        back: value & 0x100 ? 0 : (value & 0x38) >> 3,
+        color: value & 0x100 ? -1 : value & 0x7,
+        back: value & 0x100 ? -1 : (value & 0x38) >> 3,
         separated: value & 0x40 ? true : false,
         blink: value & 0x80 ? true : false,
         transparent: value & 0x100 ? true : false

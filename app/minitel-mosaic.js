@@ -627,8 +627,11 @@ class MinitelMosaic {
             point.x, point.y, point.color, point.separated
         )
 
-        if(point.transparent) {
-            ctx.clearRect(coords.x, coords.y, coords.width, coords.height)
+        if(point.color < 0) {
+            ctx.clearRect(
+                coords.x, coords.y,
+                coords.width + lineWidth, coords.height + lineWidth
+            )
             return
         }
 
@@ -794,13 +797,12 @@ class MinitelMosaic {
     drawGrid() {
         const ctx = this.grid.getContext("2d")
         const lineWidth = 1 / this.zoom
+
         // Secondary grid
         ctx.beginPath()
 
-        ctx.lineWidth = lineWidth
-
         ctx.fillStyle = this.secondaryGrid
-        for(let x = 0; x < this.canvas.width; x+= Minitel.charWidth) {
+        for(let x = 0; x < this.canvas.width; x += Minitel.charWidth) {
             ctx.fillRect(x + 4 - lineWidth, 0, lineWidth, this.canvas.height)
         }
 
@@ -814,13 +816,12 @@ class MinitelMosaic {
 
         // Primary grid
         ctx.beginPath()
-        ctx.lineWidth = lineWidth
         ctx.fillStyle = this.primaryGrid
-        for(let x = 0; x < this.canvas.width; x+= Minitel.charWidth) {
+        for(let x = 0; x < this.canvas.width; x += Minitel.charWidth) {
             ctx.fillRect(x, 0, lineWidth, this.canvas.height)
         }
 
-        for(let y = 0; y < this.canvas.height; y+= Minitel.charHeight) {
+        for(let y = 0; y < this.canvas.height; y += Minitel.charHeight) {
             ctx.fillRect(0, y, this.canvas.width, lineWidth)
         }
 
