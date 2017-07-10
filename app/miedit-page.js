@@ -50,6 +50,12 @@ class MiEditPage {
             }
 
             this.pageName = value
+
+            window.history.replaceState(
+                history.state,
+                this.pageName,
+                window.location.href + "?page=" + this.pageName
+            )
         }
 
         const objSave = {
@@ -58,12 +64,6 @@ class MiEditPage {
         }
 
         this.mistorage.save(this.pageName, objSave)
-
-        window.history.replaceState(
-            history.state,
-            this.pageName,
-            window.location.href + "?page=" + this.pageName
-        )
     }
 
     onImport(event, param) {
