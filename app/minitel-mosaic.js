@@ -591,8 +591,8 @@ class MinitelMosaic {
             coords.x++
         }
 
-        coords.width -= 1 / this.zoom
-        coords.height -= 1 / this.zoom
+        //coords.width -= 1 / this.zoom
+        //coords.height -= 1 / this.zoom
 
         return coords
     }
@@ -610,7 +610,6 @@ class MinitelMosaic {
 
     drawPoint(point) {
         const ctx = this.drawing.getContext("2d")
-        const lineWidth = 1 / this.zoom
 
         if(this.undo.active) {
             this.undo.current.unshift({
@@ -628,26 +627,19 @@ class MinitelMosaic {
         )
 
         if(point.color < 0) {
-            ctx.clearRect(
-                coords.x, coords.y,
-                coords.width + lineWidth, coords.height + lineWidth
-            )
+            ctx.clearRect(coords.x, coords.y, coords.width, coords.height)
             return
         }
 
         if(point.separated) {
             ctx.fillStyle = Minitel.colors[point.back]
             ctx.fillRect(
-                coords.x, coords.y,
-                coords.fullWidth + lineWidth, coords.fullHeight + lineWidth
+                coords.x - 1, coords.y, coords.fullWidth, coords.fullHeight
             )
         }
 
         ctx.fillStyle = Minitel.colors[point.color]
-        ctx.fillRect(
-            coords.x, coords.y,
-            coords.width + lineWidth, coords.height + lineWidth
-        )
+        ctx.fillRect(coords.x, coords.y, coords.width, coords.height)
 
         if(point.blink) {
             ctx.beginPath()
@@ -803,7 +795,7 @@ class MinitelMosaic {
 
         ctx.fillStyle = this.secondaryGrid
         for(let x = 0; x < this.canvas.width; x += Minitel.charWidth) {
-            ctx.fillRect(x + 4 - lineWidth, 0, lineWidth, this.canvas.height)
+            ctx.fillRect(x + 4, 0, lineWidth, this.canvas.height)
         }
 
         for(let y = 0; y < this.canvas.height; y+= Minitel.charHeight) {
