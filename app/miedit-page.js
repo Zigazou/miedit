@@ -56,7 +56,14 @@ class MiEditPage {
             "thumbnail": this.miscreen.generateThumbnail(320, 250),
             "tree": this.mitree.serialize()
         }
+
         this.mistorage.save(this.pageName, objSave)
+
+        window.history.replaceState(
+            history.state,
+            this.pageName,
+            window.location.href + "?page=" + this.pageName
+        )
     }
 
     onImport(event, param) {

@@ -31,6 +31,8 @@ Minitel.colors = [
     "#FFFFFF", // white
 ]
 
+Minitel.contrasts = [ 7, 7, 0, 0, 7, 7, 0, 0 ]
+
 Minitel.directStream = {
     "clear-screen": [0x0c],
     "move-up": [0x0b],

@@ -623,17 +623,30 @@ class MinitelMosaic {
             point.x, point.y, point.color, point.separated
         )
 
-        if(point.color < 0) {
+        if(point.transparent) {
             ctx.clearRect(coords.x, coords.y, coords.width, coords.height)
-        } else {
-            if(point.separated) {
-                ctx.fillStyle = Minitel.colors[point.back]
-                ctx.fillRect(
-                    coords.x, coords.y, coords.fullWidth, coords.fullHeight
-                )
-            }
-            ctx.fillStyle = Minitel.colors[point.color]
-            ctx.fillRect(coords.x, coords.y, coords.width, coords.height)
+            return
+        }
+
+        if(point.separated) {
+            ctx.fillStyle = Minitel.colors[point.back]
+            ctx.fillRect(
+                coords.x, coords.y, coords.fullWidth, coords.fullHeight
+            )
+        }
+        ctx.fillStyle = Minitel.colors[point.color]
+        ctx.fillRect(coords.x, coords.y, coords.width, coords.height)
+
+        if(point.blink) {
+            ctx.beginPath()
+            ctx.lineWidth = 1 / this.zoom
+            ctx.strokeStyle = Minitel.colors[Minitel.contrasts[point.color]]
+            ctx.moveTo(coords.x, coords.y)
+            ctx.lineTo(coords.x + coords.width, coords.y + coords.height)
+            ctx.moveTo(coords.x + coords.width, coords.y)
+            ctx.lineTo(coords.x, coords.y + coords.height)
+            ctx.stroke()
+            ctx.closePath()
         }
     }
 
