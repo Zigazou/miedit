@@ -29,6 +29,7 @@ class MiEditPage {
 
         const events = [
             "value_changed.mitree",
+            "redraw.jstree",
             "create_node.jstree",
             "move_node.jstree",
             "delete_node.jstree"
