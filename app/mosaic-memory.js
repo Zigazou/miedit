@@ -291,19 +291,26 @@ MosaicMemory.toChar = function(value) {
 }
 
 MosaicMemory.pixelToValue = function(pixel) {
-    return (pixel.color < 0 ? 0 : pixel.color & 0x7)
-         | (pixel.back < 0 ? 0 : (pixel.back & 0x7) << 3)
-         | (pixel.separated ? 0x40 : 0)
-         | (pixel.blink ? 0x80 : 0)
-         | (pixel.transparent ? 0x100 : 0)
+    const transparent = pixel.color < 0 || pixel.transparent
+    if(transparent) {
+        return 0x100
+    } else {
+        return (pixel.color & 0x7)
+             | (((pixel.separated ? pixel.back : pixel.color) & 0x7) << 3)
+             | (pixel.separated ? 0x40 : 0)
+             | (pixel.blink ? 0x80 : 0)
+    }
 }
 
 MosaicMemory.colorToValue = function(color, back, separated, blink) {
-    return (color < 0 ? 0 : color & 0x7)
-         | (back < 0 ? 0 : (back & 0x7) << 3)
-         | (separated ? 0x40 : 0)
-         | (blink ? 0x80 : 0)
-         | (color < 0 ? 0x100 : 0)
+    if(color < 0) {
+        return 0x100
+    } else {
+        return (color & 0x7)
+             | (((separated ? back : color) & 0x7) << 3)
+             | (separated ? 0x40 : 0)
+             | (blink ? 0x80 : 0)
+    }
 }
 
 MosaicMemory.charToValue = function(char) {
