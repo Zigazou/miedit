@@ -8,6 +8,26 @@
       <canvas class="mosaic-error"></canvas>
     </div>
   </div>
+  <div class="mosaic-current-settings">
+    <img src="icon/graphics-pencil.svg" width="32" height="32"
+         id="mosaic-current-tool"
+         title="Current tool" />
+    <img src="icon/graphics-size-1.svg" width="32" height="32"
+         id="mosaic-current-size"
+         title="Current point size" />
+    <img src="icon/color-fg-7.svg" width="32" height="32"
+         id="mosaic-current-foreground"
+         title="Current foreground color" />
+    <img src="icon/color-bg-0.svg" width="32" height="32"
+         id="mosaic-current-background"
+         title="Current background color" />
+    <img src="icon/effect-separated-off.svg" width="32" height="32"
+         id="mosaic-current-separated"
+         title="Current separated" />
+    <img src="icon/graphics-blink-off.svg" width="32" height="32"
+         id="mosaic-current-blink"
+         title="Current blink" />
+  </div>
   <div class="simple-ribbon" id="mosaic-ribbon">
     <h2>Mosaic editor</h2>
     
@@ -122,10 +142,10 @@
       <div>
         <h4>Blink</h4>
         <button class="large" data-param="off" data-call="onBlink">
-          <img src="icon/effect-separated-off.svg" /><br/>Blink<br/>off
+          <img src="icon/graphics-blink-off.svg" /><br/>Blink<br/>off
         </button>
         <button class="large" data-param="on" data-call="onBlink">
-          <img src="icon/effect-separated-on.svg" /><br/>Blink<br/>on
+          <img src="icon/graphics-blink-on.svg" /><br/>Blink<br/>on
         </button>
       </div>
     </div>

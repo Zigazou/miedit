@@ -166,9 +166,10 @@ class MinitelMosaic {
         this.drawPoints()
     }
 
-    changeTool(newToolName) {
+    changeTool(newToolName, fromElement) {
         this.setCursor(this.tool.name, newToolName)
         this.tool = { name: newToolName }
+        this.setCurrentIcon("mosaic-current-tool", fromElement)
     }
 
     onImportEditTf(event, param) {
@@ -176,18 +177,56 @@ class MinitelMosaic {
         this.drawPoints()
     }
 
-    onPointSize(event, param) { this.pointSize = parseInt(param) }
-    onToolChange(event, param) { this.changeTool(param) }
+    getButtonIcon(domElement) {
+        const icons = domElement.getElementsByTagName("img")
+        return icons.length > 0 ? icons[0].src : ""
+    }
 
-    onErase(event, param) { this.color = -1 }
-    onForegroundChange(event, param) { this.color = parseInt(param) }
-    onBackgroundChange(event, param) { this.back = parseInt(param) }
+    setCurrentIcon(id, fromElement) {
+        if(fromElement === undefined) {
+            return
+        }
 
-    onSeparated(event, param) { this.separated = param === "on" }
-    onBlink(event, param) { this.blink = param === "on" }
+        document.getElementById(id).src = this.getButtonIcon(fromElement)
+    }
+
+    onPointSize(event, param) {
+        this.pointSize = parseInt(param)
+        this.setCurrentIcon("mosaic-current-size", event.target)
+    }
+
+    onToolChange(event, param) {
+        this.changeTool(param, event.target)
+    }
+
+    onErase(event, param) {
+        this.color = -1
+        this.setCurrentIcon("mosaic-current-foreground", event.target)
+    }
+
+    onForegroundChange(event, param) {
+        this.color = parseInt(param)
+        this.setCurrentIcon("mosaic-current-foreground", event.target)
+    }
+
+    onBackgroundChange(event, param) {
+        this.back = parseInt(param)
+        this.setCurrentIcon("mosaic-current-background", event.target)
+    }
+
+    onSeparated(event, param) {
+        this.separated = param === "on"
+        this.setCurrentIcon("mosaic-current-separated", event.target)
+    }
+
+    onBlink(event, param) {
+        this.blink = param === "on"
+        this.setCurrentIcon("mosaic-current-blink", event.target)
+    }
 
     onText(event, param) {
         document.getElementById("graphics-text-form").classList.add("visible")
+        this.setCurrentIcon("mosaic-current-tool", event.target)
     }
 
     onSetText(event, param) {
@@ -202,7 +241,9 @@ class MinitelMosaic {
             form["text-style"].value,
             parseInt(form["text-size"].value),
             this.color,
+            this.back,
             this.separated,
+            this.blink,
             form["text-compress"].checked
         )
         

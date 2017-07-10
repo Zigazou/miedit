@@ -74,6 +74,20 @@
     opacity: 0.5;
 }
 
+/* Current settings */
+.mosaic-current-settings {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #eaedf1;
+    padding: 0 0.5em;
+}
+
+.mosaic-current-settings img {
+    display: block;
+    margin: 0.5em 0;
+}
+
 /* Cursors for each tool */
 .cursor-pencil {
     cursor: url(../icon/graphics-pencil.svg) 0 32,

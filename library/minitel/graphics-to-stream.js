@@ -2,112 +2,169 @@
 var Minitel = Minitel || {}
 
 Minitel.graphicsToStream = function(string, col, row) {
-    function isSeparated(sextet) {
-        for(let c of sextet) {
-            if(c >= "A" && c <= "H") return c.toLowerCase()
-        }
+    function mostFrequent(pixels, hashFunc) {
+        const counts = []
+        let bestPixel = undefined
+        let bestCount = 0
 
-        return undefined
+        for(let pixel of pixels) {
+            const hash = hashFunc(pixel)
+            if(hash === undefined) continue
+
+            if(counts[hash]) {
+                counts[hash]++
+            } else {
+                counts[hash] = 1
+            }
+
+            if(counts[hash] > bestCount) {
+                bestCount = counts[hash]
+                bestPixel = pixel
+            }
+
+            if(bestCount >= pixels.length / 2) break
+        }        
+
+        return bestPixel
     }
 
-    let lastBg = "-"
-    function twoColors(sextet, separatedColor) {
-        const cardinals = {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0,
-            "g": 0,
-            "h": 0,
-            "-": 0,
-            "*": -1
-        }
+    function attributes(pixels) {
+        const separated = pixels.find(pixel => {
+            return pixel.separated && (pixel.color !== pixel.back)
+        })
 
-        for(let char of sextet) cardinals[char]++
+        const blink = pixels.find(pixel => {
+            return pixel.blink && (pixel.color !== pixel.back)
+        })
 
-        // Find most often used color
-        let fg = "*"
-        for(let key in cardinals) {
-            if(cardinals[key] > cardinals[fg]) fg = key
-        }
+        let [ foreground, background ] = [ 7, 0 ]
 
-        delete cardinals[fg]
+        if(separated) {
+            foreground = mostFrequent(pixels, pixel => {
+                return pixel.separated && (pixel.color !== pixel.back)
+                     ? pixel.color : undefined
+            }).color
 
-        // Find second most often used color
-        let bg = "*"
-        for(let key in cardinals) {
-            if(cardinals[key] > cardinals[bg]) bg = key
-        }
-
-        if(fg === "-" || fg === "a") {
-            fg = bg
-            bg = "-"
-        }
-
-        if(bg === separatedColor) {
-            const swap = fg
-            fg = bg
-            bg = swap
-        }
-
-        // Current system does not handle background color of separated mosaic
-        // when each point has foreground color
-        if(cardinals[bg] === 0) {
-            if(separatedColor) {
-                bg = lastBg
+            background = mostFrequent(pixels, pixel => {
+                return pixel.separated ? pixel.back : pixel.color
+            })
+            
+            if(background.separated) {
+                background = background.back
             } else {
-                const swap = fg
-                fg = bg
-                bg = swap
+                background = background.color
+            }
+        } else if(blink) {
+            foreground = mostFrequent(pixels, pixel => {
+                return pixel.blink ? pixel.color : undefined
+            }).color
+
+            background = mostFrequent(pixels, pixel => {
+                return pixel.color === foreground ? undefined : pixel.color
+            })
+
+            if(background === undefined) {
+                background = 0
+            } else {
+                background = background.color
+            }
+        } else {
+            background = mostFrequent(pixels, pixel => {
+                return pixel.color
+            }).color
+
+            foreground = mostFrequent(pixels, pixel => {
+                return pixel.color === background ? undefined : pixel.color
+            })
+            if(foreground === undefined) {
+                foreground = 7
+            } else {
+                foreground = foreground.color
+            }
+        }        
+
+        return [ foreground, background, separated, blink ]
+    }
+
+    function sextetToChar(sextet) {
+        if(sextet.every(pixel => { return pixel.transparent })) return [0x09]
+
+        const [ foreground, background, separated, blink ] = attributes(sextet)
+
+        const charCode = sextet.reduce((code, pixel, position) => {
+            if(pixel.transparent) return code
+            if(separated && !pixel.separated) return code
+            if(pixel.color !== background) return code | (1 << position)
+            return code
+        }, 0)
+
+        const sequence = []
+        sequence.push(0x1b, 0x40 + foreground)
+        sequence.push(0x1b, 0x50 + background)
+        sequence.push(0x1b, separated ? 0x5a : 0x59)
+        sequence.push(0x1b, blink ? 0x48 : 0x49)
+        sequence.push(0x20 + charCode)
+
+        return sequence
+    }
+
+    function stringToPixels(string) {
+        const codeChars = "abcdefghijklmnopqrstuvwxyz012345"
+
+        const rows = []
+        let row = []
+
+        for(i = 0; i < string.length; i+= 2) {
+            const value = codeChars.indexOf(string[i])
+                        | (codeChars.indexOf(string[i + 1]) << 5)
+
+            row.push({
+                color: value & 0x100 ? 0 : value & 0x7,
+                back: value & 0x100 ? 0 : (value & 0x38) >> 3,
+                separated: value & 0x40 ? true : false,
+                blink: value & 0x80 ? true : false,
+                transparent: value & 0x100 ? true : false
+            })
+
+            if(row.length === 80) {
+                rows.push(row)
+                row = []
             }
         }
 
-        lastBg = bg
-        return [Minitel.color2int[fg], Minitel.color2int[bg]]
+        return rows
     }
 
-    function sextet2char(sextet) {
-        if(sextet === "------") return [0x09]
-
-        const separatedColor = isSeparated(sextet)
-        sextet = sextet.toLowerCase()
-
-        const [fg, bg] = twoColors(sextet, separatedColor)
-
-        let char = 0
-        let bit = 1
-        for(let c of sextet) {
-            if(Minitel.color2int[c] !== bg) char += bit
-            bit *= 2
+    function pixelsToSextets(pixels) {
+        const rows = []
+        for(let y = 0; y < pixels.length; y += 3) {
+            const row = []
+            for(let x = 0; x < pixels[y].length; x += 2) {
+                row.push([
+                    pixels[y][x], pixels[y][x + 1],
+                    pixels[y + 1][x], pixels[y + 1][x + 1],
+                    pixels[y + 2][x], pixels[y + 2][x + 1],
+                ])
+            }
+            rows.push(row)
         }
-        char = 0x20 + char
 
-        if(separatedColor) {
-            return [0x1b, 0x40 + fg, 0x1b, 0x50 + bg, 0x1b, 0x5a, char]
-        } else {
-            lastBg = bg
-            return [0x1b, 0x40 + fg, 0x1b, 0x50 + bg, 0x1b, 0x59, char]
-        }
+        return rows
     }
 
     const stream = new Minitel.Stream()
 
-    if(string === undefined || string.length !== 80 * 72) return stream
+    if(string === undefined) return stream
+    if(string.length === 80 * 72) string = MosaicMemory.oldToNewFormat(string)
+    if(string.length !== 80 * 72 * 2) return stream
 
-    for(let y = 0; y <= 72 - row * 3; y += 3) {
+    const sextets = pixelsToSextets(stringToPixels(string))
+
+    for(let y = 0; y <= 24 - row; y++) {
         // Converts pixels to mosaic characters
         let codes = new Minitel.Stream()
-        for(let x = 0; x < 80 - col * 2; x += 2) {
-            const sextet = string[x + y * 80]
-                         + string[x + 1 + y * 80]
-                         + string[x + (y + 1) * 80]
-                         + string[x + 1 + (y + 1) * 80]
-                         + string[x + (y + 2) * 80]
-                         + string[x + 1 + (y + 2) * 80]
-
-            codes.push(sextet2char(sextet))
+        for(let x = 0; x < 40 - col; x++) {
+            codes.push(sextetToChar(sextets[y][x]))
         }
 
         codes = codes.optimizeRow(true).trimRow()
@@ -123,7 +180,7 @@ Minitel.graphicsToStream = function(string, col, row) {
 
         stream.push([
             0x1f,
-            0x40 + y / 3 + row,
+            0x40 + y + row,
             0x40 + col + startX + 1,
             0x0e,
             codes

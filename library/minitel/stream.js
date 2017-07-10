@@ -142,6 +142,7 @@ Minitel.Stream = class {
         let bg = moveFirst ? 0x50 : -1
         let fg = moveFirst ? 0x47 : -1
         let separated = false
+        let blink = false
         let char = 0x00
         let count = 0
         let currentSet = -1
@@ -160,9 +161,12 @@ Minitel.Stream = class {
             let chgSep = this.items[i] === 0x1b
                       && (   (this.items[i + 1] === 0x5a && !separated)
                           || (this.items[i + 1] === 0x59 && separated))
+            let chgBlk = this.items[i] === 0x1b
+                      && (   (this.items[i + 1] === 0x48 && !blink)
+                          || (this.items[i + 1] === 0x49 && blink))
             let chgChar = this.items[i] >= 0x20 && this.items[i] !== char
 
-            const changes = [ moveRight, chgFG, chgBG, chgSep, chgChar ]
+            const changes = [ moveRight, chgFG, chgBG, chgSep, chgBlk, chgChar ]
 
             if(count > 0 && changes.some(identity)) {
                 if(count == 1) {
@@ -186,6 +190,10 @@ Minitel.Stream = class {
             } else if(chgSep) {
                 // Change separated
                 separated = !separated
+                optimized.push([0x1b, this.items[i + 1]])
+            } else if(chgBlk) {
+                // Change blink
+                blink = !blink
                 optimized.push([0x1b, this.items[i + 1]])
             } else if(chgChar) {
                 if(currentSet !== -1) {

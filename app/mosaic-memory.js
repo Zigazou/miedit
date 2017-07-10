@@ -197,14 +197,16 @@ class MosaicMemory {
 
     putRect(zone, destination) {
         zone.forEach((value, x, y) => {
-            if(value < 0) return
-
             const pixel = MosaicMemory.toPixel(value)
+            if(pixel.transparent) { return }
+
             this.setPoint(
                 x + destination.x,
                 y + destination.y,
                 pixel.color,
-                pixel.separated
+                pixel.back,
+                pixel.separated,
+                pixel.blink
             )
         })
     }
@@ -289,16 +291,16 @@ MosaicMemory.toChar = function(value) {
 }
 
 MosaicMemory.pixelToValue = function(pixel) {
-    return (pixel.color < 0 ? -1 : pixel.color & 0x7)
-         | (pixel.back < 0 ? -1 : (pixel.back & 0x7) << 3)
+    return (pixel.color < 0 ? 0 : pixel.color & 0x7)
+         | (pixel.back < 0 ? 0 : (pixel.back & 0x7) << 3)
          | (pixel.separated ? 0x40 : 0)
          | (pixel.blink ? 0x80 : 0)
-         | (pixel.color < 0 ? 0x100 : 0)
+         | (pixel.transparent ? 0x100 : 0)
 }
 
 MosaicMemory.colorToValue = function(color, back, separated, blink) {
-    return (color < 0 ? -1 : color & 0x7)
-         | (back < 0 ? -1 : (back & 0x7) << 3)
+    return (color < 0 ? 0 : color & 0x7)
+         | (back < 0 ? 0 : (back & 0x7) << 3)
          | (separated ? 0x40 : 0)
          | (blink ? 0x80 : 0)
          | (color < 0 ? 0x100 : 0)
@@ -315,13 +317,13 @@ MosaicMemory.charToValue = function(char) {
 }
 
 MosaicMemory.oldToNewFormat = function(oldFormat) {
-    const fullChars = "abcdefg"
-    const sepChars = "ABCDEFG"
+    const fullChars = "abcdefgh"
+    const sepChars = "ABCDEFGH"
 
     let newFormat = ""
     oldFormat.split("").forEach(char => {
         const pixel = {
-            color: 0 ,
+            color: 0,
             back: 0,
             separated: false,
             blink: false,
