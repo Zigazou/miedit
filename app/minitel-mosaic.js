@@ -610,6 +610,7 @@ class MinitelMosaic {
 
     drawPoint(point) {
         const ctx = this.drawing.getContext("2d")
+        const lineWidth = 1 / this.zoom
 
         if(this.undo.active) {
             this.undo.current.unshift({
@@ -634,11 +635,16 @@ class MinitelMosaic {
         if(point.separated) {
             ctx.fillStyle = Minitel.colors[point.back]
             ctx.fillRect(
-                coords.x, coords.y, coords.fullWidth, coords.fullHeight
+                coords.x, coords.y,
+                coords.fullWidth + lineWidth, coords.fullHeight + lineWidth
             )
         }
+
         ctx.fillStyle = Minitel.colors[point.color]
-        ctx.fillRect(coords.x, coords.y, coords.width, coords.height)
+        ctx.fillRect(
+            coords.x, coords.y,
+            coords.width + lineWidth, coords.height + lineWidth
+        )
 
         if(point.blink) {
             ctx.beginPath()
