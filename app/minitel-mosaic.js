@@ -591,6 +591,9 @@ class MinitelMosaic {
             coords.x++
         }
 
+        coords.width -= 1 / this.zoom
+        coords.height -= 1 / this.zoom
+
         return coords
     }
 
@@ -784,26 +787,20 @@ class MinitelMosaic {
 
     drawGrid() {
         const ctx = this.grid.getContext("2d")
-
+        const lineWidth = 1 / this.zoom
         // Secondary grid
         ctx.beginPath()
 
-        ctx.lineWidth = 1 / this.zoom
+        ctx.lineWidth = lineWidth
 
-        ctx.strokeStyle = this.secondaryGrid
-        for(let x = Minitel.charWidth / this.pixelsPerWidth;
-            x < this.canvas.width;
-            x+= Minitel.charWidth
-        ) {
-            ctx.moveTo(x, 0)
-            ctx.lineTo(x, this.canvas.height)
+        ctx.fillStyle = this.secondaryGrid
+        for(let x = 0; x < this.canvas.width; x+= Minitel.charWidth) {
+            ctx.fillRect(x + 4 - lineWidth, 0, lineWidth, this.canvas.height)
         }
 
         for(let y = 0; y < this.canvas.height; y+= Minitel.charHeight) {
-            ctx.moveTo(0, y + 3)
-            ctx.lineTo(this.canvas.width, y + 3)
-            ctx.moveTo(0, y + 7)
-            ctx.lineTo(this.canvas.width, y + 7)
+            ctx.fillRect(0, y + 3, this.canvas.width, lineWidth)
+            ctx.fillRect(0, y + 7, this.canvas.width, lineWidth)
         }
 
         ctx.stroke()
@@ -811,16 +808,14 @@ class MinitelMosaic {
 
         // Primary grid
         ctx.beginPath()
-        ctx.lineWidth = 1 / this.zoom
-        ctx.strokeStyle = this.primaryGrid
+        ctx.lineWidth = lineWidth
+        ctx.fillStyle = this.primaryGrid
         for(let x = 0; x < this.canvas.width; x+= Minitel.charWidth) {
-            ctx.moveTo(x, 0)
-            ctx.lineTo(x, this.canvas.height)
+            ctx.fillRect(x, 0, lineWidth, this.canvas.height)
         }
 
         for(let y = 0; y < this.canvas.height; y+= Minitel.charHeight) {
-            ctx.moveTo(0, y)
-            ctx.lineTo(this.canvas.width, y)
+            ctx.fillRect(0, y, this.canvas.width, lineWidth)
         }
 
         ctx.stroke()
