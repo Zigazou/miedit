@@ -92,7 +92,6 @@ Minitel.graphicsToStream = function(string, col, row) {
         const [ foreground, background, separated, blink ] = attributes(sextet)
 
         const charCode = sextet.reduce((code, pixel, position) => {
-            if(pixel.transparent) return code
             if(separated && !pixel.separated) return code
             if(pixel.color !== background) return code | (1 << position)
             return code
