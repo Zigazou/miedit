@@ -327,13 +327,8 @@ class MinitelDecoder {
         }
     }
 
-    drcsDefineCharset(charset) {
-        this.current.drcsCharsetToDefine = charset
-    }
-
-    drcsSetStartChar(startChar) {
-        this.current.drcsStartChar = startChar
-    }
+    drcsDefineCharset(charset) { this.current.drcsCharsetToDefine = charset }
+    drcsSetStartChar(startChar) { this.current.drcsStartChar = startChar }
 
     drcsDefineChar(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o) {
         const sextets = [a, b, c, d, e, f, g, h, i, j, k, l, m, n]
@@ -369,13 +364,8 @@ class MinitelDecoder {
         this.current.drcsStartChar++
     }
 
-    drcsUseG0(bool) {
-        this.current.drcsG0 = bool
-    }
-    
-    drcsUseG1(bool) {
-        this.current.drcsG1 = bool
-    }
+    drcsUseG0(bool) { this.current.drcsG0 = bool }
+    drcsUseG1(bool) { this.current.drcsG1 = bool }
 
     decode(char) {
         const c = char.charCodeAt(0)
