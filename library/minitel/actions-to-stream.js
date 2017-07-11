@@ -80,6 +80,49 @@ Minitel.actionsToStream = function(actions, offsetX, offsetY) {
             for(let i = 0; i < parseInt(action.data.value); i++) {
                 stream.push(0x00)
             }
+        } else if(action.type === "drcs-create") {
+            if(action.data.char === undefined) continue
+            let charCode = 0
+            if(action.data.char.length === 1) {
+                charCode = action.data.char.charCodeAt(0);
+            } else {
+                charCode = parseInt(action.data.char)
+            }
+
+            if(charCode === undefined) continue
+            if(charCode <= 32 || charCode > 127) continue
+
+            const bits = []
+            for(let y = 0; y < 10; y++) {
+                for(let x = 0; x < 8; x++) {
+                    if(action.data["px-" + x + "-" + y]) {
+                        bits.push(1)
+                    } else {
+                        bits.push(0)
+                    }
+                }
+            }
+
+            const sextets = []
+            let bitCount = 0
+            let sextet = 0
+            bits.forEach(bit => {
+                sextet = (sextet << 1) | bit
+                bitCount++
+                if(bitCount === 6) {
+                    sextets.push(0x40 + sextet)
+                    bitCount = 0
+                    sextet = 0
+                }
+            })
+            sextets.push(0x40 + (sextet << 4))
+
+            const charset = action.data.charset === "G0" ? 0x42 : 0x43
+
+            stream.push([0x1f, 0x23, 0x20, 0x20, 0x20, charset, 0x49])
+            stream.push([0x1f, 0x23, charCode, 0x30])
+            stream.push(sextets)
+            stream.push([0x30, 0x1f, 0x41, 0x41])
         }
     }
 

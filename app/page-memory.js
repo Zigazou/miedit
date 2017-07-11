@@ -66,12 +66,15 @@ class PageMemory {
 
         /**
          * G0 is the alphanumeric character set, G1 is the mosaic character set
+         * G'0 and G'1 are the DRCS counterpart
          * @member {Object}
          * @private
          */
         this.font = {
             "G0": this.loadFont("font/ef9345-g0.png"),
             "G1": this.loadFont("font/ef9345-g1.png"),
+            "G'0": this.loadFont("font/blank.png"),
+            "G'1": this.loadFont("font/blank.png"),
         }
 
         /**
@@ -197,6 +200,24 @@ class PageMemory {
     }
 
     /**
+     * Redefine a character (DRCS)
+     * @param {number} ord Character ordinal
+     * @param {Array[number]} design An array of 10 bytes defining the character
+     */
+    defineCharG0(ord, design) {
+        this.font["G'0"].defineChar(ord, design)
+    }
+
+    /**
+     * Redefine a character (DRCS)
+     * @param {number} ord Character ordinal
+     * @param {Array[number]} design An array of 10 bytes defining the character
+     */
+    defineCharG1(ord, design) {
+        this.font["G'1"].defineChar(ord, design)
+    }
+
+    /**
      * Scroll the page memory in a direction. It takes the page mode into
      * account.
      * @param {string} direction "up" or "down"
@@ -253,8 +274,10 @@ class PageMemory {
      */
     render() {
         // Do not render if the fonts are not ready
-        if(this.font["G0"].isReady === false) return
-        if(this.font["G1"].isReady === false) return
+        if(!this.font["G0"].isReady) return
+        if(!this.font["G1"].isReady) return
+        if(!this.font["G'0"].isReady) return
+        if(!this.font["G'1"].isReady) return
 
         // Add the inverted F on the status line
         const fCell = new CharCell()
@@ -321,17 +344,17 @@ class PageMemory {
                                       || !cell.invert))
                                      ) {
                     if(cell instanceof CharCell) {
-                        page = this.font["G0"]
+                        page = cell.drcs ? this.font["G'0"] : this.font["G0"]
                         part = cell.part
                         mult = cell.mult
                         unde = underline
                     } else if(cell instanceof DelimiterCell) {
-                        page = this.font["G0"]
+                        page = cell.drcs ? this.font["G'0"] : this.font["G0"]
                         part = { x: 0, y: 0 }
                         mult = cell.mult
                         unde = underline
                     } else {
-                        page = this.font["G1"]
+                        page = cell.drcs ? this.font["G'1"] : this.font["G1"]
                         part = { x: 0, y: 0 }
                         mult = { width: 1, height: 1 }
                         unde = false
@@ -341,13 +364,8 @@ class PageMemory {
                 }
 
                 if(cell instanceof DelimiterCell) {
-                    if(cell.mask !== undefined) {
-                        mask = cell.mask
-                    }
-
-                    if(cell.zoneUnderline !== undefined) {
-                        underline = cell.zoneUnderline
-                    }
+                    if(cell.mask) mask = cell.mask
+                    if(cell.zoneUnderline) underline = cell.zoneUnderline
                 }
             }
 

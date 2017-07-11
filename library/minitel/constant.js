@@ -68,6 +68,10 @@ Minitel.directStream = {
     "color-bg-5": [0x1b, 0x55],
     "color-bg-6": [0x1b, 0x56],
     "color-bg-7": [0x1b, 0x57],
+    "drcs-std-g0": [0x1b, 0x28, 0x40],
+    "drcs-drcs-g0": [0x1b, 0x28, 0x20, 0x42],
+    "drcs-std-g1": [0x1b, 0x29, 0x63],
+    "drcs-drcs-g1": [0x1b, 0x29, 0x20, 0x43],
 }
 
 Minitel.specialChars = {
@@ -231,8 +235,8 @@ Minitel.states =  {
 
     "esc": {
         0x23: { goto: "attribute" },
-        0x28: { goto: "selectG0charset" },
-        0x29: { goto: "selectG1charset" },
+        0x28: { goto: "drcs-g0-use" },
+        0x29: { goto: "drcs-g1-use" },
         0x39: { goto: "pro1" },
         0x3A: { goto: "pro2" },
         0x3B: { goto: "pro3" },
@@ -269,8 +273,47 @@ Minitel.states =  {
         0x5F: { func: "setMask", arg: false },
     },
 
-    "us": { "*": { goto: "us-2" } },
+    "us": {
+        0x23: { goto: "drcs-define" },
+        "*": { goto: "us-2" }
+    },
     "us-2": { "*": { func: "locate", dynarg: 2 } },
+
+    "drcs-define": {
+        0x20: { goto: "drcs-define-2" },
+        "*": { func: "drcsSetStartChar", dynarg: 1, goto: "drcs-start" }
+    },
+
+    // Select charset on which some chars will be defined
+    "drcs-define-2": { 0x20: { goto: "drcs-define-3" } },
+    "drcs-define-3": { 0x20: { goto: "drcs-define-gselect" } },
+    "drcs-define-gselect": {
+        0x42: { goto: "drcs-define-validate-g0" },
+        0x43: { goto: "drcs-define-validate-g1" }
+    },
+    "drcs-define-validate-g0": { 0x49: { func: "drcsDefineCharset", arg: "G0" } },
+    "drcs-define-validate-g1": { 0x49: { func: "drcsDefineCharset", arg: "G1" } },
+
+    // Define a character
+    "drcs-start": { 0x30: { goto: "drcs-read" } },
+    "drcs-read": {
+        0x30: { func: "drcsDefineChar", dynarg: 15, goto: "drcs-read" },
+        0x1f: { goto: "us" },
+        "*": { goto: "drcs-read" }
+    },
+
+    // Select use or not of DRCS charsets
+    "drcs-g0-use": {
+        0x40: { func: "drcsUseG0", arg: false },
+        0x20: { goto: "drcs-g0-unuse" }
+    },
+    "drcs-g0-unuse": { 0x42: { func: "drcsUseG0", arg: true } },
+
+    "drcs-g1-use": {
+        0x63: { func: "drcsUseG1", arg: false },
+        0x20: { goto: "drcs-g1-unuse" }
+    },
+    "drcs-g1-unuse": { 0x43: { func: "drcsUseG1", arg: true } },
 
     "attribute": {
         0x20: { goto: "attributeOn" },

@@ -140,6 +140,11 @@ class MiTree {
             "content-block": "Block",
             "content-graphics": "Graphics",
             "content-box": "Box",
+            "drcs-create": "Create DRCS character",
+            "drcs-std-g0": "Use standard G0",
+            "drcs-drcs-g0": "Use DRCS G0",
+            "drcs-std-g1": "Use standard G1",
+            "drcs-drcs-g1": "Use DRCS G1",
             "smgraph": "Semigraphic characters",
             "content-delay": "Delay"
         }

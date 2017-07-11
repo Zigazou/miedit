@@ -149,3 +149,25 @@ select { height: 2.6em; }
     background-repeat: no-repeat;
 }
 
+/* Mini DRCS editor */
+.drcs-checkbox-pixel {
+    position: relative;
+    overflow: hidden;
+}
+
+.drcs-checkbox-pixel input {
+    position: absolute;
+    left: -9999em;
+}
+
+.drcs-checkbox-pixel label {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    background-color: white;
+}
+
+.drcs-checkbox-pixel input:checked+label {
+    background-color: black;
+}
+

@@ -188,4 +188,36 @@ class FontSprite {
             ctx.fillRect(x, y + this.char.height - 1, this.char.width, 1)
         }
     }
+
+    /**
+     * Redefine a character (DRCS)
+     * @param {number} ord Character ordinal
+     * @param {Array[number]} design An array of 10 bytes defining the character
+     */
+    defineChar(ord, design) {
+        if(ord <= 32 || ord >= 128) return
+        if(design.length !== 10) return
+
+        const coords = this.toCoordinates(ord)
+        this.spriteSheetColors.forEach((spriteSheetColor, color) => {
+            const ctx = spriteSheetColor.getContext("2d")
+            ctx.globalCompositeOperation = "source-over"
+
+            ctx.clearRect(coords.x, coords.y, this.char.width, this.char.height)
+
+            ctx.fillStyle = this.colors[color]
+            design.forEach((byte, offsetY) => {
+                byte = byte & 0xff
+
+                for(let bitPosition = 0; bitPosition < 8; bitPosition++) {
+                    if(byte & (1 << (7 - bitPosition))) {
+                        ctx.fillRect(
+                            coords.x + bitPosition, coords.y + offsetY,
+                            1, 1
+                        )
+                    }
+                }
+            })
+        })
+    }
 }

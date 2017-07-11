@@ -19,6 +19,7 @@ class CharCell extends Cell {
         this.invert = false
         this.mult = { width: 1, height: 1 }
         this.part = { x: 0, y: 0 }
+        this.drcs = false
 
         Object.preventExtensions(this)
     }
@@ -33,6 +34,7 @@ class CharCell extends Cell {
         cell.invert = this.invert
         cell.mult = { width: this.mult.width, height: this.mult.height }
         cell.part = { x: this.part.x, y: this.part.y }
+        cell.drcs = this.drcs
 
         return cell
     }
@@ -45,6 +47,7 @@ class MosaicCell extends Cell {
         this.bgColor = 0
         this.blink = false
         this.separated = false
+        this.drcs = false
 
         Object.preventExtensions(this)
     }
@@ -58,6 +61,7 @@ class MosaicCell extends Cell {
         cell.bgColor = this.bgColor
         cell.blink = this.blink
         cell.separated = this.separated
+        cell.drcs = this.drcs
 
         return cell
     }

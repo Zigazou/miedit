@@ -31,7 +31,12 @@ class MinitelDecoder {
             blink: false,
             invert: false,
             mask: false,
-            separated: false
+            separated: false,
+
+            drcsG0: false,
+            drcsG1: false,
+            drcsCharsetToDefine: undefined,
+            drcsStartChar: undefined,
         }
     }
 
@@ -268,6 +273,7 @@ class MinitelDecoder {
         cell.blink = this.current.blink
         cell.invert = this.current.invert
         cell.mult = this.current.mult
+        cell.drcs = this.current.drcsG0
 
         for(let j = 0; j < cell.mult.height; j++) {
             for(let i = 0; i < cell.mult.width; i++) {
@@ -288,6 +294,7 @@ class MinitelDecoder {
         cell.bgColor = this.current.bgColor
         cell.blink = this.current.blink
         cell.separated = this.current.separated
+        cell.drcs = this.current.drcsG1
 
         if(cell.value >= 0x20 && cell.value <= 0x5F) {
             cell.value += 0x20
@@ -318,6 +325,56 @@ class MinitelDecoder {
         for(let i = 0; i < count; i++) {
             this.print(this.charCode)
         }
+    }
+
+    drcsDefineCharset(charset) {
+        this.current.drcsCharsetToDefine = charset
+    }
+
+    drcsSetStartChar(startChar) {
+        this.current.drcsStartChar = startChar
+    }
+
+    drcsDefineChar(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o) {
+        const sextets = [a, b, c, d, e, f, g, h, i, j, k, l, m, n]
+                      .map(value => { return (value - 0x40) & 0x3f })
+
+        // Converts 14 6-bits values to 10 8-bits values
+        // 0      1      2      3     !4      5      6      7     !8
+        // 543210 543210 543210 543210 543210 543210 543210 543210 543210...
+        // 765432 107654 321076 543210 765432 107654 321076 543210 765432...
+
+        const bytes = [
+            sextets[0] << 2 | sextets[1] >> 4,
+            (sextets[1] & 0xf) << 4 | sextets[2] >> 2,
+            (sextets[2] & 3) << 6 | sextets[3],
+
+            sextets[4] << 2 | sextets[5] >> 4,
+            (sextets[5] & 0xf) << 4 | sextets[6] >> 2,
+            (sextets[6] & 3) << 6 | sextets[7],
+
+            sextets[8] << 2 | sextets[9] >> 4,
+            (sextets[9] & 0xf) << 4 | sextets[10] >> 2,
+            (sextets[10] & 3) << 6 | sextets[11],
+
+            sextets[12] << 2 | sextets[13] >> 4,
+        ]
+
+        if(this.current.drcsCharsetToDefine === "G0") {
+            this.pm.defineCharG0(this.current.drcsStartChar, bytes)
+        } else {
+            this.pm.defineCharG1(this.current.drcsStartChar, bytes)
+        }
+
+        this.current.drcsStartChar++
+    }
+
+    drcsUseG0(bool) {
+        this.current.drcsG0 = bool
+    }
+    
+    drcsUseG1(bool) {
+        this.current.drcsG1 = bool
     }
 
     decode(char) {
