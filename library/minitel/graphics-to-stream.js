@@ -33,9 +33,7 @@ Minitel.graphicsToStream = function(string, col, row) {
             return pixel.separated && (pixel.color !== pixel.back)
         })
 
-        const blink = pixels.find(pixel => {
-            return pixel.blink && (pixel.color !== pixel.back)
-        })
+        const blink = pixels.find(pixel => { return pixel.blink })
 
         let [ foreground, background ] = [ 7, 0 ]
 
