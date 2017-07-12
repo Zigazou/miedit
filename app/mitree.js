@@ -327,7 +327,7 @@ function mieditActions(objs) {
             } else {
                 const kvp = arg.split("=")
                 const key = decodeURIComponent(kvp[0])
-                const value = decodeURIComponent(kvp[1])
+                const value = decodeURIComponent(kvp[1].replace(/\+/g, " "))
                 queryParsed[key] = value
             }
         }
