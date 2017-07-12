@@ -74,6 +74,7 @@ Minitel.graphicsToStream = function(string, col, row) {
             foreground = mostFrequent(pixels, pixel => {
                 return pixel.color === background ? undefined : pixel.color
             })
+
             if(foreground === undefined) {
                 foreground = 7
             } else {
@@ -111,7 +112,7 @@ Minitel.graphicsToStream = function(string, col, row) {
         const rows = []
         let row = []
 
-        for(i = 0; i < string.length; i+= 2) {
+        range(0, string.length, 2).forEach(i => {
             const value = codeChars.indexOf(string[i])
                         | (codeChars.indexOf(string[i + 1]) << 5)
 
@@ -127,7 +128,7 @@ Minitel.graphicsToStream = function(string, col, row) {
                 rows.push(row)
                 row = []
             }
-        }
+        })
 
         return rows
     }

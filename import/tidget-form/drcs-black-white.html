@@ -1,0 +1,55 @@
+<!-- DRCS black and white widget -->
+<form class="drcs-black-white" data-change="onChange">
+  <h2>Create a bitmap in DRCS characters from black and white image</h2>
+  <div>
+    <div class="miedit-field">
+      <label for="drcs-black-white-image">Value:</label>
+      <input
+        id="drcs-black-white-image"
+        name="image"
+        type="text"
+      />
+      <button value="edit"
+        data-call="onImportBWImage"
+        data-param="drcs-black-white-image"
+      >Import image</button>
+    </div>
+
+    <div class="miedit-field">
+      <label for="drcs-black-white-x">X:</label>
+      <input
+        id="drcs-black-white-x"
+        type="number"
+        name="x"
+        min="0"
+        max="40"
+        value="0"
+        size="2"
+        maxlength="2"
+      />
+    </div>
+
+    <div class="miedit-field">
+      <label for="drcs-black-white-y">Y:</label>
+      <input
+        id="drcs-black-white-y"
+        type="number"
+        name="y"
+        min="0"
+        max="24"
+        value="1"
+        size="2"
+        maxlength="2"
+      />
+    </div>
+
+    <div class="miedit-info">
+      <h3>Note</h3>
+      <p>
+        This tool can only create 94 DRCS character, therefore the resulting
+        bitmap may not be accurate if the source is too complex.
+      </p>
+    </div>
+  </div>
+</form>
+

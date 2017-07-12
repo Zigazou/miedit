@@ -127,12 +127,12 @@ class MosaicMemory {
             string = "ai".repeat(this.size)
         }
 
-        for(let offset = 0; offset < string.length; offset += 2) {
+        range(0, string.length, 2).forEach(offset => {
             this._setPoint(
                 offset >> 1,
                 MosaicMemory.charToValue(string[offset] + string[offset + 1])
             )
-        }
+        })
     }
 
     toString() {
@@ -186,11 +186,11 @@ class MosaicMemory {
         if(width === 0 || height === 0) return
 
         const points = []
-        for(let y = yStart; y < yEnd; y+= this.width) {
+        range(yStart, yEnd, this.width).forEach(y => {
             this.memory.slice(y + xStart, y + xEnd).forEach(point => {
                 points.push(point)
             })
-        }
+        })
 
         return new MosaicZone(width, height, points)
     }

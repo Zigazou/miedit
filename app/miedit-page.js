@@ -22,6 +22,7 @@ class MiEditPage {
 
         this.ribbon.root.autocallback(this)
         container.find(".content-graphics")[0].autocallback(this)
+        container.find(".drcs-black-white")[0].autocallback(this)
         container.find(".mosaic-exit")[0].autocallback(this)
 
         const canvas = container.find("#minitel-screen")[0]
@@ -119,7 +120,9 @@ class MiEditPage {
 
     onRunFast(event) {
         const actions = mieditActions(this.mitree.serialize())
-        this.miscreen.directSend(Minitel.actionsToStream(actions, 0, 0).toArray())
+        this.miscreen.directSend(
+            Minitel.actionsToStream(actions, 0, 0).toArray()
+        )
     }
 
     onEditGraphics(event, param) {
@@ -129,7 +132,27 @@ class MiEditPage {
             document.getElementById("content-graphics-background").value
         )
         this.graphics.root.classList.remove("hidden")
-        
+    }
+
+    onImportBWImage(event, param) {
+        const image = new Image()
+
+        let loaded = false
+        function loadHandler() {
+            if(loaded) { return }
+
+            loaded = true
+            const data = Drawing.bwdrcs(image)
+            document.getElementById(param).value = JSON.stringify(data)
+        }
+
+        const url = window.prompt("Input the URL of the image to import", "")
+
+        if(url) {
+            image.src = url
+            image.onload = loadHandler
+            if(image.complete) loadHandler()
+        }
     }
 
     onSaveGraphics(event, param) {

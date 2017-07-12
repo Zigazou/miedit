@@ -56,9 +56,9 @@ class MinitelDecoder {
                 } else {
                     // Go to start of next row
                     this.pm.cursor.x = 0
-                    for(let i = 0; i < this.current.mult.height; i++) {
+                    range(this.current.mult.height).forEach(i => {
                         this.moveCursor("down")
-                    }
+                    })
                 }
             }
         } else if(direction === "left") {
@@ -108,8 +108,8 @@ class MinitelDecoder {
         }
     }
 
-    clear(range) {
-        if(range === "page") {
+    clear(clearRange) {
+        if(clearRange === "page") {
             this.pm.clear()
             this.pm.cursor.x = 0
             this.pm.cursor.y = 1
@@ -117,20 +117,20 @@ class MinitelDecoder {
             return
         }
 
-        if(range === "status") {
+        if(clearRange === "status") {
             let row = []
-            for(let i = 0; i < this.pm.grid.cols; i++) {
+            range(this.pm.grid.cols).forEach(i => {
                 this.pm.set(i, 0, new MosaicCell())
-            }
+            })
             return
         }
 
-        if(range === "eol") {
+        if(clearRange === "eol") {
             const saveX = this.pm.cursor.x
             const saveY = this.pm.cursor.y
-            for(let i = this.pm.cursor.x; i < this.pm.grid.cols; i++) {
+            range(this.pm.cursor.x, this.pm.grid.cols).forEach(i => {
                 this.print(0x20)
-            }
+            })
             this.pm.cursor = { x: saveX, y: saveY }
             return
         }
@@ -255,12 +255,10 @@ class MinitelDecoder {
             this.waiting.mask = undefined
         }
 
-        for(let j = 0; j < cell.mult.height; j++) {
-            for(let i = 0; i < cell.mult.width; i++) {
-                const newCell = cell.copy()
-                this.pm.set(x + i, y - j, newCell)
-            }
-        }
+        range2([cell.mult.height, cell.mult.width]).forEach((j, i) => {
+            const newCell = cell.copy()
+            this.pm.set(x + i, y - j, newCell)
+        })
     }
 
     printG0Char(charCode) {
@@ -275,13 +273,11 @@ class MinitelDecoder {
         cell.mult = this.current.mult
         cell.drcs = this.current.drcsG0
 
-        for(let j = 0; j < cell.mult.height; j++) {
-            for(let i = 0; i < cell.mult.width; i++) {
-                const newCell = cell.copy()
-                newCell.part = { x: i, y: cell.mult.height - j - 1 }
-                this.pm.set(x + i, y - j, newCell)
-            }
-        }
+        range2([cell.mult.height, cell.mult.width]).forEach((j, i) => {
+            const newCell = cell.copy()
+            newCell.part = { x: i, y: cell.mult.height - j - 1 }
+            this.pm.set(x + i, y - j, newCell)
+        })
     }
 
     printG1Char(charCode) {
@@ -322,9 +318,7 @@ class MinitelDecoder {
 
     repeat(count) {
         count -= 0x40
-        for(let i = 0; i < count; i++) {
-            this.print(this.charCode)
-        }
+        range(count).forEach(i => this.print(this.charCode))
     }
 
     drcsDefineCharset(charset) { this.current.drcsCharsetToDefine = charset }
@@ -411,13 +405,11 @@ class MinitelDecoder {
 
     decodeList(items) {
         if (typeof items === "string" || items instanceof String) {
-            for(let i = 0; i < items.length; i++) {
-                this.decode(items[i])
-            }
+            range(items.length).forEach(i => this.decode(items[i]))
         } else {
-            for(let i = 0; i < items.length; i++) {
+            range(items.length).forEach(i =>
                 this.decode(String.fromCharCode(items[i]))
-            }
+            )
         }
     }
 }

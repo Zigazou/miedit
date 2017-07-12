@@ -90,7 +90,7 @@ class FontSprite {
      * @private
      */
     generateColors() {
-        for(let color = 0; color < this.colors.length; color++) {
+        range(this.colors.length).forEach(color => {
             const canvas = document.createElement("canvas")
             canvas.width = this.spriteSheet.width
             canvas.height = this.spriteSheet.height
@@ -105,7 +105,7 @@ class FontSprite {
             ctx.fillRect(0, 0, wid, hei)
 
             this.spriteSheetColors[color] = canvas
-        }
+        })
 
         this.generateCoordinates()
 
@@ -119,12 +119,13 @@ class FontSprite {
      */
     generateCoordinates() {
         this.spriteNumber = this.grid.cols * this.grid.rows
-        for(let ord = 0; ord < this.spriteNumber; ord++) {
+
+        range(this.spriteNumber).forEach(ord => {
             this.allCoordinates.push({
                 "x": Math.floor(ord / this.grid.rows) * this.char.width,
                 "y": (ord % this.grid.rows) * this.char.height,
             })
-        }
+        })
 
         return 
     }
@@ -209,14 +210,14 @@ class FontSprite {
             design.forEach((byte, offsetY) => {
                 byte = byte & 0xff
 
-                for(let bitPosition = 0; bitPosition < 8; bitPosition++) {
+                range(8).forEach(bitPosition => {
                     if(byte & (1 << (7 - bitPosition))) {
                         ctx.fillRect(
                             coords.x + bitPosition, coords.y + offsetY,
                             1, 1
                         )
                     }
-                }
+                })
             })
         })
     }

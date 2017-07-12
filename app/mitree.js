@@ -145,6 +145,7 @@ class MiTree {
             "drcs-drcs-g0": "Use DRCS G0",
             "drcs-std-g1": "Use standard G1",
             "drcs-drcs-g1": "Use DRCS G1",
+            "drcs-black-white": "Black and white image to DRCS",
             "smgraph": "Semigraphic characters",
             "content-delay": "Delay"
         }
@@ -326,7 +327,7 @@ function mieditActions(objs) {
             } else {
                 const kvp = arg.split("=")
                 const key = decodeURIComponent(kvp[0])
-                const value = decodeURIComponent(kvp[1]).replace(/\+/g, " ")
+                const value = decodeURIComponent(kvp[1])
                 queryParsed[key] = value
             }
         }

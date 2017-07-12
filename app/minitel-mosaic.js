@@ -794,14 +794,14 @@ class MinitelMosaic {
         ctx.beginPath()
 
         ctx.fillStyle = this.secondaryGrid
-        for(let x = 0; x < this.canvas.width; x += Minitel.charWidth) {
+        range(0, this.canvas.width, Minitel.charWidth).forEach(x => {
             ctx.fillRect(x + 4, 0, lineWidth, this.canvas.height)
-        }
+        })
 
-        for(let y = 0; y < this.canvas.height; y+= Minitel.charHeight) {
+        range(0, this.canvas.height, Minitel.charHeight).forEach(y => {
             ctx.fillRect(0, y + 3, this.canvas.width, lineWidth)
             ctx.fillRect(0, y + 7, this.canvas.width, lineWidth)
-        }
+        })
 
         ctx.stroke()
         ctx.closePath()
@@ -809,13 +809,13 @@ class MinitelMosaic {
         // Primary grid
         ctx.beginPath()
         ctx.fillStyle = this.primaryGrid
-        for(let x = 0; x < this.canvas.width; x += Minitel.charWidth) {
+        range(0, this.canvas.width, Minitel.charWidth).forEach(x => {
             ctx.fillRect(x, 0, lineWidth, this.canvas.height)
-        }
+        })
 
-        for(let y = 0; y < this.canvas.height; y += Minitel.charHeight) {
+        range(0, this.canvas.height, Minitel.charHeight).forEach(y => {
             ctx.fillRect(0, y, this.canvas.width, lineWidth)
-        }
+        })
 
         ctx.stroke()
         ctx.closePath()
@@ -827,16 +827,14 @@ MinitelMosaic.validCombinations = (function () {
     const colors = [-1, 0, 1, 2, 3, 4, 5, 6, 7]
 
     const valids = new Set()
-    for(let color1 of colors) {
-        for(let color2 of colors) {
-            for(i = 0; i < 6; i++) {
-                valids.add(
-                    Math.pow(MinitelMosaic.primes[color1 + 1], i) *
-                    Math.pow(MinitelMosaic.primes[color2 + 1], 6 - i)
-                )
-            }
-        }
-    }
+    range2([-1, -1], [8, 8], [1, 1]).forEach((color1, color2) => {
+        range(6).forEach(i => {
+            valids.add(
+                Math.pow(MinitelMosaic.primes[color1 + 1], i) *
+                Math.pow(MinitelMosaic.primes[color2 + 1], 6 - i)
+            )
+        })
+    })
     
     return valids
 })()
