@@ -35,6 +35,7 @@ Minitel.contrasts = [ 7, 7, 0, 0, 7, 7, 0, 0 ]
 
 Minitel.directStream = {
     "clear-screen": [0x0c],
+    "clear-status": [0x1f, 0x40, 0x41, 0x18, 0x0a],
     "move-up": [0x0b],
     "move-down": [0x0a],
     "move-left": [0x08],

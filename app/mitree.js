@@ -105,6 +105,7 @@ class MiTree {
             "move-right": "Move cursor on the right",
             "move-sol": "Move cursor to the first column of the current row",
             "clear-screen": "Clear screen",
+            "clear-status": "Clear status row",
             "clear-eol": "Clear till the end of the current row",
             "color-fg-0": "Set foreground color to black",
             "color-fg-1": "Set foreground color to red",
