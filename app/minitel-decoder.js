@@ -19,6 +19,13 @@ class MinitelDecoder {
             mask: undefined,
             underline: undefined
         }
+
+        this.drcs = {
+            g0: false,
+            g1: false,
+            charsetToDefine: undefined,
+            startChar: undefined,
+        }
     }
 
     resetCurrent() {
@@ -32,11 +39,6 @@ class MinitelDecoder {
             invert: false,
             mask: false,
             separated: false,
-
-            drcsG0: false,
-            drcsG1: false,
-            drcsCharsetToDefine: undefined,
-            drcsStartChar: undefined,
         }
     }
 
@@ -271,7 +273,7 @@ class MinitelDecoder {
         cell.blink = this.current.blink
         cell.invert = this.current.invert
         cell.mult = this.current.mult
-        cell.drcs = this.current.drcsG0
+        cell.drcs = this.drcs.g0
 
         range2([cell.mult.height, cell.mult.width]).forEach((j, i) => {
             const newCell = cell.copy()
@@ -290,7 +292,7 @@ class MinitelDecoder {
         cell.bgColor = this.current.bgColor
         cell.blink = this.current.blink
         cell.separated = this.current.separated
-        cell.drcs = this.current.drcsG1
+        cell.drcs = this.drcs.g1
 
         if(cell.value >= 0x20 && cell.value <= 0x5F) {
             cell.value += 0x20
@@ -304,12 +306,12 @@ class MinitelDecoder {
     }
 
     print(charCode) {
-        if(charCode === 0x20 && this.serialAttributesDefined()) {
+        if(this.current.charType === MosaicCell) {
+            this.printG1Char(charCode)
+        } else if(charCode === 0x20 && this.serialAttributesDefined()) {
             this.printDelimiter(charCode)
         } else if(this.current.charType === CharCell) {
             this.printG0Char(charCode)
-        } else if(this.current.charType === MosaicCell) {
-            this.printG1Char(charCode)
         }
 
         this.charCode = charCode
@@ -321,8 +323,8 @@ class MinitelDecoder {
         range(count).forEach(i => this.print(this.charCode))
     }
 
-    drcsDefineCharset(charset) { this.current.drcsCharsetToDefine = charset }
-    drcsSetStartChar(startChar) { this.current.drcsStartChar = startChar }
+    drcsDefineCharset(charset) { this.drcs.charsetToDefine = charset }
+    drcsSetStartChar(startChar) { this.drcs.startChar = startChar }
 
     drcsDefineChar(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o) {
         const sextets = [a, b, c, d, e, f, g, h, i, j, k, l, m, n]
@@ -349,17 +351,17 @@ class MinitelDecoder {
             sextets[12] << 2 | sextets[13] >> 4,
         ]
 
-        if(this.current.drcsCharsetToDefine === "G0") {
-            this.pm.defineCharG0(this.current.drcsStartChar, bytes)
+        if(this.drcs.charsetToDefine === "G0") {
+            this.pm.defineCharG0(this.drcs.startChar, bytes)
         } else {
-            this.pm.defineCharG1(this.current.drcsStartChar, bytes)
+            this.pm.defineCharG1(this.drcs.startChar, bytes)
         }
 
-        this.current.drcsStartChar++
+        this.drcs.startChar++
     }
 
-    drcsUseG0(bool) { this.current.drcsG0 = bool }
-    drcsUseG1(bool) { this.current.drcsG1 = bool }
+    drcsUseG0(bool) { this.drcs.g0 = bool }
+    drcsUseG1(bool) { this.drcs.g1 = bool }
 
     decode(char) {
         const c = char.charCodeAt(0)
