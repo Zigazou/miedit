@@ -440,7 +440,7 @@ class MinitelDecoder {
             } else if("dynarg" in action) {
                 args = this.previousBytes.lastValues(action.dynarg)
             }
-            if(action.func !== "print") console.log(action.func, args)
+
             this[action.func].apply(this, args)
         }
 
