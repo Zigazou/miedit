@@ -136,6 +136,48 @@ class MinitelDecoder {
             this.pm.cursor = { x: saveX, y: saveY }
             return
         }
+
+        // CSI sequences do not work on status row
+        if(this.pm.cursor.y === 0) return
+
+        if(clearRange === "endofscreen") {
+            range(this.pm.cursor.x, this.pm.grid.cols).forEach(x => {
+                this.pm.set(x, this.pm.cursor.y, new MosaicCell())
+            })
+
+            const [cols, rows] = [this.pm.grid.cols, this.pm.grid.rows]
+            range2([this.pm.cursor.y + 1, 0], [rows, cols]).forEach((y, x) => {
+                this.pm.set(x, y, new MosaicCell())
+            })
+        }
+
+        if(clearRange === "startofscreen") {
+            range(0, this.pm.cursor.x + 1).forEach(x => {
+                this.pm.set(x, this.pm.cursor.y, new MosaicCell())
+            })
+        
+            const [cols, rows] = [this.pm.grid.cols, this.pm.cursor.y]
+            range2([0, 0], [rows, cols]).forEach((y, x) => {
+                this.pm.set(x, y, new MosaicCell())
+            })
+        }
+
+        if(clearRange === "startofline") {
+            range(0, this.pm.cursor.x + 1).forEach(x => {
+                this.pm.set(x, this.pm.cursor.y, new MosaicCell())
+            })
+        }
+
+        if(clearRange === "completescreen") {
+            this.pm.clear()
+            return        
+        }
+
+        if(clearRange === "completeline") {
+            range(0, this.pm.grid.cols).forEach(x => {
+                this.pm.set(x, this.pm.cursor.y, new MosaicCell())
+            })
+        }
     }
 
     setPageMode(bool) {
@@ -398,7 +440,7 @@ class MinitelDecoder {
             } else if("dynarg" in action) {
                 args = this.previousBytes.lastValues(action.dynarg)
             }
-
+            if(action.func !== "print") console.log(action.func, args)
             this[action.func].apply(this, args)
         }
 

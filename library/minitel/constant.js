@@ -36,6 +36,12 @@ Minitel.contrasts = [ 7, 7, 0, 0, 7, 7, 0, 0 ]
 Minitel.directStream = {
     "clear-screen": [0x0c],
     "clear-status": [0x1f, 0x40, 0x41, 0x18, 0x0a],
+    "clear-eol": [0x18],
+    "clear-end-of-screen": [0x1b, 0x5b, 0x4a],
+    "clear-start-of-screen": [0x1b, 0x5b, 0x31, 0x4a],
+    "clear-start-of-line": [0x1b, 0x5b, 0x31, 0x4b],
+    "clear-complete-line": [0x1b, 0x5b, 0x32, 0x4b],
+    "clear-complete-screen": [0x1b, 0x5b, 0x32, 0x4a],
     "move-up": [0x0b],
     "move-down": [0x0a],
     "move-left": [0x08],
@@ -325,11 +331,24 @@ Minitel.states =  {
     "attributeOff": { "*": { notImplemented: "attributeOff" } },
 
     "csi": {
+        0x4a: { func: "clear", arg: "endofscreen" },
+        0x31: { goto: "clearStart" },
+        0x32: { goto: "clearAll" },
         /*0x41: { func: "moveCursorN
         0x42: { func: "moveCursorN", arg:"", csi: },
         "*": { goto: "csi" }*/
         "*": { notImplemented: "csiSequence" }
      },
+
+    "clearStart": {
+        0x4a: { func: "clear", arg: "startofscreen" },
+        0x4b: { func: "clear", arg: "startofline" },
+    },
+
+    "clearAll": {
+        0x4a: { func: "clear", arg: "completescreen" },
+        0x4b: { func: "clear", arg: "completeline" },
+    },
 
     "pro1": { "*": { notImplemented: "pro1Sequence" } },
     "pro2": {
