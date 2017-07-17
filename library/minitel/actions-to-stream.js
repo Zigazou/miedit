@@ -207,3 +207,59 @@ Minitel.actions["drcs-black-white"] = function(stream, data, offsetX, offsetY) {
         stream.push(row)
     })
 }
+
+Minitel.rawKeywords = {
+    NUL: [0x00],
+    SOH: [0x01],
+    EOT: [0x04],
+    ENQ: [0x05],
+    BEL: [0x07],
+    BS: [0x08],
+    HT: [0x09],
+    LF: [0x0A],
+    VT: [0x0B],
+    FF: [0x0C],
+    CR: [0x0D],
+    SO: [0x0E],
+    SI: [0x0F],
+    DLE: [0x10],
+    CON: [0x11],
+    REP: [0x12],
+    SEP: [0x13],
+    COFF: [0x14],
+    NACK: [0x15],
+    SYN: [0x16],
+    CAN: [0x18],
+    SS2: [0x19],
+    SUB: [0x1A],
+    ESC: [0x1B],
+    SS3: [0x1D],
+    RS: [0x1E],
+    US: [0x1F],
+    CSI: [0x1B, 0x5B],
+    PRO1: [0x1B, 0x39],
+    PRO2: [0x1B, 0x3A],
+    PRO3: [0x1B, 0x3B],
+}
+
+Minitel.actions["content-raw"] = function(stream, data) {
+    if(data.value === undefined) return
+
+    const keywords = data.value.split(/\s+/)
+
+    keywords.forEach(keyword => {
+        if(keyword.length === 0) return
+
+        const keywordUppercase = keyword.toUpperCase()
+
+        if(Minitel.rawKeywords[keywordUppercase]) {
+            stream.push(Minitel.rawKeywords[keywordUppercase])
+        } else if(keyword[0] === "!" && keyword.length === 2) {
+            stream.push(keyword[1])
+        } else if(keyword.length === 2) {
+            const number = parseInt(keyword, 16)
+            if(isNaN(number)) { return }
+            stream.push(number)
+        }
+    })
+}

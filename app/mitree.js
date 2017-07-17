@@ -146,6 +146,7 @@ class MiTree {
             "content-block": "Block",
             "content-graphics": "Graphics",
             "content-box": "Box",
+            "content-raw": "Raw stream",
             "drcs-create": "Create DRCS character",
             "drcs-std-g0": "Use standard G0",
             "drcs-drcs-g0": "Use DRCS G0",

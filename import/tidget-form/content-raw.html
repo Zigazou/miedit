@@ -1,0 +1,34 @@
+<!-- Raw widget -->
+<form class="content-raw" data-change="onChange">
+  <h2>Raw stream</h2>
+  <div>
+    <div class="miedit-field">
+      <label for="content-raw-value">Value:</label>
+      <textarea
+        id="content-raw-value"
+        name="value"
+        cols="41"
+        rows="10"
+      ></textarea>
+    </div>
+
+    <div class="miedit-info">
+      <h3>Note</h3>
+      <ul>
+        <li>
+          Hex bytes from 00 to 7F must be written with two hexadecimal
+          characters.
+        </li>
+        <li>The following keywords are recognized:
+          NUL (00), SOH (01), EOT (04), ENQ (05), BEL (07), BS (08), HT (09),
+          LF (0A), VT (0B), FF (0C), CR (0D), SO (0E), SI (0F),
+          DLE (10), CON (11), REP (12), SEP (13), COFF (14), NACK (15),
+          SYN (16), CAN (18), SS2 (19), SUB (1A), ESC (1B), SS3 (1D), RS (1E),
+          US (1F), CSI (1B 5B), PRO1 (1B 39), PRO2 (1B 3A), PRO3 (1B 3B)
+        </li>
+        <li>Single characters must be preceded by an exclamation point (!).</li>
+      </ul>
+    </div>
+  </div>
+</form>
+
