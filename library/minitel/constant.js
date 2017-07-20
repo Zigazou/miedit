@@ -59,6 +59,8 @@ Minitel.directStream = {
     "effect-double-height": [0x1b, 0x4d],
     "effect-double-width": [0x1b, 0x4e],
     "effect-double-size": [0x1b, 0x4f],
+    "cursor-on": [0x11],
+    "cursor-off": [0x14],
     "color-fg-0": [0x1b, 0x40],
     "color-fg-1": [0x1b, 0x41],
     "color-fg-2": [0x1b, 0x42],

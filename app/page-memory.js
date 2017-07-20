@@ -82,7 +82,21 @@ class PageMemory {
          * @member {Cursor}
          * @private
          */
-        this.cursor = { x: 0, y: 1, visible: false }
+        const bgSave = document.createElement("canvas")
+        bgSave.width = this.char.width
+        bgSave.height = this.char.height
+        const cursorCtx = bgSave.getContext("2d")
+        cursorCtx.imageSmoothingEnabled = false
+
+        this.cursor = {
+            x: 0,
+            y: 1,
+            visible: false,
+            ctx: cursorCtx,
+            bgSave: bgSave,
+            lastX: undefined,
+            lastY: undefined
+        }
 
         /**
          * A two dimension array of Cells
@@ -296,6 +310,8 @@ class PageMemory {
 
         let [ front, back ] = [ 7, 0 ]
 
+        this.cursorRestore()
+
         // Draw each cell
         for(let row = 0; row < this.grid.rows; row++) {
             // Draw the row only if needed
@@ -360,7 +376,13 @@ class PageMemory {
                         unde = false
                     }
 
-                    page.writeChar(ctx, cell.value, x, y, part, mult, front, unde)
+                    page.writeChar(
+                        ctx, cell.value, x, y, part, mult, front, unde
+                    )
+                }
+
+                if(this.cursor.x === col && this.cursor.y === row) {
+                    this.cursorSave()
                 }
 
                 if(cell instanceof DelimiterCell) {
@@ -372,6 +394,57 @@ class PageMemory {
             this.blinking[row] = blinkRow
         }
 
+        this.cursorSave()
+        this.drawCursor()
+
         this.lastBlink = blink
+    }
+
+    cursorSave() {
+        this.cursor.ctx.drawImage(
+            // Source
+            this.canvas,
+            this.cursor.x * this.char.width,
+            this.cursor.y * this.char.height,
+            this.char.width,
+            this.char.height,
+
+            // Destination
+            0, 0,
+            this.char.width,
+            this.char.height
+        )
+
+        this.cursor.lastX = this.cursor.x
+        this.cursor.lastY = this.cursor.y
+    }
+
+    cursorRestore() {
+        this.context.drawImage(
+            // Source
+            this.cursor.bgSave,
+            0, 0,
+            this.char.width,
+            this.char.height,
+
+            // Destination
+            this.cursor.lastX * this.char.width,
+            this.cursor.lastY * this.char.height,
+            this.char.width,
+            this.char.height
+        )
+    }
+
+    drawCursor() {
+        if(!this.cursor.visible || !this.getBlink()) return
+
+        const cell = this.memory[this.cursor.y][this.cursor.x]
+        this.context.fillStyle = this.colors[cell.fgColor]
+        this.context.fillRect(
+            this.cursor.x * this.char.width,
+            this.cursor.y * this.char.height,
+            this.char.width,
+            this.char.height
+        )
     }
 }

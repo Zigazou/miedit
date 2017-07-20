@@ -138,6 +138,8 @@ class MiTree {
             "effect-invert-off": "Invert off",
             "effect-underline-on": "Underline on",
             "effect-underline-off": "Underline off",
+            "cursor-on": "Show cursor",
+            "cursor-off": "Hide cursor",
             "content-group": "Group",
             "content-g0": "Switch to standard characters",
             "content-g1": "Switch to mosaic characters",

@@ -89,8 +89,6 @@ class MinitelDecoder {
                 }
             }
         } else if(direction === "down") {
-            if(this.pm.cursor.y == 0) return;
-
             this.pm.cursor.y++
 
             if(this.pm.cursor.y == this.pm.grid.rows) {
@@ -133,7 +131,8 @@ class MinitelDecoder {
             range(this.pm.cursor.x, this.pm.grid.cols).forEach(i => {
                 this.print(0x20)
             })
-            this.pm.cursor = { x: saveX, y: saveY }
+            this.pm.cursor.x = saveX
+            this.pm.cursor.y = saveY
             return
         }
 
