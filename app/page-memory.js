@@ -106,13 +106,13 @@ class PageMemory {
         this.memory = []
 
         // Initializes the page memory with default mosaic cells
-        for(let j = 0; j < this.grid.rows; j++) {
+        range(0, this.grid.rows).forEach(j => {
             let row = []
-            for(let i = 0; i < this.grid.cols; i++) {
+            range(0, this.grid.cols).forEach(i => {
                 row[i] = new MosaicCell()
-            }
+            })
             this.memory[j] = row
-        }
+        })
 
         /**
          * Keeps the last blink state
@@ -163,12 +163,12 @@ class PageMemory {
      * Clear the page
      */
     clear() {
-        for(let y = 1; y < this.grid.rows; y++) {
-            for(let x = 0; x < this.grid.cols; x++) {
+        range(1, this.grid.rows).forEach(y => {
+            range(0, this.grid.cols).forEach(x => {
                 this.memory[y][x] = new MosaicCell()
-            }
+            })
             this.changed[y] = true
-        }
+        })
     }
 
     /**
@@ -238,23 +238,23 @@ class PageMemory {
      */
     scroll(direction) {
         const newRow = new Array(this.grid.cols)
-        for(let col = 0; col < this.grid.cols; col++) {
+        range(0, this.grid.cols).forEach(col => {
             newRow[col] = new MosaicCell()
-        }
+        })
 
         if(direction === "up") {
-            for(let row = 2; row < this.grid.rows; row++) {
-                this.memory[row] = this.memory[row + 1];
-                this.changed[row] = true;
-            }
+            range(2, this.grid.rows).forEach(row => {
+                this.memory[row] = this.memory[row + 1]
+                this.changed[row] = true
+            })
 
             this.memory[this.grid.rows - 1] = newRow
             this.changed[this.grid.rows - 1] = true
         } else if(direction === "down") {
-            for(let row = this.grid.rows - 1; row > 1; row--) {
+            range(this.grid.rows - 1, 1).forEach(row => {
                 this.memory[row] = this.memory[row - 1]
                 this.changed[row] = true
-            }
+            })
 
             this.memory[1] = newRow
             this.changed[1] = true
@@ -299,105 +299,107 @@ class PageMemory {
         fCell.invert = true
         this.memory[0][38] = fCell
 
-        const [ defaultFgColor, defaultBgColor ] = [ 7, 0 ]
-        const ctx = this.context
         const blink = this.getBlink()
-
-        let page = this.font["G0"]
-        let part = { x: 0, y: 0 }
-        let mult = { width: 1, height: 1 }
-        let unde = false
-
-        let [ front, back ] = [ 7, 0 ]
 
         this.cursorRestore()
 
         // Draw each cell
-        for(let row = 0; row < this.grid.rows; row++) {
+        range(0, this.grid.rows).forEach(row => {
             // Draw the row only if needed
             if(!this.changed[row]) {
-                if(!this.blinking[row]) continue
-                if(this.lastBlink === blink) continue
+                if(!this.blinking[row]) return
+                if(this.lastBlink === blink) return
             }
 
-            // Zone attributes
-            let bgColor = defaultBgColor
-            let mask = false
-            let underline = false
             this.changed[row] = false
 
-            const y = row * this.char.height
-
-            let blinkRow = false
-            for(let col = 0; col < this.grid.cols; col++) {
-                const cell = this.memory[row][col]
-                const x = col * this.char.width
-
-                if(!(cell instanceof CharCell)) {
-                    bgColor = cell.bgColor
-                    underline = false
-                }
-                
-                if(!(cell instanceof DelimiterCell) && cell.blink === true) {
-                    blinkRow = true
-                }
-
-                if(!(cell instanceof MosaicCell) && cell.invert === true) {
-                    [ front, back ] = [ bgColor, cell.fgColor ]
-                } else {
-                    [ front, back ] = [ cell.fgColor, bgColor ]
-                }
-
-                // Draw background
-                ctx.fillStyle = this.colors[back]
-                ctx.fillRect(x, y, this.char.width, this.char.height)
-
-                // Draw character
-                if(   mask !== true
-                   && !(   !(cell instanceof DelimiterCell)
-                        && cell.blink === true
-                        && blink === (cell instanceof MosaicCell
-                                      || !cell.invert))
-                                     ) {
-                    if(cell instanceof CharCell) {
-                        page = cell.drcs ? this.font["G'0"] : this.font["G0"]
-                        part = cell.part
-                        mult = cell.mult
-                        unde = underline
-                    } else if(cell instanceof DelimiterCell) {
-                        page = cell.drcs ? this.font["G'0"] : this.font["G0"]
-                        part = { x: 0, y: 0 }
-                        mult = cell.mult
-                        unde = underline
-                    } else {
-                        page = cell.drcs ? this.font["G'1"] : this.font["G1"]
-                        part = { x: 0, y: 0 }
-                        mult = { width: 1, height: 1 }
-                        unde = false
-                    }
-
-                    page.writeChar(
-                        ctx, cell.value, x, y, part, mult, front, unde
-                    )
-                }
-
-                if(this.cursor.x === col && this.cursor.y === row) {
-                    this.cursorSave()
-                }
-
-                if(cell instanceof DelimiterCell) {
-                    if(cell.mask) mask = cell.mask
-                    if(cell.zoneUnderline) underline = cell.zoneUnderline
-                }
-            }
+            let blinkRow = this.drawRow(this.memory[row], row, blink)
 
             this.blinking[row] = blinkRow
-        }
+        })
 
         this.cursorSave()
         this.drawCursor()
 
         this.lastBlink = blink
+    }
+
+    drawRow(memoryRow, row, blink) {
+        let bgColor = 0
+        let mask = false
+        let underline = false
+
+        const y = row * this.char.height
+
+        let blinkRow = false
+
+        range(0, this.grid.cols).forEach(col => {
+            const cell = memoryRow[col]
+            const x = col * this.char.width
+
+            if(!(cell instanceof CharCell)) {
+                bgColor = cell.bgColor
+                underline = false
+            }
+
+            if(!(cell instanceof DelimiterCell) && cell.blink === true) {
+                blinkRow = true
+            }
+
+            let front = 7
+            let back = 0
+            if(!(cell instanceof MosaicCell) && cell.invert === true) {
+                [ front, back ] = [ bgColor, cell.fgColor ]
+            } else {
+                [ front, back ] = [ cell.fgColor, bgColor ]
+            }
+
+            this.drawCharacter(
+                x, y, cell, front, back, mask, blink, underline
+            )
+
+            if(cell instanceof DelimiterCell) {
+                if(cell.mask) mask = cell.mask
+                if(cell.zoneUnderline) underline = cell.zoneUnderline
+            }
+        })
+
+        return blinkRow
+    }
+
+    drawCharacter(x, y, cell, front, back, mask, blink, underline) {
+        const ctx = this.context
+
+        // Draw background    
+        ctx.fillStyle = this.colors[back]
+        ctx.fillRect(x, y, this.char.width, this.char.height)
+
+        if(mask) return
+        if(   !(cell instanceof DelimiterCell)
+           && cell.blink
+           && blink === (cell instanceof MosaicCell || !cell.invert)
+        ) return
+
+        // Draw character
+        let page = undefined
+        let part = { x: 0, y: 0 }
+        let mult = { width: 1, height: 1 }
+        let unde = false
+
+        if(cell instanceof CharCell) {
+            page = cell.drcs ? this.font["G'0"] : this.font["G0"]
+            part = cell.part
+            mult = cell.mult
+            unde = underline
+        } else if(cell instanceof DelimiterCell) {
+            page = cell.drcs ? this.font["G'0"] : this.font["G0"]
+            mult = cell.mult
+            unde = underline
+        } else {
+            page = cell.drcs ? this.font["G'1"] : this.font["G1"]
+        }
+
+        page.writeChar(ctx, cell.value, x, y, part, mult, front, unde)
     }
 
     cursorSave() {
