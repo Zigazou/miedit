@@ -96,14 +96,13 @@ Minitel.graphicsToStream = function(string, col, row) {
             return code
         }, 0)
 
-        const sequence = []
-        sequence.push(0x1b, 0x40 + foreground)
-        sequence.push(0x1b, 0x50 + background)
-        sequence.push(0x1b, separated ? 0x5a : 0x59)
-        sequence.push(0x1b, blink ? 0x48 : 0x49)
-        sequence.push(0x20 + charCode)
-
-        return sequence
+        return [
+            0x1b, 0x40 + foreground,
+            0x1b, 0x50 + background,
+            0x1b, separated ? 0x5a : 0x59,
+            0x1b, blink ? 0x48 : 0x49,
+            0x20 + charCode
+        ]
     }
 
     function stringToPixels(string) {
@@ -135,17 +134,17 @@ Minitel.graphicsToStream = function(string, col, row) {
 
     function pixelsToSextets(pixels) {
         const rows = []
-        for(let y = 0; y < pixels.length; y += 3) {
+        range(0, pixels.length, 3).forEach(y => {
             const row = []
-            for(let x = 0; x < pixels[y].length; x += 2) {
+            range(0, pixels[y].length, 2).forEach(x => {
                 row.push([
                     pixels[y][x], pixels[y][x + 1],
                     pixels[y + 1][x], pixels[y + 1][x + 1],
                     pixels[y + 2][x], pixels[y + 2][x + 1],
                 ])
-            }
+            })
             rows.push(row)
-        }
+        })
 
         return rows
     }
@@ -158,12 +157,12 @@ Minitel.graphicsToStream = function(string, col, row) {
 
     const sextets = pixelsToSextets(stringToPixels(string))
 
-    for(let y = 0; y <= 24 - row; y++) {
+    range(0, 25 - row).forEach(y => {
         // Converts pixels to mosaic characters
         let codes = new Minitel.Stream()
-        for(let x = 0; x < 40 - col; x++) {
+        range(0, 40 - col).forEach(x => {
             codes.push(sextetToChar(sextets[y][x]))
-        }
+        })
 
         codes = codes.optimizeRow(true).trimRow()
 
@@ -174,7 +173,7 @@ Minitel.graphicsToStream = function(string, col, row) {
             codes.shift()
         }
 
-        if(codes.length === 0) continue
+        if(codes.length === 0) return;
 
         stream.push([
             0x1f,
@@ -183,7 +182,7 @@ Minitel.graphicsToStream = function(string, col, row) {
             0x0e,
             codes
         ])
-    }
+    })
 
     return stream
 }
