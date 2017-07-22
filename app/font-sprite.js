@@ -196,7 +196,7 @@ class FontSprite {
      * @param {Array[number]} design An array of 10 bytes defining the character
      */
     defineChar(ord, design) {
-        if(ord <= 32 || ord >= 128) return
+        if(ord <= 32 || ord >= 127) return
         if(design.length !== 10) return
 
         const coords = this.toCoordinates(ord)

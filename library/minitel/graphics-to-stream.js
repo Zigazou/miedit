@@ -157,7 +157,7 @@ Minitel.graphicsToStream = function(string, col, row) {
 
     const sextets = pixelsToSextets(stringToPixels(string))
 
-    range(0, 25 - row).forEach(y => {
+    range(25 - row).forEach(y => {
         // Converts pixels to mosaic characters
         let codes = new Minitel.Stream()
         range(0, 40 - col).forEach(x => {

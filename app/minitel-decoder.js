@@ -148,6 +148,8 @@ class MinitelDecoder {
             range2([this.pm.cursor.y + 1, 0], [rows, cols]).forEach((y, x) => {
                 this.pm.set(x, y, new MosaicCell())
             })
+
+            return
         }
 
         if(clearRange === "startofscreen") {
@@ -159,12 +161,16 @@ class MinitelDecoder {
             range2([0, 0], [rows, cols]).forEach((y, x) => {
                 this.pm.set(x, y, new MosaicCell())
             })
+
+            return
         }
 
         if(clearRange === "startofline") {
             range(0, this.pm.cursor.x + 1).forEach(x => {
                 this.pm.set(x, this.pm.cursor.y, new MosaicCell())
             })
+
+            return
         }
 
         if(clearRange === "completescreen") {
@@ -176,6 +182,8 @@ class MinitelDecoder {
             range(0, this.pm.grid.cols).forEach(x => {
                 this.pm.set(x, this.pm.cursor.y, new MosaicCell())
             })
+
+            return
         }
     }
 

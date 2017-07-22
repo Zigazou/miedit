@@ -56,10 +56,10 @@ Minitel.Stream = class {
             toPush = item.charCodeAt(0)
         } else if(item instanceof Minitel.Stream) {
             // Stream
-            for(let i = 0; i < item.length; i++) {
+            range(item.length).forEach(i => {
                 this.items[this.length] = item.items[i]
                 this.length++
-            }
+            })
         } else if(item !== undefined && typeof item[Symbol.iterator] === "function") {
             // Iterable object
             for(let value of item) this.push(value)
@@ -68,7 +68,7 @@ Minitel.Stream = class {
         if(toPush !== undefined) {
             if(Minitel.specialChars[toPush]) {
                 // Convert special characters to Minitel codes
-                Minitel.specialChars[toPush].map(v => {
+                Minitel.specialChars[toPush].forEach(v => {
                     this.items[this.length] = v
                     this.length++
                 })
@@ -213,6 +213,7 @@ Minitel.Stream = class {
 
             if(this.items[i] === 0x1b) i++
         }
+
         if(count > 0) optimized.push([0x12, 0x40 + count])
 
         return optimized
