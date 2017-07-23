@@ -233,10 +233,12 @@ Minitel.Stream = class {
             }
         })
 
-        if(count == 1) {
-            optimized.push(char)
-        } else {
-            optimized.push([0x12, 0x40 + count])
+        if(count > 0) {
+            if(count == 1) {
+                optimized.push(char)
+            } else {
+                optimized.push([0x12, 0x40 + count])
+            }
         }
 
         return optimized
