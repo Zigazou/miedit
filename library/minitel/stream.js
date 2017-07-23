@@ -138,83 +138,106 @@ Minitel.Stream = class {
      * @return {Stream} An optimized version of the current stream
      */
     optimizeRow(moveFirst) {
-        function identity(x) { return x }
-        let bg = moveFirst ? 0x50 : -1
-        let fg = moveFirst ? 0x47 : -1
-        let separated = false
-        let blink = false
-        let char = 0x00
+        let esc = false
         let count = 0
-        let currentSet = -1
+        let char = 0x00
 
-        const optimized = new Minitel.Stream()
-        for(let i = 0; i < this.length; i++) {
-            let moveRight = this.items[i] === 0x09
-            let chgFG = this.items[i] === 0x1b
-                     && this.items[i + 1] >= 0x40
-                     && this.items[i + 1] <= 0x47
-                     && this.items[i + 1] !== fg
-            let chgBG = this.items[i] === 0x1b
-                     && this.items[i + 1] >= 0x50
-                     && this.items[i + 1] <= 0x57
-                     && this.items[i + 1] !== bg
-            let chgSep = this.items[i] === 0x1b
-                      && (   (this.items[i + 1] === 0x5a && !separated)
-                          || (this.items[i + 1] === 0x59 && separated))
-            let chgBlk = this.items[i] === 0x1b
-                      && (   (this.items[i + 1] === 0x48 && !blink)
-                          || (this.items[i + 1] === 0x49 && blink))
-            let chgChar = this.items[i] >= 0x20 && this.items[i] !== char
-
-            const changes = [ moveRight, chgFG, chgBG, chgSep, chgBlk, chgChar ]
-
-            if(count > 0 && changes.some(identity)) {
-                if(count == 1) {
-                    optimized.push(char)
-                } else {
-                    optimized.push([0x12, 0x40 + count])
-                }
-                count = 0
-            }
-
-            if(moveRight) {
-                optimized.push(0x09)
-            } else if(chgFG) {
-                // Change foreground color
-                fg = this.items[i + 1]
-                optimized.push([0x1b, fg])
-            } else if(chgBG) {
-                // Change background color
-                bg = this.items[i + 1]
-                optimized.push([0x1b, bg])
-            } else if(chgSep) {
-                // Change separated
-                separated = !separated
-                optimized.push([0x1b, this.items[i + 1]])
-            } else if(chgBlk) {
-                // Change blink
-                blink = !blink
-                optimized.push([0x1b, this.items[i + 1]])
-            } else if(chgChar) {
-                if(currentSet !== -1) {
-                    optimized.push(currentSet)
-                    currentSet = -1
-                }
-
-                // Change character
-                optimized.push(this.items[i])
-                char = this.items[i]
-            } else if(this.items[i] >= 0x20) {
-                // Same character
-                count++
-            } else if([0x1b].indexOf(this.items[i]) < 0) {
-                optimized.push(this.items[i])
-            }
-
-            if(this.items[i] === 0x1b) i++
+        const current = {
+            bg: undefined,
+            fg: undefined,
+            separated: undefined,
+            blink: undefined,
+            charset: undefined,
         }
 
-        if(count > 0) optimized.push([0x12, 0x40 + count])
+        const next = {
+            bg: moveFirst ? 0x50 : undefined,
+            fg: moveFirst ? 0x47 : undefined,
+            separated: undefined,
+            blink: undefined,
+            charset: undefined,
+        }
+
+        const optimized = new Minitel.Stream()
+
+        range(this.length).forEach(i => {
+            const item = this.items[i]
+
+            if(item === 0x1b) {
+                esc = true
+                return
+            }
+
+            if(esc) {
+                if(item >= 0x40 && item <= 0x47) {
+                    next.fg = item
+                } else if(item >= 0x50 && item <= 0x57) {
+                    next.bg = item
+                } else if(item === 0x59 || item === 0x5a) {
+                    next.separated = item
+                } else if(item === 0x49 || item === 0x48) {
+                    next.blink = item
+                }
+
+                esc = false
+            } else if(item < 0x20) {
+                if(item === 0x0e || item === 0x0f) {
+                    next.charset = item
+                } else {
+                    if(count > 0) {
+                        if(count == 1) {
+                            optimized.push(char)
+                        } else {
+                            optimized.push([0x12, 0x40 + count])
+                        }
+                        count = 0
+                    }
+
+                    optimized.push(item)
+                }
+            } else {
+                let attributeChange = false
+                for(let attr in next) {
+                    if(next[attr] === undefined) continue
+                    if(next[attr] === current[attr]) continue
+                    attributeChange = true
+                }
+
+                if(count > 0 && (attributeChange || char !== item)) {
+                    if(count == 1) {
+                        optimized.push(char)
+                    } else {
+                        optimized.push([0x12, 0x40 + count])
+                    }
+                    count = 0
+                }
+
+                ["charset", "bg", "fg", "separated", "blink"].forEach(attr => {
+                    if(next[attr] === undefined) return
+                    if(current[attr] === next[attr]) return
+
+                    if(attr !== "charset") optimized.push(0x1b)
+                    optimized.push(next[attr])
+
+                    current[attr] = next[attr]
+
+                    next[attr] = undefined
+                })
+
+                if(char !== item) {
+                    optimized.push(item)
+                    char = item
+                } else {
+                    count++
+                }
+            }
+        })
+
+        if(count == 1) {
+            optimized.push(char)
+        } else {
+            optimized.push([0x12, 0x40 + count])
+        }
 
         return optimized
     }

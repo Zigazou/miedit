@@ -152,7 +152,7 @@ Minitel.convertCeefaxRow = function(row) {
         if(hold && c & 0x20) held = c
     }
 
-    return destination
+    return destination.optimizeRow().trimRow()
 }
 
 /** 
@@ -331,7 +331,7 @@ Minitel.drawCeefaxRow = function(row) {
         if(hold && c & 0x20) held = c
     }
 
-    return destination
+    return destination.optimizeRow().trimRow()
 }
 
 
