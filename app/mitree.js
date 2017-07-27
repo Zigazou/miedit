@@ -57,7 +57,7 @@ class MiTree {
         }
 
         Object.keys(this.children).forEach(child => {
-            widgetTypes[child] = { "icon": "./icon/" + child + ".svg" }
+            widgetTypes[child] = { "icon": "./icon/miicons.svg#" + child }
             if(child !== "content-group") widgetTypes[child].valid_children = []
         })
 

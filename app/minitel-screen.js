@@ -12,7 +12,7 @@ class MinitelScreen {
     /**
      * @param {HTMLCanvasElement} canvas
      */
-    constructor(canvas) {
+    constructor(canvas, cursorPosition) {
         const grid = { cols: Minitel.columns, rows: Minitel.rows }
         const char = { width: Minitel.charWidth, height: Minitel.charHeight }
 
@@ -52,6 +52,18 @@ class MinitelScreen {
          * @param {number}
          */
         this.timer = undefined
+
+        /**
+         * The cursor position element
+         * @param {HTMLElement}
+         */
+        this.cursorPosition = cursorPosition
+
+        /**
+         * Should the cursor position be shown?
+         * @param {boolean}
+         */
+        this.cursorShown = false
 
         this.initRefresh(Minitel.B1200, 25)
     }
