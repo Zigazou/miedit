@@ -79,9 +79,11 @@ class MiTree {
     loadTree(nodes) {
         this.treeWidget.jstree("destroy")
 
-        nodes.forEach(node => {
-            node.icon = "./icon/miicons.svg#" + node.type
-        })
+        if(nodes) {
+            nodes.forEach(node => {
+                node.icon = "./icon/miicons.svg#" + node.type
+            })
+        }
 
         this.treeWidget.jstree({
             "core": { "check_callback": true, "data": nodes },
