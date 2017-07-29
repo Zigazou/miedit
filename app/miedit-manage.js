@@ -43,10 +43,10 @@ class MiEditManage {
             </div>
             <div class="actions">
               <a href="miedit-page.html?page=${key}">
-                <img src="icon/manage-edit.svg" title="Edit ${key}" />
+                <img src="icon/miicons.svg#manage-edit" title="Edit ${key}" />
               </a>
               <button data-call="onDelete" data-param="${key}">
-                <img src="icon/manage-delete.svg" title="Delete {$key}" />
+                <img src="icon/miicons.svg#manage-delete" title="Delete {$key}" />
               </button>
             </div>
           </div>`

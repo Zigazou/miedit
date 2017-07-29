@@ -95,7 +95,7 @@ a>.jstree-icon {
 .miedit-info>* { padding-left: 2.5rem; }
 .miedit-info>h3 {
     line-height: 2rem;
-    background-image: url(../icon/miedit-info.svg);
+    background-image: url(../icon/miicons.svg#miedit-info);
     background-size: 2rem;
     background-position: top left;
     background-repeat: no-repeat;
