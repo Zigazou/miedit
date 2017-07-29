@@ -78,6 +78,11 @@ class MiTree {
 
     loadTree(nodes) {
         this.treeWidget.jstree("destroy")
+
+        nodes.forEach(node => {
+            node.icon = "./icon/miicons.svg#" + node.type
+        })
+
         this.treeWidget.jstree({
             "core": { "check_callback": true, "data": nodes },
             "types": this.widgetTypes,
@@ -172,7 +177,7 @@ class MiTree {
                 "separator_after": false,
                 "_disabled": false,
                 "label": "Rename",
-                "icon": "./icon/edit-rename.svg",
+                "icon": "./icon/miicons.svg#edit-rename",
                 "action": data => {
                     const inst = $.jstree.reference(data.reference)
                     const obj = inst.get_node(data.reference)
@@ -185,7 +190,7 @@ class MiTree {
                 "separator_after": false,
                 "_disabled": false,
                 "label": "Delete",
-                "icon": "./icon/edit-delete.svg",
+                "icon": "./icon/miicons.svg#edit-delete",
                 "action": data => {
                     const inst = $.jstree.reference(data.reference)
                     const obj = inst.get_node(data.reference)
