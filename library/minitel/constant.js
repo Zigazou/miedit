@@ -246,6 +246,8 @@ Minitel.states =  {
         0x23: { goto: "attribute" },
         0x28: { goto: "drcs-g0-use" },
         0x29: { goto: "drcs-g1-use" },
+        0x37: { notImplemented: "saveContext" },
+        0x38: { notImplemented: "restoreContext" },
         0x39: { goto: "pro1" },
         0x3A: { goto: "pro2" },
         0x3B: { goto: "pro3" },

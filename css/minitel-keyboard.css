@@ -1,0 +1,24 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #202020;
+}
+
+#miedit {
+    width: 40em;
+    text-align: center;
+    margin: auto;
+}
+
+canvas {
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    width: 40em;
+    height: auto;
+}
+
+img {
+    width: 40em;
+    height: auto;
+}

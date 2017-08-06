@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Minitel keyboard</title>
+    <link rel="stylesheet" href="css/minitel-keyboard.css" />
+  </head>
+  <body>
+    <div id="miedit">
+      <canvas id="minitel-screen"></canvas>
+      <img id="mikeyboard" src="image/minitel-keyboard.svg"/>
+    </div>
+
+    <div id="misound">
+      <audio id="minitel-standardkey-down">
+        <source src="sound/minitel-standardkey-down.mp3" type="audio/mpeg">
+        Too bad, your browser does not support HTML5 audio or mp3 format.
+      </audio>
+      <audio id="minitel-standardkey-up">
+        <source src="sound/minitel-standardkey-up.mp3" type="audio/mpeg">
+        Too bad, your browser does not support HTML5 audio or mp3 format.
+      </audio>
+    </div>
+
+    <script src="library/generichelper/generichelper.js"></script>
+    <script src="library/query-parameters/query-parameters.js"></script>
+    <script src="library/finite-stack/finite-stack.js"></script>
+
+    <script src="library/key-simulator/key-simulator.js"></script>
+
+    <script src="library/minitel/constant.js"></script>
+    <script src="library/minitel/stream.js"></script>
+
+    <script src="app/font-sprite.js"></script>
+    <script src="app/page-cell.js"></script>
+    <script src="app/page-memory.js"></script>
+    <script src="app/minitel-decoder.js"></script>
+    <script src="app/minitel-screen.js"></script>
+
+    <script src="app/minitel-keyboard.js"></script>
+  </body>
+</html>
