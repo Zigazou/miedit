@@ -3,7 +3,7 @@ window.addEventListener("load", function(event) {
     const canvas = document.getElementById("minitel-screen")
     const screen = new MinitelScreen(canvas)
 
-    const socket = new WebSocket("ws://minitel.ouep.eu/ws/")
+    const socket = new WebSocket("wss://minitel.ouep.eu/ws/")
 
     socket.onopen = event => {
         const standardKey = new KeySimulator(
