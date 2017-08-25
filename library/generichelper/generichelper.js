@@ -13,7 +13,7 @@ function* range(start, end, step) {
     step = Math.abs(step)
 
     if(end < start) {
-        for(let i = end; i > start; i -= step) yield i
+        for(let i = start; i > end; i -= step) yield i
     } else {
         for(let i = start; i < end; i += step) yield i
     }
