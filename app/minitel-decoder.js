@@ -261,8 +261,13 @@ class MinitelDecoder {
     }
 
     locate(y, x) {
-        x -= 0x40
-        y -= 0x40
+        if(y === 0x30 || y === 0x31 || y === 0x32) {
+            y = 10 * (y - 0x30) + (x - 0x30)
+            x = 1
+        } else {
+            x -= 0x40
+            y -= 0x40
+        }
 
         if(x < 1 || x > 40) return
         if(y < 0 || y > 24) return
