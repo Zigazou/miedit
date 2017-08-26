@@ -3,7 +3,17 @@ window.addEventListener("load", function(event) {
     const canvas = document.getElementById("minitel-screen")
     const viewer = document.getElementById("minitel-viewer")
     const screen = new MinitelScreen(canvas)
-    const stream = queryParameters("stream")
+    let stream = ""
+    const cstream = queryParameters("cstream")
+            .replace(new RegExp('\\.', 'g'), '+')
+            .replace(new RegExp('_', 'g'), '/')
+            .replace(new RegExp('-', 'g'), '=')
+
+    if(cstream) {
+        stream = LZString.decompressFromBase64(cstream)
+    } else {
+        stream = queryParameters("stream")    
+    }
 
     function findBestScaling() {
         if(window.innerWidth/window.innerHeight > 2065/2160) {

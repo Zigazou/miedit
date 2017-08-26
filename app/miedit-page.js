@@ -96,6 +96,11 @@ class MiEditPage {
                          + ("0" + time.getMinutes()).slice(-2) + ":"
                          + ("0" + time.getSeconds()).slice(-2)
 
+        const compressed = LZString.compressToBase64(vdt)
+            .replace(new RegExp('\\+', 'g'), '.')
+            .replace(new RegExp('/', 'g'), '_')
+            .replace(new RegExp('=', 'g'), '-')
+
         // Download VDT link
         dlLink.href = "data:text/plain;charset=ascii,"
                     + encodeURIComponent(vdt)
@@ -104,12 +109,12 @@ class MiEditPage {
 
         // View VDT link
         vwLink.href = "minitel-viewer.html"
-                    + "?stream=" + encodeURIComponent(vdt)
+                    + "?cstream=" + compressed
         vwLink.innerHTML = "View VDT [" + timeString + "]"
 
         // View VDT link
         rlLink.href = "minitel-real-viewer.html"
-                    + "?stream=" + encodeURIComponent(vdt)
+                    + "?cstream=" + compressed
         rlLink.innerHTML = "Real view VDT [" + timeString + "]"
     }
 
