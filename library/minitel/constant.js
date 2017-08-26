@@ -208,7 +208,7 @@ Minitel.states =  {
     },
 
     "g2acute": {
-        0x45: { func: "print", arg: 0x09 }, // É
+        0x45: { func: "print", arg: 0x02 }, // É
         0x65: { func: "print", arg: 0x12 }, // é
         "*": { func: "print", arg: 0x5F }
     },
