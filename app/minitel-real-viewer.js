@@ -5,12 +5,13 @@ window.addEventListener("load", function(event) {
     const screen = new MinitelScreen(canvas)
     let stream = ""
     const cstream = queryParameters("cstream")
-            .replace(new RegExp('\\.', 'g'), '+')
-            .replace(new RegExp('_', 'g'), '/')
-            .replace(new RegExp('-', 'g'), '=')
 
     if(cstream) {
-        stream = LZString.decompressFromBase64(cstream)
+        stream = LZString.decompressFromBase64(
+            cstream.replace(new RegExp('\\.', 'g'), '+')
+                   .replace(new RegExp('_', 'g'), '/')
+                   .replace(new RegExp('-', 'g'), '=')
+        )
     } else {
         stream = queryParameters("stream")    
     }
