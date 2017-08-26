@@ -14,12 +14,6 @@ class MinitelDecoder {
         this.resetCurrent()
         this.charCode = 0x20
 
-        this.waiting = {
-            bgColor: undefined,
-            mask: undefined,
-            underline: undefined
-        }
-
         this.drcs = {
             g0: false,
             g1: false,
@@ -39,6 +33,12 @@ class MinitelDecoder {
             invert: false,
             mask: false,
             separated: false,
+        }
+
+        this.waiting = {
+            bgColor: undefined,
+            mask: undefined,
+            underline: undefined
         }
     }
 
