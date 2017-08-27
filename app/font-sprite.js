@@ -31,8 +31,9 @@ class FontSprite {
      * @param {Char} char Character characteristics.
      * @param {string[]} colors The color palette containing the hex colors to
      *                          use.
+     * @param {bool} drcs Whether the font is DRCS or standard
      */
-    constructor(sheetURL, grid, char, colors) {
+    constructor(sheetURL, grid, char, colors, drcs) {
         /**
          * How the sprite sheet is organized.
          * @member {Grid}
@@ -71,6 +72,12 @@ class FontSprite {
          * @private
          */
         this.spriteNumber = 0
+
+        /**
+         * Indicates whether the characters are for a DRCS charset or standard.
+         * @member {boolean}
+         */
+        this.drcs = drcs
 
         /**
          * Indicates whether the sprite sheet can be used or not.
@@ -172,16 +179,65 @@ class FontSprite {
 
         if(color === undefined) color = 0
 
-        if(ord === 0x5F && mult.height === 2 && part.y === 1) {
-            // Underscore is a special case when doubling height
-            // It takes only one pixel height instead of 2
-            ctx.fillStyle = this.colors[color]
-            ctx.fillRect(x, y + this.char.height - 1, this.char.width, 1)
-        } else if(ord === 0x7E && mult.height === 2 && part.y === 0) {
-            // Upperscore is a special case when doubling height
-            // It takes three pixels height instead of 2
-            ctx.fillStyle = this.colors[color]
-            ctx.fillRect(x, y, this.char.width, 3)
+        ctx.save()
+
+        // Create clipping
+        ctx.beginPath()
+        ctx.rect(x, y, this.char.width, this.char.height)
+        ctx.clip()
+
+        if(mult.height === 2) {
+            // When height is doubled, first line is three pixel height and
+            // last line is one pixel height
+            if(part.y === 0) {
+                ctx.drawImage(
+                    // Source
+                    this.spriteSheetColors[color],
+                    srcCoords.x + offset.x, srcCoords.y + offset.y,
+                    this.char.width / mult.width,
+                    1 / mult.height,
+
+                    // Destination
+                    x, y,
+                    this.char.width, 1
+                )
+
+                ctx.drawImage(
+                    // Source
+                    this.spriteSheetColors[color],
+                    srcCoords.x + offset.x, srcCoords.y + offset.y,
+                    this.char.width / mult.width,
+                    this.char.height / mult.height,
+
+                    // Destination
+                    x, y + 1,
+                    this.char.width, this.char.height
+                )
+            } else {
+                ctx.drawImage(
+                    // Source
+                    this.spriteSheetColors[color],
+                    srcCoords.x + offset.x, srcCoords.y + offset.y - 1,
+                    this.char.width / mult.width,
+                    1 / mult.height,
+
+                    // Destination
+                    x, y,
+                    this.char.width, 1
+                )
+
+                ctx.drawImage(
+                    // Source
+                    this.spriteSheetColors[color],
+                    srcCoords.x + offset.x, srcCoords.y + offset.y,
+                    this.char.width / mult.width,
+                    this.char.height / mult.height,
+
+                    // Destination
+                    x, y + 1,
+                    this.char.width, this.char.height
+                )
+            }
         } else {
             // Generic case
             ctx.drawImage(
@@ -201,6 +257,8 @@ class FontSprite {
             ctx.fillStyle = this.colors[color]
             ctx.fillRect(x, y + this.char.height - 1, this.char.width, 1)
         }
+
+        ctx.restore()
     }
 
     /**
