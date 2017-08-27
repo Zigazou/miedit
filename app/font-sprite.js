@@ -172,16 +172,29 @@ class FontSprite {
 
         if(color === undefined) color = 0
 
-        ctx.drawImage(
-            // Source
-            this.spriteSheetColors[color],
-            srcCoords.x + offset.x, srcCoords.y + offset.y,
-            this.char.width / mult.width, this.char.height / mult.height,
+        if(ord === 0x5F && mult.height === 2 && part.y === 1) {
+            // Underscore is a special case when doubling height
+            // It takes only one pixel height instead of 2
+            ctx.fillStyle = this.colors[color]
+            ctx.fillRect(x, y + this.char.height - 1, this.char.width, 1)
+        } else if(ord === 0x7E && mult.height === 2 && part.y === 0) {
+            // Upperscore is a special case when doubling height
+            // It takes three pixels height instead of 2
+            ctx.fillStyle = this.colors[color]
+            ctx.fillRect(x, y, this.char.width, 3)
+        } else {
+            // Generic case
+            ctx.drawImage(
+                // Source
+                this.spriteSheetColors[color],
+                srcCoords.x + offset.x, srcCoords.y + offset.y,
+                this.char.width / mult.width, this.char.height / mult.height,
 
-            // Destination
-            x, y,
-            this.char.width, this.char.height
-        )
+                // Destination
+                x, y,
+                this.char.width, this.char.height
+            )
+        }
 
         // Draw the underline if needed
         if(underline && part.y === mult.height - 1) {
