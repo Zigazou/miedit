@@ -31,9 +31,8 @@ class FontSprite {
      * @param {Char} char Character characteristics.
      * @param {string[]} colors The color palette containing the hex colors to
      *                          use.
-     * @param {bool} drcs Whether the font is DRCS or standard
      */
-    constructor(sheetURL, grid, char, colors, drcs) {
+    constructor(sheetURL, grid, char, colors) {
         /**
          * How the sprite sheet is organized.
          * @member {Grid}
@@ -72,12 +71,6 @@ class FontSprite {
          * @private
          */
         this.spriteNumber = 0
-
-        /**
-         * Indicates whether the characters are for a DRCS charset or standard.
-         * @member {boolean}
-         */
-        this.drcs = drcs
 
         /**
          * Indicates whether the sprite sheet can be used or not.
