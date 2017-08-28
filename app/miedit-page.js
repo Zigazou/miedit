@@ -26,7 +26,7 @@ class MiEditPage {
         container.find(".mosaic-exit")[0].autocallback(this)
 
         const canvas = container.find("#minitel-screen")[0]
-        this.miscreen = new MinitelScreen(canvas)
+        this.miscreen = new MinitelScreen(canvas, true)
 
         const events = [
             "value_changed.mitree",

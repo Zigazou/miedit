@@ -1,7 +1,7 @@
 "use strict"
 window.addEventListener("load", function(event) {
     const canvas = document.getElementById("minitel-screen")
-    const screen = new MinitelScreen(canvas)
+    const screen = new MinitelScreen(canvas, false)
     const urls = queryParameters("url").split(",")
 
     for (let u = 0; u < urls.length; u++) {

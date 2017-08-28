@@ -12,7 +12,7 @@ class MinitelScreen {
     /**
      * @param {HTMLCanvasElement} canvas
      */
-    constructor(canvas, cursorPosition) {
+    constructor(canvas, color) {
         const grid = { cols: Minitel.columns, rows: Minitel.rows }
         const char = { width: Minitel.charWidth, height: Minitel.charHeight }
 
@@ -21,11 +21,22 @@ class MinitelScreen {
         canvas.height = char.height * grid.rows
 
         /**
+         * Should we show colors or black and white?
+         * @param {boolean}
+         */
+        this.color = color ? true : false
+
+        /**
          * The page memory
          * @member {PageMemory}
          * @private
          */
-        this.pageMemory = new PageMemory(grid, char, canvas)
+        this.pageMemory = new PageMemory(
+            grid,
+            char,
+            canvas,
+            this.color ? Minitel.colors : Minitel.greys
+        )
 
         /**
          * The decoder
@@ -54,17 +65,12 @@ class MinitelScreen {
         this.timer = undefined
 
         /**
-         * The cursor position element
-         * @param {HTMLElement}
-         */
-        this.cursorPosition = cursorPosition
-
-        /**
          * Should the cursor position be shown?
          * @param {boolean}
          */
         this.cursorShown = false
 
+        canvas.addEventListener("click", event => this.onClick(event))
         this.initRefresh(Minitel.B1200, 25)
     }
 
@@ -122,6 +128,21 @@ class MinitelScreen {
         const chunk = this.queue.slice(0, this.chunkSize)
         this.queue = this.queue.slice(this.chunkSize)
         this.decoder.decodeList(chunk)
+    }
+
+    /**
+     * Change colors (black and white or color)
+     */
+    changeColors() {
+        this.color = !this.color
+        this.pageMemory.changeColors(this.color)
+    }
+
+    onClick(event) {
+        if(event.button !== 0) return true
+        
+        this.changeColors()
+        return false
     }
 }
 

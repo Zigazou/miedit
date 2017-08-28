@@ -29,10 +29,8 @@ class FontSprite {
      * @param {string} sheetURL The URL of the sprite sheet to use.
      * @param {Grid} grid How the sprite sheet is organized.
      * @param {Char} char Character characteristics.
-     * @param {string[]} colors The color palette containing the hex colors to
-     *                          use.
      */
-    constructor(sheetURL, grid, char, colors) {
+    constructor(sheetURL, grid, char) {
         /**
          * How the sprite sheet is organized.
          * @member {Grid}
@@ -46,17 +44,17 @@ class FontSprite {
         this.char = char
 
         /**
-         * The color palette containing the hex colors to use.
-         * @member {string[]}
+         * Whether sprites are rendered in color or black and white
+         * @member {boolean}
          */
-        this.colors = colors
+        this.color = true
 
         /**
          * The pre-renderd sprite sheets for each color.
          * @member {HTMLCanvasElement[]}
          * @private
          */
-        this.spriteSheetColors = []
+        this.spriteSheetColors = { gray: [], color: [] }
 
         /**
          * Coordinates are pre-computed.
@@ -90,22 +88,30 @@ class FontSprite {
      * @private
      */
     generateColors() {
-        range(this.colors.length).forEach(color => {
+        function generateColor(source, color) {
             const canvas = document.createElement("canvas")
-            canvas.width = this.spriteSheet.width
-            canvas.height = this.spriteSheet.height
+            canvas.width = source.width
+            canvas.height = source.height
 
             const ctx = canvas.getContext("2d")
             const [ wid, hei ] = [ canvas.width, canvas.height ]
 
             ctx.clearRect(0, 0, wid, hei)
-            ctx.drawImage(this.spriteSheet, 0, 0, wid, hei, 0, 0, wid, hei)
-            ctx.fillStyle = this.colors[color]
+            ctx.drawImage(source, 0, 0, wid, hei, 0, 0, wid, hei)
+            ctx.fillStyle = color
             ctx.globalCompositeOperation = "source-in"
             ctx.fillRect(0, 0, wid, hei)
 
-            this.spriteSheetColors[color] = canvas
-        })
+            return canvas
+        }
+
+        this.spriteSheetColors.color = Minitel.colors.map(
+            color => generateColor(this.spriteSheet, color)
+        )
+
+        this.spriteSheetColors.gray = Minitel.grays.map(
+            gray => generateColor(this.spriteSheet, gray)
+        )
 
         this.generateCoordinates()
 
@@ -172,6 +178,10 @@ class FontSprite {
 
         if(color === undefined) color = 0
 
+        const source = this.color
+                     ? this.spriteSheetColors.color[color]
+                     : this.spriteSheetColors.gray[color]
+
         ctx.save()
 
         // Create clipping
@@ -185,7 +195,7 @@ class FontSprite {
             if(part.y === 0) {
                 ctx.drawImage(
                     // Source
-                    this.spriteSheetColors[color],
+                    source,
                     srcCoords.x + offset.x, srcCoords.y + offset.y,
                     this.char.width / mult.width,
                     1 / mult.height,
@@ -197,7 +207,7 @@ class FontSprite {
 
                 ctx.drawImage(
                     // Source
-                    this.spriteSheetColors[color],
+                    source,
                     srcCoords.x + offset.x, srcCoords.y + offset.y,
                     this.char.width / mult.width,
                     this.char.height / mult.height,
@@ -209,7 +219,7 @@ class FontSprite {
             } else {
                 ctx.drawImage(
                     // Source
-                    this.spriteSheetColors[color],
+                    source,
                     srcCoords.x + offset.x, srcCoords.y + offset.y - 1,
                     this.char.width / mult.width,
                     1 / mult.height,
@@ -221,7 +231,7 @@ class FontSprite {
 
                 ctx.drawImage(
                     // Source
-                    this.spriteSheetColors[color],
+                    source,
                     srcCoords.x + offset.x, srcCoords.y + offset.y,
                     this.char.width / mult.width,
                     this.char.height / mult.height,
@@ -235,7 +245,7 @@ class FontSprite {
             // Generic case
             ctx.drawImage(
                 // Source
-                this.spriteSheetColors[color],
+                source,
                 srcCoords.x + offset.x, srcCoords.y + offset.y,
                 this.char.width / mult.width, this.char.height / mult.height,
 
@@ -247,7 +257,10 @@ class FontSprite {
 
         // Draw the underline if needed
         if(underline && part.y === mult.height - 1) {
-            ctx.fillStyle = this.colors[color]
+            ctx.fillStyle = this.color
+                          ? Minitel.colors[color]
+                          : Minitel.grays[color]
+
             ctx.fillRect(x, y + this.char.height - 1, this.char.width, 1)
         }
 
@@ -260,17 +273,13 @@ class FontSprite {
      * @param {Array[number]} design An array of 10 bytes defining the character
      */
     defineChar(ord, design) {
-        if(ord <= 32 || ord >= 127) return
-        if(design.length !== 10) return
-
-        const coords = this.toCoordinates(ord)
-        this.spriteSheetColors.forEach((spriteSheetColor, color) => {
+        function defineOneChar(spriteSheetColor, color) {
             const ctx = spriteSheetColor.getContext("2d")
             ctx.globalCompositeOperation = "source-over"
 
             ctx.clearRect(coords.x, coords.y, this.char.width, this.char.height)
 
-            ctx.fillStyle = this.colors[color]
+            ctx.fillStyle = color
             design.forEach((byte, offsetY) => {
                 byte = byte & 0xff
 
@@ -283,6 +292,17 @@ class FontSprite {
                     }
                 })
             })
+        }
+
+        if(ord <= 32 || ord >= 127) return
+        if(design.length !== 10) return
+
+        const coords = this.toCoordinates(ord)
+        this.spriteSheetColors.color.forEach((spriteSheetColor, index) => {
+            defineOneChar(spriteSheetColor, Minitel.colors[index])
+        })
+        this.spriteSheetColors.gray.forEach((spriteSheetColor, index) => {
+            defineOneChar(spriteSheetColor, Minitel.grays[index])
         })
     }
 }

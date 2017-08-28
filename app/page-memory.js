@@ -27,7 +27,7 @@ class PageMemory {
      * @param {HTMLCanvasElement} canvas The canvas which will be used as the
      *                                   screen.
      */
-    constructor(grid, char, canvas) {
+    constructor(grid, char, canvas, color) {
         const frameRate = 50 // Frame per second
 
         /**
@@ -54,28 +54,9 @@ class PageMemory {
          */
         this.context = this.createContext()
 
-        /**
-         * @member {string[]}
-         * @private
-         */
-        this.colors = Minitel.colors
-
         // Helper array
         const rows = []
         rows.length = this.grid.rows
-
-        /**
-         * G0 is the alphanumeric character set, G1 is the mosaic character set
-         * G'0 and G'1 are the DRCS counterpart
-         * @member {Object}
-         * @private
-         */
-        this.font = {
-            "G0": this.loadFont("font/ef9345-g0.png"),
-            "G1": this.loadFont("font/ef9345-g1.png"),
-            "G'0": this.loadFont("font/blank.png"),
-            "G'1": this.loadFont("font/blank.png"),
-        }
 
         /**
          * Cursor position and visibility
@@ -135,6 +116,21 @@ class PageMemory {
          * @private
          */
         this.changed = rows.map(() => true)
+
+        /**
+         * G0 is the alphanumeric character set, G1 is the mosaic character set
+         * G'0 and G'1 are the DRCS counterpart
+         * @member {Object}
+         * @private
+         */
+        this.font = {
+            "G0": this.loadFont("font/ef9345-g0.png"),
+            "G1": this.loadFont("font/ef9345-g1.png"),
+            "G'0": this.loadFont("font/blank.png"),
+            "G'1": this.loadFont("font/blank.png"),
+        }
+
+        this.changeColors(color)
 
         /**
          * Timer ID of the refresh timer.
@@ -204,12 +200,11 @@ class PageMemory {
      * @param {string} url URL of the font to load.
      * @return {FontSprite}
      */
-    loadFont(url) {
+    loadFont(url, colors) {
         return new FontSprite(
             url,
             { cols: 8, rows: 16 },
-            this.char,
-            this.colors
+            this.char
         )
     }
 
@@ -259,6 +254,17 @@ class PageMemory {
             this.memory[1] = newRow
             this.changed[1] = true
         }
+    }
+
+    /**
+     * Change colors (black and white or color)
+     */
+    changeColors(color) {
+        this.colors = color ? Minitel.colors : Minitel.grays
+        for(let index in this.font) this.font[index].color = color
+
+        // Force redraw of the whole screen
+        this.changed = this.changed.map(() => true)
     }
 
     /**

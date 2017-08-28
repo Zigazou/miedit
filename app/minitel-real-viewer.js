@@ -2,7 +2,8 @@
 window.addEventListener("load", function(event) {
     const canvas = document.getElementById("minitel-screen")
     const viewer = document.getElementById("minitel-viewer")
-    const screen = new MinitelScreen(canvas)
+    const gray = queryParameters("gray")
+    const screen = new MinitelScreen(canvas, gray ? false : true)
     let stream = ""
     const cstream = queryParameters("cstream")
 

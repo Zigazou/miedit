@@ -1,7 +1,8 @@
 "use strict"
 window.addEventListener("load", function(event) {
     const canvas = document.getElementById("minitel-screen")
-    const screen = new MinitelScreen(canvas)
+    const gray = queryParameters("gray")
+    const screen = new MinitelScreen(canvas, gray ? false : true)
     let stream = ""
     const cstream = queryParameters("cstream")
 
