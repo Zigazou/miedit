@@ -198,16 +198,15 @@ class MinitelDecoder {
     }
 
     setCharType(charPage) {
+        this.current.separated = false
+        this.current.invert = false
+        this.current.mult = { width: 1, height: 1 }
+
         if(charPage === "G0") {
             this.current.charType = CharCell
-            this.current.separated = false
-            this.current.invert = false
-            this.current.mult = { width: 1, height: 1 }
         } else if(charPage === "G1") {
             this.current.charType = MosaicCell
             this.current.underline = false
-            this.current.invert = false
-            this.current.mult = { width: 1, height: 1 }
             if(this.waiting.bgColor !== undefined) {
                 this.current.bgColor = this.waiting.bgColor
                 this.waiting.bgColor = undefined
