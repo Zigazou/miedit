@@ -19,6 +19,7 @@ class MinitelDecoder {
             g1: false,
             charsetToDefine: undefined,
             startChar: undefined,
+            count: 0,
         }
     }
 
@@ -379,9 +380,12 @@ class MinitelDecoder {
 
     drcsDefineCharset(charset) { this.drcs.charsetToDefine = charset }
     drcsSetStartChar(startChar) { this.drcs.startChar = startChar }
+    drcsStart() { this.drcs.count = 0 }
+    drcsInc() { this.drcs.count++ }
 
-    drcsDefineChar(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o) {
-        const sextets = [a, b, c, d, e, f, g, h, i, j, k, l, m, n]
+    drcsDefineChar() {
+        const sextets = this.previousBytes.lastValues(this.drcs.count + 1)
+                      .slice(0, -1)
                       .map(value => { return (value - 0x40) & 0x3f })
 
         // Converts 14 6-bits values to 10 8-bits values

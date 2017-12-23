@@ -215,6 +215,7 @@ class PageMemory {
      */
     defineCharG0(ord, design) {
         this.font["G'0"].defineChar(ord, design)
+        this.changed = this.changed.map(() => true)
     }
 
     /**
@@ -224,6 +225,7 @@ class PageMemory {
      */
     defineCharG1(ord, design) {
         this.font["G'1"].defineChar(ord, design)
+        this.changed = this.changed.map(() => true)
     }
 
     /**

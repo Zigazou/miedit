@@ -273,7 +273,7 @@ class FontSprite {
      * @param {Array[number]} design An array of 10 bytes defining the character
      */
     defineChar(ord, design) {
-        function defineOneChar(spriteSheetColor, color) {
+        const defineOneChar = (spriteSheetColor, color) => {
             const ctx = spriteSheetColor.getContext("2d")
             ctx.globalCompositeOperation = "source-over"
 

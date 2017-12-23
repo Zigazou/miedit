@@ -306,11 +306,11 @@ Minitel.states =  {
     "drcs-define-validate-g1": { 0x49: { func: "drcsDefineCharset", arg: "G1" } },
 
     // Define a character
-    "drcs-start": { 0x30: { goto: "drcs-read" } },
+    "drcs-start": { 0x30: { func: "drcsStart", goto: "drcs-read" } },
     "drcs-read": {
-        0x30: { func: "drcsDefineChar", dynarg: 15, goto: "drcs-read" },
-        0x1f: { goto: "us" },
-        "*": { goto: "drcs-read" }
+        0x30: { func: "drcsDefineChar", goto: "drcs-read" },
+        0x1f: { func: "drcsDefineChar", goto: "us" },
+        "*": { func: "drcsInc", goto: "drcs-read" }
     },
 
     // Select use or not of DRCS charsets
