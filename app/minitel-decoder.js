@@ -208,6 +208,10 @@ class MinitelDecoder {
             this.current.underline = false
             this.current.invert = false
             this.current.mult = { width: 1, height: 1 }
+            if(this.waiting.bgColor !== undefined) {
+                this.current.bgColor = this.waiting.bgColor
+                this.waiting.bgColor = undefined
+            }
         }
     }
 
