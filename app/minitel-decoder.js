@@ -129,11 +129,16 @@ class MinitelDecoder {
         if(clearRange === "eol") {
             const saveX = this.pm.cursor.x
             const saveY = this.pm.cursor.y
+            const savePageMode = this.pageMode
+
+            // Clearing must not scroll the screen
+            this.pageMode = true
             range(this.pm.cursor.x, this.pm.grid.cols).forEach(i => {
                 this.print(0x20)
             })
             this.pm.cursor.x = saveX
             this.pm.cursor.y = saveY
+            this.pageMode = savePageMode
             return
         }
 
@@ -359,7 +364,7 @@ class MinitelDecoder {
         this.pm.set(x, y, cell)
     }
 
-    print(charCode) {
+    print(charCode, dontMove) {
         if(this.current.charType === MosaicCell) {
             this.printG1Char(charCode)
         } else if(charCode === 0x20 && this.serialAttributesDefined()) {
@@ -369,7 +374,9 @@ class MinitelDecoder {
         }
 
         this.charCode = charCode
-        this.moveCursor("char")
+        if(!dontMove) {
+            this.moveCursor("char")
+        }
     }
 
     repeat(count) {

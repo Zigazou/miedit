@@ -240,7 +240,7 @@ class PageMemory {
         })
 
         if(direction === "up") {
-            range(2, this.grid.rows).forEach(row => {
+            range(1, this.grid.rows).forEach(row => {
                 this.memory[row] = this.memory[row + 1]
                 this.changed[row] = true
             })
