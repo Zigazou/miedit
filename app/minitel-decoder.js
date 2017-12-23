@@ -349,7 +349,7 @@ class MinitelDecoder {
         cell.separated = this.current.separated
         cell.drcs = this.drcs.g1
 
-        if(cell.value >= 0x20 && cell.value <= 0x5F) {
+        if(cell.value >= 0x20 && cell.value <= 0x5F && !cell.drcs) {
             cell.value += 0x20
         }
 
@@ -416,6 +416,7 @@ class MinitelDecoder {
         }
 
         this.drcs.startChar++
+        this.drcs.count = 0
     }
 
     drcsUseG0(bool) { this.drcs.g0 = bool }
