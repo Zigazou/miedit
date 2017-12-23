@@ -90,7 +90,12 @@ class MinitelDecoder {
                 }
             }
         } else if(direction === "down") {
-            this.pm.cursor.y++
+            if(this.pm.cursor.y === 0) {
+                this.pm.cursor.x = 0
+                this.pm.cursor.y = 1
+            } else {
+                this.pm.cursor.y++
+            }
 
             if(this.pm.cursor.y == this.pm.grid.rows) {
                 if(this.pageMode) {
