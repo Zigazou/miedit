@@ -340,7 +340,7 @@ class MinitelDecoder {
         cell.blink = this.current.blink
         cell.invert = this.current.invert
         cell.mult = this.current.mult
-        cell.drcs = this.drcs.g0
+        cell.drcs = y === 0 ? false : this.drcs.g0
 
         range2([cell.mult.height, cell.mult.width]).forEach((j, i) => {
             const newCell = cell.copy()
@@ -359,7 +359,7 @@ class MinitelDecoder {
         cell.bgColor = this.current.bgColor
         cell.blink = this.current.blink
         cell.separated = this.current.separated
-        cell.drcs = this.drcs.g1
+        cell.drcs = y === 0 ? false : this.drcs.g1
 
         if(cell.value >= 0x20 && cell.value <= 0x5F && !cell.drcs) {
             cell.value += 0x20
