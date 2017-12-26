@@ -1,19 +1,73 @@
 "use strict"
+/**
+ * @file MinitelDecoder
+ * @author Frédéric BISSON <zigazou@free.fr>
+ * @version 1.0
+ */
 
+/**
+ * @class MinitelDecoder
+ */
 class MinitelDecoder {
+    /**
+     * Initializes the decoder
+     * @param {PageMemory} pageMemory
+     */
     constructor(pageMemory) {
+        /**
+         * The current state of the decoder
+         * @member {string}
+         * @private
+         */
         this.state = "start"
+
+        /**
+         * Indicates whether the screen should be automatically scrolled
+         * when reaching the bottom of the screen (roll mode) or if the cursor
+         * should be put on the first row (page mode)
+         * @member {string}
+         * @private
+         */
         this.pageMode = true
 
+        /**
+         * The page memory to which the decoded character must be applied
+         * @member {PageMemory}
+         * @private
+         */
         this.pm = pageMemory
+
         this.clear("page")
         this.clear("status")
 
+        /**
+         * A finite stack holding the previous bytes encountered by the
+         * automaton. 128 bytes should be enough for any Minitel up to Minitel 2
+         * @member {FiniteStack}
+         * @private
+         */
         this.previousBytes = new FiniteStack(128)
 
         this.resetCurrent()
+
+        /**
+         * Last drawn character, mainly used by the repeat functionality.
+         * @member {number}
+         * @private
+         */
         this.charCode = 0x20
 
+        /**
+         * A structure holding information about characters being currently
+         * redefined.
+         * @member {Object}
+         * @property {boolean} g0 showing DRCS G0 (true) or standard G0 (false)?
+         * @property {boolean} g1 showing DRCS G1 (true) or standard G1 (false)?
+         * @property {string} charsetToDefine charset to define "G0" or "G1"
+         * @property {number} startChar starting character (ord) to define
+         * @property {number} count number of defining bytes read 
+         * @private
+         */
         this.drcs = {
             g0: false,
             g1: false,
@@ -23,7 +77,28 @@ class MinitelDecoder {
         }
     }
 
+    /**
+     * Reset current attributes to default values
+     * @private
+     */
     resetCurrent() {
+        /**
+         * A structure holding the current attributes
+         * @member {Object}
+         * @property {Cell} charType current character type (CharCell or
+         *                           SeparatedCell)
+         * @property {Object} mult
+         * @property {number} mult.width width multiplier (1 or 2)
+         * @property {number} mult.height height multiplier (1 or 2)
+         * @property {number} fgColor foreground color (0 to 7)
+         * @property {number} bgColor background color (0 to 7)
+         * @property {boolean} underline is underlining enabled?
+         * @property {boolean} blink is blinking enabled?
+         * @property {boolean} invert is video inverse enabled?
+         * @property {boolean} mask is attribute masking enabled?
+         * @property {boolean} separated is mosaic character separation enabled?
+         * @private
+         */
         this.current = {
             charType: CharCell,
             mult: { width: 1, height: 1 },
@@ -36,6 +111,15 @@ class MinitelDecoder {
             separated: false,
         }
 
+        /**
+         * A structure holding attributes waiting to be applied (serial
+         * attributes)
+         * @member {Object}
+         * @property {number=} bgColor
+         * @property {boolean=} mask
+         * @property {boolean=} underline
+         * @private
+         */
         this.waiting = {
             bgColor: undefined,
             mask: undefined,
@@ -43,14 +127,34 @@ class MinitelDecoder {
         }
     }
 
+    /**
+     * Checks if serial attributes have been defined which are waiting to be
+     * applied.
+     * @private
+     * @return {boolean} true if serial attributes are waiting to be applied,
+     *                   false otherwise
+     */
     serialAttributesDefined() {
         return this.waiting.bgColor !== undefined
             || this.waiting.underline !== undefined
             || this.waiting.mask !== undefined
     }
 
+    /**
+     * Move the cursor at a relative position
+     * This method takes into account:
+     * - whether the cursor is in the status row or not
+     * - whether the width or height multiplier are used
+     * - the current page mode
+     * - whether the cursor is at the last column
+     * @param {string} direction The direction to move the cursor to, can be
+     *                           char, left, right, up, down, firstColumn or
+     *                           home
+     * @private
+     */
     moveCursor(direction) {
         if(direction === "char") {
+            // Moves the cursor after printing a character
             this.pm.cursor.x += this.current.mult.width
             if(this.pm.cursor.x >= this.pm.grid.cols) {
                 if(this.pm.cursor.y == 0) {
@@ -65,18 +169,21 @@ class MinitelDecoder {
                 }
             }
         } else if(direction === "left") {
+            // Moves the cursor one column the left
             this.pm.cursor.x--
             if(this.pm.cursor.x < 0) {
                 this.pm.cursor.x = this.pm.grid.cols - 1
                 this.moveCursor("up")
             }
         } else if(direction === "right") {
+            // Moves the cursor one column on the right
             this.pm.cursor.x++
             if(this.pm.cursor.x >= this.pm.grid.cols) {
                 this.pm.cursor.x = 0
                 this.moveCursor("down")
             }
         } else if(direction === "up") {
+            // Moves the cursor one row up
             if(this.pm.cursor.y == 0) return;
 
             this.pm.cursor.y--
@@ -90,6 +197,7 @@ class MinitelDecoder {
                 }
             }
         } else if(direction === "down") {
+            // Move the cursor one row down
             if(this.pm.cursor.y === 0) {
                 this.pm.cursor.x = 0
                 this.pm.cursor.y = 1
@@ -106,16 +214,29 @@ class MinitelDecoder {
                 }
             }
         } else if(direction === "firstColumn") {
+            // Moves the cursor on the first column of the current row
             this.pm.cursor.x = 0
         } else if(direction === "home") {
+            // Moves the cursor on the first column, first row and reset
+            // current attributes.
             this.pm.cursor.x = 0
             this.pm.cursor.y = 1
             this.resetCurrent()
         }
     }
 
+    /**
+     * Clear a portion of the screen.
+     * @param {string} clearRange Which part of the screen should be cleared, it
+     *                            can be either page, status, eol, endofscreen,
+     *                            startofscreen, startofline, completescreen or
+     *                            completeline
+     * @private
+     */
     clear(clearRange) {
         if(clearRange === "page") {
+            // Clear the whole screen except the status row ,reset current
+            // attributes and place the cursor on the first column, first row
             this.pm.clear()
             this.pm.cursor.x = 0
             this.pm.cursor.y = 1
@@ -124,6 +245,7 @@ class MinitelDecoder {
         }
 
         if(clearRange === "status") {
+            // Clear status row
             let row = []
             range(this.pm.grid.cols).forEach(i => {
                 this.pm.set(i, 0, new MosaicCell())
@@ -132,6 +254,7 @@ class MinitelDecoder {
         }
 
         if(clearRange === "eol") {
+            // Clear from the current cursor position till the end of the line
             const saveX = this.pm.cursor.x
             const saveY = this.pm.cursor.y
             const savePageMode = this.pageMode
@@ -151,6 +274,7 @@ class MinitelDecoder {
         if(this.pm.cursor.y === 0) return
 
         if(clearRange === "endofscreen") {
+            // Clear from the current cursor position till the end of the screen
             range(this.pm.cursor.x, this.pm.grid.cols).forEach(x => {
                 this.pm.set(x, this.pm.cursor.y, new MosaicCell())
             })
@@ -164,6 +288,8 @@ class MinitelDecoder {
         }
 
         if(clearRange === "startofscreen") {
+            // Clear from the current cursor position till the start of the
+            // screen
             range(0, this.pm.cursor.x + 1).forEach(x => {
                 this.pm.set(x, this.pm.cursor.y, new MosaicCell())
             })
@@ -177,6 +303,7 @@ class MinitelDecoder {
         }
 
         if(clearRange === "startofline") {
+            // Clear from the start of the row till the current cursor position
             range(0, this.pm.cursor.x + 1).forEach(x => {
                 this.pm.set(x, this.pm.cursor.y, new MosaicCell())
             })
@@ -185,11 +312,14 @@ class MinitelDecoder {
         }
 
         if(clearRange === "completescreen") {
+            // Clear complete screen without moving the cursor nor losing
+            // current attributes
             this.pm.clear()
             return        
         }
 
         if(clearRange === "completeline") {
+            // Clear the current line
             range(0, this.pm.grid.cols).forEach(x => {
                 this.pm.set(x, this.pm.cursor.y, new MosaicCell())
             })
@@ -198,10 +328,23 @@ class MinitelDecoder {
         }
     }
 
+    /**
+     * Set the current page mode
+     * @param {boolean} bool true indicates the screen is in page mode while
+     *                       false indicates the screen is in roll mode
+     * @private
+     */
     setPageMode(bool) {
         this.pageMode = bool
     }
 
+    /**
+     * Set the current character type.
+     * Doing so resets some attributes even if the current character type does
+     * not change.
+     * @param {string} charPage either G0 or G1
+     * @private
+     */
     setCharType(charPage) {
         this.current.separated = false
         this.current.invert = false
@@ -219,14 +362,29 @@ class MinitelDecoder {
         }
     }
 
+    /**
+     * Sets the cursor visibility
+     * @param {boolean} visibility true for a visibile cursor, false otherwise
+     * @private
+     */
     showCursor(visibility) {
         this.pm.cursor.visible = visibility
     }
 
+    /**
+     * Sets the foreground color
+     * @param {number} color the foreground color (0 to 7)
+     * @private
+     */
     setFgColor(color) {
         this.current.fgColor = color
     }
 
+    /**
+     * Sets the background color
+     * @param {number} color the background color (0 to 7)
+     * @private
+     */
     setBgColor(color) {
         if(this.current.charType === CharCell) {
             this.waiting.bgColor = color
@@ -235,6 +393,14 @@ class MinitelDecoder {
         }
     }
 
+    /**
+     * Sets the character size.
+     * This is valid only for alphanumerical character and when not in the
+     * status row.
+     * @param {string} sizeName the size can be either: normalSize, doubleWidth,
+     *                          doubleHeight or doubleSize.
+     * @private
+     */
     setSize(sizeName) {
         if(this.pm.cursor.y === 0) return
         if(this.current.charType !== CharCell) return
@@ -251,14 +417,29 @@ class MinitelDecoder {
         this.current.mult = sizes[sizeName]
     }
 
+    /**
+     * Sets the text blinking
+     * @param {boolean} blink true for blinking text, false otherwise
+     * @private
+     */
     setBlink(blink) {
         this.current.blink = blink
     }
 
+    /**
+     * Sets the masking of attributes
+     * @param {boolean} mask true for attributes masking, false otherwise
+     * @private
+     */
     setMask(mask) {
         this.waiting.mask = mask
     }
 
+    /**
+     * Set underline of text or separation of mosaic characters
+     * @param {boolean} underline true for text underlining, false otherwise
+     * @private
+     */
     setUnderline(underline) {
         if(this.current.charType === CharCell) {
             this.waiting.underline = underline
@@ -267,30 +448,53 @@ class MinitelDecoder {
         }
     }
 
+    /**
+     * Set video inversion of alphanumerical characters
+     * @param {boolean} invert true for video inverse, false otherwise
+     * @private
+     */
     setInvert(invert) {
         if(this.current.charType === MosaicCell) return
 
         this.current.invert = invert
     }
 
+    /**
+     * Move the cursor at an absolute position.
+     * Doing so resets the current attributes.
+     * @param {boolean} invert true for video inverse, false otherwise
+     * @private
+     */
     locate(y, x) {
         if(y === 0x30 || y === 0x31 || y === 0x32) {
+            // This form of absolute positionning is indicated as deprecated
+            // but is nonetheless supported by every Minitel. It moves the
+            // cursor at the first column of a specific row
             y = 10 * (y - 0x30) + (x - 0x30)
             x = 1
         } else {
+            // Standard absolute positionning of the cursor
             x -= 0x40
             y -= 0x40
         }
 
+        // Ignores everything that is outside of the screen
         if(x < 1 || x > 40) return
         if(y < 0 || y > 24) return
 
+        // Minitel works from 1 to 40 while the PageMemory works with 0 to 39
         this.pm.cursor.x = x - 1
         this.pm.cursor.y = y
 
         this.resetCurrent()
     }
 
+    /**
+     * Prints a delimiter at the current cursor position.
+     * Printing a delimiter will apply the waiting attributes.
+     * @param {number} charCode the delimiter code to print (usually 0x20)
+     * @private
+     */
     printDelimiter(charCode) {
         const x = this.pm.cursor.x
         const y = this.pm.cursor.y
@@ -330,6 +534,12 @@ class MinitelDecoder {
         })
     }
 
+    /**
+     * Prints a G0 character.
+     * G0 characters are standard alphanumerical characters.
+     * @param {number} charCode the character code of the character to print
+     * @private
+     */
     printG0Char(charCode) {
         const x = this.pm.cursor.x
         const y = this.pm.cursor.y
@@ -340,6 +550,8 @@ class MinitelDecoder {
         cell.blink = this.current.blink
         cell.invert = this.current.invert
         cell.mult = this.current.mult
+
+        // DRCS is ineffictive on the status row
         cell.drcs = y === 0 ? false : this.drcs.g0
 
         range2([cell.mult.height, cell.mult.width]).forEach((j, i) => {
@@ -349,6 +561,12 @@ class MinitelDecoder {
         })
     }
 
+    /**
+     * Prints a G1 character.
+     * G1 characters are semigraphic characters (mosaic).
+     * @param {number} charCode the character code of the character to print
+     * @private
+     */
     printG1Char(charCode) {
         const x = this.pm.cursor.x
         const y = this.pm.cursor.y
@@ -361,6 +579,7 @@ class MinitelDecoder {
         cell.separated = this.current.separated
         cell.drcs = y === 0 ? false : this.drcs.g1
 
+        // Adjust the character code when not printing DRCS characters
         if(cell.value >= 0x20 && cell.value <= 0x5F && !cell.drcs) {
             cell.value += 0x20
         }
@@ -372,32 +591,79 @@ class MinitelDecoder {
         this.pm.set(x, y, cell)
     }
 
-    print(charCode, dontMove) {
+    /**
+     * Prints a character and moves the cursor.
+     * @param {number} charCode the character code of the character to print
+     * @private
+     */
+    print(charCode) {
         if(this.current.charType === MosaicCell) {
+            // MosaicCell are tested first because there is no delimiter for
+            // this character types (no serial attributes)
             this.printG1Char(charCode)
         } else if(charCode === 0x20 && this.serialAttributesDefined()) {
+            // A space is a delimiter only if there are serial attributes
+            // waiting to be applied
             this.printDelimiter(charCode)
         } else if(this.current.charType === CharCell) {
             this.printG0Char(charCode)
         }
 
         this.charCode = charCode
-        if(!dontMove) {
-            this.moveCursor("char")
-        }
+        this.moveCursor("char")
     }
 
+    /**
+     * Repeat the last printed character.
+     * @param {number} count the number of repetitions
+     * @private
+     */
     repeat(count) {
         count -= 0x40
         range(count).forEach(i => this.print(this.charCode))
     }
 
-    drcsDefineCharset(charset) { this.drcs.charsetToDefine = charset }
-    drcsSetStartChar(startChar) { this.drcs.startChar = startChar }
-    drcsStart() { this.drcs.count = 0 }
-    drcsInc() { this.drcs.count++ }
+    /**
+     * Set the charset to define
+     * @param {string} charsetToDefine charset to define, "G0" or "G1"
+     * @private
+     */
+    drcsDefineCharset(charset) {
+        this.drcs.charsetToDefine = charset
+    }
 
+    /**
+     * Set the ordinal number of the first character to redefine
+     * @param {number} startChar starting character (ord) to define
+     * @private
+     */
+    drcsSetStartChar(startChar) {
+        this.drcs.startChar = startChar
+    }
+
+    /**
+     * Start a new serie of redefinition bytes
+     * @private
+     */
+    drcsStart() {
+        this.drcs.count = 0
+    }
+
+    /**
+     * Increment the count of redefinition bytes
+     * @private
+     */
+    drcsInc() {
+        this.drcs.count++
+    }
+
+    /**
+     * Redefine one character based on previous redefinition bytes
+     * @private
+     */
     drcsDefineChar() {
+        // Do not take the last byte into account (usually 0x30 or 0x1F used
+        // as separator).
         const sextets = this.previousBytes.lastValues(this.drcs.count + 1)
                       .slice(0, -1)
                       .map(value => { return (value - 0x40) & 0x3f })
@@ -406,7 +672,6 @@ class MinitelDecoder {
         // 0      1      2      3     !4      5      6      7     !8
         // 543210 543210 543210 543210 543210 543210 543210 543210 543210...
         // 765432 107654 321076 543210 765432 107654 321076 543210 765432...
-
         const bytes = [
             sextets[0] << 2 | sextets[1] >> 4,
             (sextets[1] & 0xf) << 4 | sextets[2] >> 2,
@@ -423,65 +688,116 @@ class MinitelDecoder {
             sextets[12] << 2 | sextets[13] >> 4,
         ]
 
+        // Two sets can be redefined, the standard and the mosaic sets
         if(this.drcs.charsetToDefine === "G0") {
             this.pm.defineCharG0(this.drcs.startChar, bytes)
         } else {
             this.pm.defineCharG1(this.drcs.startChar, bytes)
         }
 
+        // Prepare for the next redefinition
         this.drcs.startChar++
         this.drcs.count = 0
     }
 
-    drcsUseG0(bool) { this.drcs.g0 = bool }
-    drcsUseG1(bool) { this.drcs.g1 = bool }
+    /**
+     * Sets the character set used for G0
+     * @param {boolean} bool true for the DRCS set, false for the standard set
+     * @private
+     */
+    drcsUseG0(bool) {
+        this.drcs.g0 = bool
+    }
 
+    /**
+     * Sets the character set used for G1
+     * @param {boolean} bool true for the DRCS set, false for the standard set
+     * @private
+     */
+    drcsUseG1(bool) {
+        this.drcs.g1 = bool
+    }
+
+    /**
+     * Execute one character in the automaton
+     * @param {string} char the character to execute
+     * @private
+     */
     decode(char) {
+        // Get the ordinal value of the character
         const c = char.charCodeAt(0)
 
+        // NUL character is always ignored, whenever it happens
         if(c == 0x00) return
 
+        // Keep memory of each executed character
         this.previousBytes.push(c)
 
+        // Verify that the current state exists in the automaton
         if(!(this.state in Minitel.states)) {
+            // Error! Restart at the initial state of the automaton
             console.log("Unknown state: " + this.state)
             this.state = "start"
             return
         }
 
+        // Look for an action for the character to execute
         let action = null
         if(c in Minitel.states[this.state]) {
+            // Found an action for this specific character
             action = Minitel.states[this.state][c]
         } else if('*' in Minitel.states[this.state]) {
+            // A generic action has been found
             action = Minitel.states[this.state]['*']
         }
 
         if(action === null) {
+            // The automaton does not know what to do with the character
             console.log("unexpectedChar: " + c)
         } else if("notImplemented" in action) {
+            // The automaton recognizes the character but has no action for it
             console.log("Not implemented: " + action.notImplemented)
         } else if("error" in action) {
+            // The character should not have occured at this particuliar moment
+            // in the stream
             console.log("Error: " + action.error)
         } else if("func" in action && !(action.func in this)) {
+            // The automaton is fine but the specified function has not been
+            // written in the MinitelDecoder class
             console.log("Error: developer forgot to write " + action.func)
         } else if("func" in action) {
+            // The action has a function ready to be executed
             let args = []
             if("arg" in action) {
+                // The function has predefined arguments
                 args = [action.arg]
             } else if("dynarg" in action) {
+                // The function should take its arguments in the previously
+                // executed characters
                 args = this.previousBytes.lastValues(action.dynarg)
             }
 
+            // Excute the function
             this[action.func].apply(this, args)
         }
 
+        // Determine the next state of the automaton based on the existence of
+        // a "goto" attribute, otherwise it sets the automaton to its initial
+        // state.
         this.state = action && "goto" in action ? action.goto : "start"
     }
 
+    /**
+     * Decode a list of characters
+     * @param {mixed} items Either a string, an instance of a String or anything
+     *                      iterable containing numbers
+     */
     decodeList(items) {
-        if (typeof items === "string" || items instanceof String) {
+        if(typeof items === "string" || items instanceof String) {
+            // Items are a string of an instance of a String
             range(items.length).forEach(i => this.decode(items[i]))
         } else {
+            // Items are iterable
             range(items.length).forEach(i =>
                 this.decode(String.fromCharCode(items[i]))
             )
