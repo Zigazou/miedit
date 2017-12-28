@@ -26,6 +26,7 @@ class PageMemory {
      * @param {Object} char Character characteristics.
      * @param {HTMLCanvasElement} canvas The canvas which will be used as the
      *                                   screen.
+     * @param {boolean} color true for color, false for black and white
      */
     constructor(grid, char, canvas, color) {
         const frameRate = 50 // Frame per second
@@ -58,17 +59,24 @@ class PageMemory {
         const rows = []
         rows.length = this.grid.rows
 
-        /**
-         * Cursor position and visibility
-         * @member {Cursor}
-         * @private
-         */
         const bgSave = document.createElement("canvas")
         bgSave.width = this.char.width
         bgSave.height = this.char.height
         const cursorCtx = bgSave.getContext("2d")
         cursorCtx.imageSmoothingEnabled = false
 
+        /**
+         * Cursor position and visibility
+         * @member {Object}
+         * @property {integer} x X position
+         * @property {integer} y Y position
+         * @property {boolean} visible Is the cursor visible or not?
+         * @property {CanvasRenderingContext2D} ctx Cursor context
+         * @property {HTMLCanvasElement} bgSave Cursor saving area
+         * @property {integer=} lastX Last X position
+         * @property {integer=} lastY Last Y position
+         * @private
+         */
         this.cursor = {
             x: 0,
             y: 1,
@@ -121,6 +129,10 @@ class PageMemory {
          * G0 is the alphanumeric character set, G1 is the mosaic character set
          * G'0 and G'1 are the DRCS counterpart
          * @member {Object}
+         * @property {FontSprite} G0 Standard font sprites
+         * @property {FontSprite} G1 Mosaic font sprites
+         * @property {FontSprite} G'0 DRCS standard font sprites
+         * @property {FontSprite} G'1 DRCS mosaic font sprites
          * @private
          */
         this.font = {
@@ -198,6 +210,7 @@ class PageMemory {
     /**
      * Load a font.
      * @param {string} url URL of the font to load.
+     * @param {string[]} colors List of colors to use in #RRGGBB format
      * @return {FontSprite}
      */
     loadFont(url, colors) {
@@ -211,7 +224,7 @@ class PageMemory {
     /**
      * Redefine a character (DRCS)
      * @param {number} ord Character ordinal
-     * @param {Array[number]} design An array of 10 bytes defining the character
+     * @param {number[]} design An array of 10 bytes defining the character
      */
     defineCharG0(ord, design) {
         this.font["G'0"].defineChar(ord, design)
@@ -221,7 +234,7 @@ class PageMemory {
     /**
      * Redefine a character (DRCS)
      * @param {number} ord Character ordinal
-     * @param {Array[number]} design An array of 10 bytes defining the character
+     * @param {number[]} design An array of 10 bytes defining the character
      */
     defineCharG1(ord, design) {
         this.font["G'1"].defineChar(ord, design)
@@ -260,6 +273,7 @@ class PageMemory {
 
     /**
      * Change colors (black and white or color)
+     * @param {boolean} color true for color, false for black and white
      */
     changeColors(color) {
         this.colors = color ? Minitel.colors : Minitel.grays
@@ -332,6 +346,14 @@ class PageMemory {
         this.lastBlink = blink
     }
 
+    /**
+     * Render one row.
+     * @param {Cell[]} memoryRow list of Cell of the row to render
+     * @param {integer} row row index
+     * @param {boolean} blink
+     * @return {boolean}
+     * @private
+     */
     drawRow(memoryRow, row, blink) {
         let bgColor = 0
         let mask = false
@@ -375,6 +397,18 @@ class PageMemory {
         return blinkRow
     }
 
+    /**
+     * Render one character.
+     * @param {integer} x x coordinate
+     * @param {integer} y y coordinate
+     * @param {Cell} cell Cell to render
+     * @param {integer} front Foreground color (0 to 7)
+     * @param {integer} back Background color (0 to 7)
+     * @param {boolean} mask masking or not ?
+     * @param {boolean} blink blinking or not ?
+     * @param {boolean} underline underlining or not ?
+     * @private
+     */
     drawCharacter(x, y, cell, front, back, mask, blink, underline) {
         const ctx = this.context
 
@@ -410,6 +444,10 @@ class PageMemory {
         page.writeChar(ctx, cell.value, x, y, part, mult, front, unde)
     }
 
+    /**
+     * Save the cursor area
+     * @private
+     */
     cursorSave() {
         this.cursor.ctx.drawImage(
             // Source
@@ -429,6 +467,10 @@ class PageMemory {
         this.cursor.lastY = this.cursor.y
     }
 
+    /**
+     * Restore the cursor area
+     * @private
+     */
     cursorRestore() {
         this.context.drawImage(
             // Source
@@ -445,6 +487,10 @@ class PageMemory {
         )
     }
 
+    /**
+     * Draw the cursor
+     * @private
+     */
     drawCursor() {
         if(!this.cursor.visible || !this.getBlink()) return
 
