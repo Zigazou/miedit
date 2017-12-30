@@ -335,8 +335,8 @@ Minitel.states =  {
     },
 
     "mask-global-set": {
-        0x58: { function: "setGlobalMask", arg: true },
-        0x5f: { function: "setGlobalMask", arg: false }
+        0x58: { func: "setGlobalMask", arg: true },
+        0x5f: { func: "setGlobalMask", arg: false }
     },
 
     "csi": {

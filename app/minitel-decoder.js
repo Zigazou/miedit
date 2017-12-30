@@ -437,12 +437,13 @@ class MinitelDecoder {
     }
 
     /**
-     * Sets the text blinking
-     * @param {boolean} blink true for blinking text, false otherwise
+     * Enables or disables the use of zone masking
+     * @param {boolean} enabled true enables the use of zone masking, false
+     *                          disables the use of zone masking
      * @private
      */
-    setGlobalMask(mask) {
-        this.current.blink = mask
+    setGlobalMask(enabled) {
+        this.pm.setGlobalMask(enabled)
     }
 
     /**
