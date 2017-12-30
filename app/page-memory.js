@@ -55,6 +55,12 @@ class PageMemory {
          */
         this.context = this.createContext()
 
+        /**
+         * @member {boolean}
+         * @private
+         */
+        this.globalMask = true
+
         // Helper array
         const rows = []
         rows.length = this.grid.rows
@@ -168,6 +174,13 @@ class PageMemory {
     }
 
     /**
+     * Force redraw of the entire page.
+     */
+    forceRedraw() {
+        this.changed = this.changed.map(() => true)
+    }
+
+    /**
      * Clear the page
      */
     clear() {
@@ -175,8 +188,8 @@ class PageMemory {
             range(0, this.grid.cols).forEach(x => {
                 this.memory[y][x] = new MosaicCell()
             })
-            this.changed[y] = true
         })
+        this.forceRedraw()
     }
 
     /**
@@ -228,7 +241,7 @@ class PageMemory {
      */
     defineCharG0(ord, design) {
         this.font["G'0"].defineChar(ord, design)
-        this.changed = this.changed.map(() => true)
+        this.forceRedraw()
     }
 
     /**
@@ -238,7 +251,7 @@ class PageMemory {
      */
     defineCharG1(ord, design) {
         this.font["G'1"].defineChar(ord, design)
-        this.changed = this.changed.map(() => true)
+        this.forceRedraw()
     }
 
     /**
@@ -272,15 +285,23 @@ class PageMemory {
     }
 
     /**
+     * Enable or disable the use of zone masking.
+     * @param {boolean} enabled true enables the use of zone masking, false
+     *                          disables the use of zone masking.
+     */
+    setGlobalMask(enabled) {
+        this.globalMask = enabled
+        this.forceRedraw()
+    }
+
+    /**
      * Change colors (black and white or color)
      * @param {boolean} color true for color, false for black and white
      */
     changeColors(color) {
         this.colors = color ? Minitel.colors : Minitel.grays
         for(let index in this.font) this.font[index].color = color
-
-        // Force redraw of the whole screen
-        this.changed = this.changed.map(() => true)
+        this.forceRedraw()
     }
 
     /**
@@ -389,8 +410,13 @@ class PageMemory {
             )
 
             if(cell instanceof DelimiterCell) {
-                if(cell.mask) mask = cell.mask
-                if(cell.zoneUnderline) underline = cell.zoneUnderline
+                if(cell.mask !== undefined ) {
+                    mask = this.globalMask && cell.mask
+                }
+
+                if(cell.zoneUnderline !== undefined) {
+                    underline = cell.zoneUnderline
+                }
             }
         })
 

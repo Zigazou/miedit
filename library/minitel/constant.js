@@ -54,7 +54,7 @@ Minitel.directStream = {
     "effect-invert-on": [0x1b, 0x5d],
     "effect-invert-off": [0x1b, 0x5c],
     "effect-blink-on": [0x1b, 0x48],
-    "effect-blink-off": [0x1b,0x49],
+    "effect-blink-off": [0x1b, 0x49],
     "effect-normal-size": [0x1b, 0x4c],
     "effect-double-height": [0x1b, 0x4d],
     "effect-double-width": [0x1b, 0x4e],
@@ -81,6 +81,10 @@ Minitel.directStream = {
     "drcs-drcs-g0": [0x1b, 0x28, 0x20, 0x42],
     "drcs-std-g1": [0x1b, 0x29, 0x63],
     "drcs-drcs-g1": [0x1b, 0x29, 0x20, 0x43],
+    "mask-zone-on": [0x1b, 0x58],
+    "mask-zone-off": [0x1b,0x5f],
+    "mask-global-on": [0x1b, 0x23, 0x20, 0x58],
+    "mask-global-off": [0x1b, 0x23, 0x20, 0x5f],
 }
 
 Minitel.specialChars = {
@@ -243,7 +247,7 @@ Minitel.states =  {
     },
 
     "esc": {
-        0x23: { goto: "attribute" },
+        0x23: { goto: "mask-global" },
         0x28: { goto: "drcs-g0-use" },
         0x29: { goto: "drcs-g1-use" },
         0x37: { notImplemented: "saveContext" },
@@ -326,13 +330,14 @@ Minitel.states =  {
     },
     "drcs-g1-unuse": { 0x43: { func: "drcsUseG1", arg: true } },
 
-    "attribute": {
-        0x20: { goto: "attributeOn" },
-        0x21: { goto: "attributeOff" },
+    "mask-global": {
+        0x20: { goto: "mask-global-set" },
     },
 
-    "attributeOn": { "*": { notImplemented: "attributeOn" } },
-    "attributeOff": { "*": { notImplemented: "attributeOff" } },
+    "mask-global-set": {
+        0x58: { function: "setGlobalMask", arg: true },
+        0x5f: { function: "setGlobalMask", arg: false }
+    },
 
     "csi": {
         0x4a: { func: "clear", arg: "endofscreen" },

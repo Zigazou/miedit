@@ -259,7 +259,7 @@ class DelimiterCell extends Cell {
         cell.bgColor = this.bgColor
         cell.invert = this.invert
         cell.zoneUnderline = this.zoneUnderline
-        cell.mask = false
+        cell.mask = this.mask
         cell.mult = { width: this.mult.width, height: this.mult.height }
 
         return cell

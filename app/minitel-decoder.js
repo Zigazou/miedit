@@ -437,6 +437,15 @@ class MinitelDecoder {
     }
 
     /**
+     * Sets the text blinking
+     * @param {boolean} blink true for blinking text, false otherwise
+     * @private
+     */
+    setGlobalMask(mask) {
+        this.current.blink = mask
+    }
+
+    /**
      * Set underline of text or separation of mosaic characters
      * @param {boolean} underline true for text underlining, false otherwise
      * @private
@@ -523,6 +532,7 @@ class MinitelDecoder {
         }
 
         // Mask
+        cell.mask = this.current.mask
         if(this.waiting.mask !== undefined) {
             cell.mask = this.waiting.mask
             this.current.mask = this.waiting.mask
