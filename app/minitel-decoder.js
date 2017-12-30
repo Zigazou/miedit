@@ -1,17 +1,18 @@
 "use strict"
 /**
- * @file MinitelDecoder
+ * @file minitel-decoder.js
  * @author Frédéric BISSON <zigazou@free.fr>
  * @version 1.0
  */
 
 /**
- * @class MinitelDecoder
+ * Class decoding a Videotex stream and updating a PageMemory
  */
 class MinitelDecoder {
     /**
-     * Initializes the decoder
-     * @param {PageMemory} pageMemory
+     * Create a new MinitelDecoder.
+     * @param {PageMemory} pageMemory The PageMemory against which apply the
+     *                                decoded stream.
      */
     constructor(pageMemory) {
         /**

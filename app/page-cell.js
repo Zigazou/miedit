@@ -1,14 +1,17 @@
 "use strict"
 
 /**
- * A Cell.
- * This class is meant to be inherited.
- * @class Cell
+ * A Cell contains one character and its visual attributes.
+ *
+ * @abstract
  */
 class Cell {
     /**
+     * Create a Cell.
+     *
      * @param {number} value the character ordinal number
      * @param {number} fgColor the foreground color (0 to 7)
+     * @constructor
      */
     constructor(value, fgColor) {
         /**
@@ -28,6 +31,7 @@ class Cell {
      * Returns a copy of the Cell.
      * This method must be implemented by the children of this class
      * @return {Cell} a copy of the cell
+     * @abstract
      */
     copy() {
     
@@ -35,9 +39,24 @@ class Cell {
 }
 
 /**
- * @class CharCell
+ * A CharCell is a particular Cell which holds alphanumerical characters.
+ * Such characters only have blink, invert, size multiplier and DRCS
+ * attributes.
+ * @extends Cell
  */
 class CharCell extends Cell {
+    /**
+     * Create a CharCell.
+     *
+     * The CharCell is initialized with the following values:
+     * 
+     * - character code set to 0x20 (a space)
+     * - foreground color set to 7 (white)
+     * - no blinking
+     * - no video inverse
+     * - no size multiplying
+     * - not using DRCS
+     */
     constructor() {
         super(0x20, 7)
 
@@ -65,8 +84,8 @@ class CharCell extends Cell {
         /**
          * Character part to be displayed. 
          * @member {object}
-         * @property {number} x x part to display (0 for left, 1 for right)
-         * @property {number} y y part to display (0 for bottom, 1 top)
+         * @property {number} x X part to display (0 for left, 1 for right)
+         * @property {number} y Y part to display (0 for bottom, 1 top)
          */
         this.part = { x: 0, y: 0 }
 
@@ -100,9 +119,21 @@ class CharCell extends Cell {
 }
 
 /**
- * @class CharCell
+ * A MosaicCell is a particular Cell which holds mosaic characters.
+ * Such characters only have background color, blink, separation and DRCS
+ * attributes.
+ * @extends Cell
  */
 class MosaicCell extends Cell {
+    /**
+     * Create a MosaicCell with the following attributes:
+     *
+     * - character code set to 0x40
+     * - background color set to 0 (black)
+     * - no blinking
+     * - no separation
+     * - not using DRCS
+     */
     constructor() {
         super(0x40, 7)
 
@@ -154,9 +185,28 @@ class MosaicCell extends Cell {
 }
 
 /**
- * @class DelimiterCell
+ * A DelimiterCell is a particular Cell which contains a delimiter character.
+ * Such characters only have background color, invertion, underlining, masking,
+ * and size multiplier attributes.
+ *
+ * A DelimiterCell is an empty "character".
+ *
+ * They generally contains attributes that CharacterCell characters cannot
+ * contain such as background color, masking or underlining.
+ * @extends Cell
  */
 class DelimiterCell extends Cell {
+    /**
+     * Create a DelimiterCell with the following attributes:
+     *
+     * - character code set to 0x20 (a space)
+     * - foregorund color set to 7 (white)
+     * - background color set to 0 (black)
+     * - no video inverse
+     * - no underlining
+     * - no masking
+     * - no size multiplier
+     */
     constructor() {
         super(0x20, 7)
 

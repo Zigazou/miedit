@@ -22,10 +22,12 @@
  */
 
 /**
- * @class FontSprite
+ * A FontSprite is a facility which draws bitmap characters on a canvas based
+ * on a sprite map, a PNG image with white pixels and background transparency.
  */
 class FontSprite {
     /**
+     * Create a FontSprite.
      * @param {string} sheetURL The URL of the sprite sheet to use.
      * @param {Grid} grid How the sprite sheet is organized.
      * @param {Char} char Character characteristics.
@@ -165,7 +167,8 @@ class FontSprite {
      * @param {number} mult.width Width multiplier
      * @param {number} mult.height Height multiplier
      * @param {number} color Index of the color to use as character foreground
-     * @param {boolean} underline
+     * @param {boolean} underline true if a line must be drawn on the bottom
+     *                            of the character, false otherwise
      */
     writeChar(ctx, ord, x, y, part, mult, color, underline) {
         if(ord < 0 || ord >= this.spriteNumber) ord = this.spriteNumber - 1
@@ -270,7 +273,8 @@ class FontSprite {
     /**
      * Redefine a character (DRCS)
      * @param {number} ord Character ordinal
-     * @param {Array[number]} design An array of 10 bytes defining the character
+     * @param {number[]} design An array of 10 bytes defining the character, one
+     *                          byte corresponding to 8 pixels of a line.
      */
     defineChar(ord, design) {
         const defineOneChar = (spriteSheetColor, color) => {
