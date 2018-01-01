@@ -6,19 +6,24 @@
  * 
  * FontSprite uses a sprite sheet (usually a PNG image) to print characters
  * on a canvas. It handles colors.
- *
+ */
+
+/**
  * @typedef {Object} Point
  * @property {number} x The X Coordinate
  * @property {number} y The Y Coordinate
- *
+ */
+
+/**
  * @typedef {Object} Grid
  * @property {number} cols Number of characters per width.
  * @property {number} rows Number of characters per height.
- *
+ */
+
+/**
  * @typedef {Object} Char
  * @property {number} width Width in pixels of a character.
  * @property {number} height Height in pixels of a character.
- *
  */
 
 /**

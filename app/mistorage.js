@@ -1,23 +1,28 @@
 "use strict"
 /**
- * @file mistorage
+ * @file mistorage.js
  * @author Frédéric BISSON <zigazou@free.fr>
  * @version 1.0
- * 
- * MiStorage is an interface to the web storage of a browser. It adds the notion
- * of context, allowing to simulate a simple hierarchy. It also handles storage
- * of objects and not just strings.
- *
  */
 
 /**
- * @class MiStorage
+ * MiStorage is an interface to the web storage of a browser. It adds the notion
+ * of context, allowing to simulate a simple hierarchy. It also handles storage
+ * of objects and not just strings.
  */
 class MiStorage {
     /**
-     * @param {string} context 
+     * @param {string} context A string prepended before every key name so that
+     *                         multiple applications can use the same storage
+     *                         facility without side effect.
      */
     constructor(context) {
+        /**
+         * @member {string} context A string prepended before every key name so
+         *                          that multiple applications can use the same
+         *                          storage facility without side effect.
+         * @private
+         */
         this.context = context.replace("/", "-") + "/"
     }
 

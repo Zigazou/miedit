@@ -6,19 +6,22 @@
  * 
  * PageMemory simulates a Minitel page memory connected to a screen using a 
  * canvas.
- *
- * @typedef {Object} Grid
- * @property {number} cols Number of characters per width.
- * @property {number} rows Number of characters per height.
- *
- * @typedef {Object} Char
- * @property {number} width Width in pixels of a character.
- * @property {number} height Height in pixels of a character.
- *
  */
 
 /**
- * @class PageMemory
+ * @typedef {Object} Grid
+ * @property {number} cols Number of characters per width.
+ * @property {number} rows Number of characters per height.
+ */
+
+/**
+ * @typedef {Object} Char
+ * @property {number} width Width in pixels of a character.
+ * @property {number} height Height in pixels of a character.
+ */
+
+/**
+ * PageMemory is a rendering of a page memory in a canvas
  */
 class PageMemory {
     /**

@@ -1,15 +1,23 @@
 "use strict"
 /**
- * @file mitree
+ * @file mitree.js
  * @author Frédéric BISSON <zigazou@free.fr>
  * @version 1.0
  * 
- * MiTree is a jstree based tree for manipulating tidget (textual gadget) for
- * the Minitel.
+ * Represents a Minitel page with a tree that the user can interact with.
  */
 
 /**
- * @class MiTree
+ * @typedef {Object} Action
+ * @property {string} type Name of the action
+ * @property {Object} data URIfied data of the action
+ * @property {Action[]} children
+ *
+ */
+
+/**
+ * MiTree is a jstree based tree for manipulating tidget (textual gadget) for
+ * the Minitel.
  */
 class MiTree {
     /**
@@ -320,11 +328,6 @@ class MiTree {
 /**
  * Prepare actions to be executed by extracting all needed information from the
  * MiTree.serialize() method.
- *
- * @typedef {Object} Action
- * @property {string} type Name of the action
- * @property {Object} data URIfied data of the action
- * @property {Action[]} children
  *
  * @param {Object[]} objs Objects as returned by MiTree.serialize()
  * @return {Action[]}

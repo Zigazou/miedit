@@ -1,13 +1,41 @@
 "use strict"
+/**
+ * @file miedit-manage.js
+ * @author Frédéric BISSON <zigazou@free.fr>
+ * @version 1.0
+ * 
+ * MiEditManage allows the user to manage pages stored in the local storage.
+ */
 
+/**
+ * GUI for managing pages kept in the local storage.
+ */
 class MiEditManage {
+    /**
+     * @param {jQuery} container 
+     */
     constructor(container) {
+        /**
+         * The jQuery object pointing to the DOM element containing our
+         * widget.
+         * @member {jQuery}
+         * @private
+         */
         this.container = container
+
+        /**
+         * The storage manager
+         * @member {MiStorage}
+         * @private
+         */
         this.mistorage = new MiStorage("page")
 
         this.refreshList()
     }
 
+    /**
+     * Refresh the list of pages found in the local storage.
+     */
     refreshList() {
         this.container.empty()
 
@@ -25,6 +53,11 @@ class MiEditManage {
         this.container[0].autocallback(this)
     }
 
+    /**
+     * Delete handler asking user confirmation, deleting the page and refreshing
+     * the list.
+     * @private
+     */
     onDelete(event, param) {
         if(!confirm("Are you sure you want to delete " + param)) {
             return
@@ -34,6 +67,11 @@ class MiEditManage {
         this.refreshList()
     }
 
+    /**
+     * Geneates the HTML structure for presenting one page and its managing
+     * links.
+     * @private
+     */
     pageListItem(pageTitle, thumbnail, key) {
         return `
           <div class="page-list-item">
