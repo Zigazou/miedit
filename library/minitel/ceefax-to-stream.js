@@ -1,4 +1,13 @@
 "use strict"
+/**
+ * @file ceefax-to-stream.js
+ * @author Frédéric BISSON <zigazou@free.fr>
+ * @version 1.0
+ */
+
+/**
+ * @namespace Minitel
+ */ 
 var Minitel = Minitel || {}
 
 /** 
@@ -336,6 +345,7 @@ Minitel.drawCeefaxRow = function(row) {
 
 
 /**
+ * Decodes an URL coming from the edit.tf website and containing a Ceefax stream
  * @param {string} url URL to decode
  * @return {number[][]} An array of row containing codes
  */
@@ -383,6 +393,11 @@ Minitel.decodeEditTfURL = function(url) {
     return decoded
 }
 
+/**
+ * Draw a Ceefax stream
+ * @param {string} url URL of the Ceefax stream to draw
+ * @return {number[]} An array of row containing codes
+ */
 Minitel.drawCeefax = function(url) {
     const page = Minitel.decodeEditTfURL(url)
 
@@ -400,6 +415,11 @@ Minitel.drawCeefax = function(url) {
     return destination
 }
 
+/**
+ * Converts an edit.tf Ceefax stream to a Videotex stream
+ * @param {string} url URL of the Ceefax stream to draw
+ * @return {Stream} A Minitel Stream
+ */
 Minitel.ceefaxToStream = function(url) {
     const page = Minitel.decodeEditTfURL(url)
 

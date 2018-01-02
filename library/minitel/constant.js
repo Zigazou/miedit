@@ -1,14 +1,69 @@
 "use strict"
+/**
+ * @file constant.js
+ * @author Frédéric BISSON <zigazou@free.fr>
+ * @version 1.0
+ *
+ * Constant used for Minitel emulation
+ */
+
+/**
+ * @namespace Minitel
+ */ 
 var Minitel = Minitel || {}
 
+/**
+ * Number of rows on a Minitel screen, including the status row
+ * @member {number}
+ */
 Minitel.rows = 25
-Minitel.columns = 40
-Minitel.charWidth = 8
-Minitel.charHeight = 10
-Minitel.B1200 = 1200 // bits per second
-Minitel.B4800 = 4800 // bits per second
-Minitel.B9600 = 9600 // bits per second
 
+/**
+ * Number of columns on a Minitel screen
+ * @member {number}
+ */
+Minitel.columns = 40
+
+/**
+ * Width of a Minitel character in real pixels
+ * @member {number}
+ */
+Minitel.charWidth = 8
+
+/**
+ * Height of a Minitel character in real pixels
+ */
+Minitel.charHeight = 10
+
+/**
+ * Standard minitel speed of 300 bits per second
+ * @member {number}
+ */
+Minitel.B300 = 300
+
+/**
+ * Standard minitel speed of 1200 bits per second
+ * @member {number}
+ */
+Minitel.B1200 = 1200
+
+/**
+ * Standard minitel speed of 4800 bits per second
+ * @member {number}
+ */
+Minitel.B4800 = 4800
+
+/**
+ * Standard minitel speed of 9600 bits per second (only on Minitel 2 and above)
+ * @member {number}
+ */
+Minitel.B9600 = 9600
+
+/**
+ * List of HTML colors corresponding to Minitel grays.
+ * key=Minitel color (0 to 7), value=HTML color
+ * @member {string[]}
+ */
 Minitel.grays = [
     "#000000", // 0%
     "#7F7F7F", // 50%
@@ -20,6 +75,11 @@ Minitel.grays = [
     "#FFFFFF", // 100%
 ]
 
+/**
+ * List of HTML colors corresponding to Minitel colors
+ * key=Minitel color (0 to 7), value=HTML color
+ * @member {string[]}
+ */
 Minitel.colors = [
     "#000000", // black
     "#FF0000", // red
@@ -31,8 +91,19 @@ Minitel.colors = [
     "#FFFFFF", // white
 ]
 
+/**
+ * List of best contrast colors. Used for drawing on a specific color and still
+ * be able to spot the difference.
+ * key=Minitel color (0 to 7), value=Minitel opposite color (0 to 7)
+ * @member {number[]}
+ */
 Minitel.contrasts = [ 7, 7, 0, 0, 7, 7, 0, 0 ]
 
+/**
+ * Direct correspondance between an identifier and its matching stream. Used
+ * to generate Videotex stream when the generation is straightforward.
+ * @member {Object.<string, number[]>}
+ */
 Minitel.directStream = {
     "clear-screen": [0x0c],
     "clear-status": [0x1f, 0x40, 0x41, 0x18, 0x0a],
@@ -87,6 +158,11 @@ Minitel.directStream = {
     "mask-global-off": [0x1b, 0x23, 0x20, 0x5f],
 }
 
+/**
+ * List of special characters and their matching Videotex stream. The
+ * associative array is indexed by the Unicode number of the character.
+ * @member {Object.<number, number[]>}
+ */
 Minitel.specialChars = {
     163: [0x19, 0x23], // £
     176: [0x19, 0x30], // °
@@ -126,18 +202,36 @@ Minitel.specialChars = {
     946: [0x19, 0x7B] // β
 }
 
-Minitel.color2int = {
-    "a": 0,
-    "b": 1,
-    "c": 2,
-    "d": 3,
-    "e": 4,
-    "f": 5,
-    "g": 6,
-    "h": 7,
-    "-": 0,
-}
+/**
+ * @typedef {Object} AutomatonAction
+ * @property {string} error Id indicating the error encountered
+ * @property {string} notImplemented Id indicating a state not implemented
+ * @property {string} func Function identifier
+ * @property {string} arg Argument for the function
+ * @property {string} goto Next state to go to
+ * @property {number} dynarg Number of previous bytes to pass to the function
+ */
 
+/**
+ * @typedef {number} VideotexByte
+ */
+
+/**
+ * @typedef {string} VideotexJoker
+ */
+
+/**
+ * @typedef {Object.<VideotexByte|VideotexJoker, AutomatonAction>} Transitions
+ */
+
+/**
+ * @typedef {string} StateName
+ */
+
+/**
+ * The automaton used to decode Videotex stream.
+ * @member {Object.<StateName, Transitions>}
+ */
 Minitel.states =  {
     "start": {
         0x01: { error: "unrecognized01" },

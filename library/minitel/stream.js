@@ -1,20 +1,20 @@
 "use strict"
 /**
- * @file Stream
+ * @file stream.js
  * @author Frédéric BISSON <zigazou@free.fr>
  * @version 1.0
- * 
+ */
+
+/**
+ * @namespace Minitel
+ */ 
+var Minitel = Minitel || {}
+
+/**
  * A Minitel Stream is an helper class which transforms any kind of JavaScript
  * type (string, number, array etc.) to an array of integers.
  *
  * A Minitel Stream is a queue.
- *
- */
-
-var Minitel = Minitel || {}
-
-/**
- * @class Stream
  */
 Minitel.Stream = class {
 
@@ -37,13 +37,16 @@ Minitel.Stream = class {
         this.length = 0
     }
 
+    /**
+     * Converts the stream to an array of bytes
+     * @return {number[]}
+     */
     toArray() {
         return this.items.slice(0, this.length)
     }
 
     /**
-     * 
-     * @param item Any value to insert in the queue.
+     * @param {} item Any value to insert in the queue.
      */
     push(item) {
         let toPush = undefined
@@ -84,6 +87,7 @@ Minitel.Stream = class {
 
     /**
      * The shift method
+     * @return {number}
      */
     shift() {
         this.length--
@@ -92,6 +96,7 @@ Minitel.Stream = class {
 
     /**
      * The pop method
+     * @return {number}
      */
     pop() {
         this.length--
