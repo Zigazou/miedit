@@ -153,6 +153,7 @@ select { height: 2.6em; }
 .drcs-checkbox-pixel {
     position: relative;
     overflow: hidden;
+    font-size: 0.2em;
 }
 
 .drcs-checkbox-pixel input {
@@ -162,12 +163,16 @@ select { height: 2.6em; }
 
 .drcs-checkbox-pixel label {
     display: inline-block;
-    width: 1rem;
-    height: 1rem;
+    width: 1.5rem;
+    height: 1.5rem;
     background-color: white;
 }
 
 .drcs-checkbox-pixel input:checked+label {
     background-color: black;
+}
+
+.drcs-checkbox-pixel input:focus+label {
+    outline: 1px dashed black;
 }
 
