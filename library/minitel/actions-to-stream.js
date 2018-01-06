@@ -57,10 +57,8 @@ Minitel.actionsToStream = function(actions, offsetX, offsetY) {
         // Parse the relative offsets
         const [ relOffsetX, relOffsetY ] = [
             action.data.offsetX, action.data.offsetY 
-        ].map(v => parseInt(v, 10))
-
-        // Verify the offsets are valid numbers
-        if([ relOffsetX, relOffsetY ].some(isNaN)) { return }
+        ].map(v => parseInt(v, 10)
+        ).map(v => isNaN(v) ? 0 : v)
 
         // Recursive call to generate stream from the group children but with
         // specified offsets
