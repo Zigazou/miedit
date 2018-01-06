@@ -526,6 +526,7 @@ class MinitelDecoder {
         this.current.bgColor = cell.bgColor
 
         // Underline
+        cell.zoneUnderline = this.current.underline
         if(this.waiting.underline !== undefined) {
             cell.zoneUnderline = this.waiting.underline
             this.current.underline = this.waiting.underline
