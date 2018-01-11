@@ -83,6 +83,7 @@ class MiEditPage {
         this.ribbon.root.autocallback(this)
         container.find(".content-graphics")[0].autocallback(this)
         container.find(".drcs-black-white")[0].autocallback(this)
+        container.find(".drcs-actions")[0].autocallback(this)
         container.find(".mosaic-exit")[0].autocallback(this)
 
         const canvas = container.find("#minitel-screen")[0]
@@ -328,6 +329,104 @@ class MiEditPage {
     onExitGraphics(event, param) {
         // Forgets every change and hides the mosaic editor
         this.graphics.root.classList.add("hidden")
+    }
+
+    /**
+     * When the user does an action a the DRCS character being edited.
+     * @param {HTMLEvent} event Event that generated the call
+     * @param {mixed} param Parameters of the event
+     * @private
+     */
+    onDRCSAction(event, param) {
+        if(param === "drcs-vertical-symmetry") {
+            range2([0, 0], [8, 5]).forEach((x, y) => {
+                const chb1 = document.getElementById("px-" + x + "-" + y)
+                const chb2 = document.getElementById("px-" + x + "-" + (9 - y))
+
+                const swap = chb1.checked
+                chb1.checked = chb2.checked
+                chb2.checked = swap
+            })
+
+            return
+        }
+
+        if(param === "drcs-horizontal-symmetry") {
+            range2([0, 0], [4, 10]).forEach((x, y) => {
+                const chb1 = document.getElementById("px-" + x + "-" + y)
+                const chb2 = document.getElementById("px-" + (7 - x) + "-" + y)
+
+                const swap = chb1.checked
+                chb1.checked = chb2.checked
+                chb2.checked = swap
+            })
+
+            return
+        }
+
+        if(param === "drcs-shift-up") {
+            range2([0, 1], [8, 10]).forEach((x, y) => {
+                const src = document.getElementById("px-" + x + "-" + y)
+                const dst = document.getElementById("px-" + x + "-" + (y - 1))
+
+                dst.checked = src.checked
+            })
+
+            range(8).forEach(x => {
+                const dst = document.getElementById("px-" + x + "-9")
+                dst.checked = false
+            })
+
+            return
+        }
+
+        if(param === "drcs-shift-down") {
+            range2([0, 9], [8, 0]).forEach((x, y) => {
+                const src = document.getElementById("px-" + x + "-" + (y - 1))
+                const dst = document.getElementById("px-" + x + "-" + y)
+
+                dst.checked = src.checked
+            })
+
+            range(8).forEach(x => {
+                const dst = document.getElementById("px-" + x + "-0")
+                dst.checked = false
+            })
+
+            return
+        }
+
+        if(param === "drcs-shift-left") {
+            range2([0, 0], [7, 10]).forEach((x, y) => {
+                const src = document.getElementById("px-" + (x + 1) + "-" + y)
+                const dst = document.getElementById("px-" + x + "-" + y)
+
+                dst.checked = src.checked
+            })
+
+            range(10).forEach(y => {
+                const dst = document.getElementById("px-7-" + y)
+                dst.checked = false
+            })
+
+            return
+        }
+
+        if(param === "drcs-shift-right") {
+            range2([7, 0], [0, 10]).forEach((x, y) => {
+                const src = document.getElementById("px-" + (x - 1) + "-" + y)
+                const dst = document.getElementById("px-" + x + "-" + y)
+
+                dst.checked = src.checked
+            })
+
+            range(10).forEach(y => {
+                const dst = document.getElementById("px-0-" + y)
+                dst.checked = false
+            })
+
+            return
+        }
     }
 }
 

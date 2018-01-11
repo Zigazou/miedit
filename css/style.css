@@ -154,6 +154,7 @@ select { height: 2.6em; }
     position: relative;
     overflow: hidden;
     font-size: 0.2em;
+    display: inline-block;
 }
 
 .drcs-checkbox-pixel input {
@@ -176,3 +177,8 @@ select { height: 2.6em; }
     outline: 1px dashed black;
 }
 
+.drcs-actions {
+    position: absolute;
+    right: 0;
+    text-align: right;
+}

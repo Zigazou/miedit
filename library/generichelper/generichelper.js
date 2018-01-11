@@ -84,10 +84,40 @@ function* range2(starts, ends, steps) {
 
     const [ jStart, iStart ] = starts
     const [ jEnd, iEnd ] = ends
-    const [ jStep, iStep ] = steps
+    const [ jStep, iStep ] = [
+        Math.abs(steps[0]) * (jStart <= jEnd ? 1 : -1),
+        Math.abs(steps[1]) * (iStart <= iEnd ? 1 : -1),
+    ]
 
-    for(let j = jStart; j < jEnd; j += jStep) {
-        for(let i = iStart; i < iEnd; i += iStep) {
+    if(jStart <= jEnd && iStart <= iEnd) {
+        for(let j = jStart; j < jEnd; j += jStep) {
+            for(let i = iStart; i < iEnd; i += iStep) {
+                yield [j, i]
+            }
+        }
+        return    
+    }
+
+    if(jStart <= jEnd && iStart > iEnd) {
+        for(let j = jStart; j < jEnd; j += jStep) {
+            for(let i = iStart; i > iEnd; i += iStep) {
+                yield [j, i]
+            }
+        }
+        return    
+    }
+
+    if(jStart > jEnd && iStart <= iEnd) {
+        for(let j = jStart; j > jEnd; j += jStep) {
+            for(let i = iStart; i < iEnd; i += iStep) {
+                yield [j, i]
+            }
+        }
+        return    
+    }
+
+    for(let j = jStart; j > jEnd; j += jStep) {
+        for(let i = iStart; i > iEnd; i += iStep) {
             yield [j, i]
         }
     }
