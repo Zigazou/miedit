@@ -198,6 +198,27 @@ class MiTree {
                     inst.edit(obj)
                 }
             },
+            "duplicate" : {
+                "separator_before": false,
+                "separator_after": false,
+                "_disabled": false,
+                "label": "Duplicate",
+                "icon": "./icon/miicons.svg#edit-duplicate",
+                "action": data => {
+                    const inst = $.jstree.reference(data.reference)
+                    const obj = inst.get_node(data.reference)
+                    inst.copy_node(
+                        obj,
+                        obj,
+                        "after",
+                        (node, newparent, pos) => {
+                            node.data = {}
+                            node.data["miedit-value"] = obj.data["miedit-value"]
+                            this.treeWidget.trigger("value_changed.mitree")
+                        }
+                    )
+                }
+            },
             "remove" : {
                 "separator_before": false,
                 "icon": false,

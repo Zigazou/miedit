@@ -347,11 +347,7 @@ class MiEditPage {
                 chb1.checked = chb2.checked
                 chb2.checked = swap
             })
-
-            return
-        }
-
-        if(param === "drcs-horizontal-symmetry") {
+        } else if(param === "drcs-horizontal-symmetry") {
             range2([0, 0], [4, 10]).forEach((x, y) => {
                 const chb1 = document.getElementById("px-" + x + "-" + y)
                 const chb2 = document.getElementById("px-" + (7 - x) + "-" + y)
@@ -360,11 +356,7 @@ class MiEditPage {
                 chb1.checked = chb2.checked
                 chb2.checked = swap
             })
-
-            return
-        }
-
-        if(param === "drcs-shift-up") {
+        } else if(param === "drcs-shift-up") {
             range2([0, 1], [8, 10]).forEach((x, y) => {
                 const src = document.getElementById("px-" + x + "-" + y)
                 const dst = document.getElementById("px-" + x + "-" + (y - 1))
@@ -376,11 +368,7 @@ class MiEditPage {
                 const dst = document.getElementById("px-" + x + "-9")
                 dst.checked = false
             })
-
-            return
-        }
-
-        if(param === "drcs-shift-down") {
+        } else if(param === "drcs-shift-down") {
             range2([0, 9], [8, 0]).forEach((x, y) => {
                 const src = document.getElementById("px-" + x + "-" + (y - 1))
                 const dst = document.getElementById("px-" + x + "-" + y)
@@ -392,11 +380,7 @@ class MiEditPage {
                 const dst = document.getElementById("px-" + x + "-0")
                 dst.checked = false
             })
-
-            return
-        }
-
-        if(param === "drcs-shift-left") {
+        } else if(param === "drcs-shift-left") {
             range2([0, 0], [7, 10]).forEach((x, y) => {
                 const src = document.getElementById("px-" + (x + 1) + "-" + y)
                 const dst = document.getElementById("px-" + x + "-" + y)
@@ -408,11 +392,7 @@ class MiEditPage {
                 const dst = document.getElementById("px-7-" + y)
                 dst.checked = false
             })
-
-            return
-        }
-
-        if(param === "drcs-shift-right") {
+        } else if(param === "drcs-shift-right") {
             range2([7, 0], [0, 10]).forEach((x, y) => {
                 const src = document.getElementById("px-" + (x - 1) + "-" + y)
                 const dst = document.getElementById("px-" + x + "-" + y)
@@ -424,9 +404,11 @@ class MiEditPage {
                 const dst = document.getElementById("px-0-" + y)
                 dst.checked = false
             })
-
-            return
         }
+
+        // Fire an Event for signalling that something has changed
+        const evt = new Event("input", {"bubbles": true, "cancelable": false});
+        document.getElementById("px-0-0").dispatchEvent(evt)
     }
 }
 
