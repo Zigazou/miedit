@@ -83,10 +83,19 @@ Minitel.actions = {}
  * sent in the stream.
  * @function
  */
-Minitel.actions["content-string"] = function(stream, data) {
+Minitel.actions["content-string"] = function(stream, data, offsetX, offsetY) {
     if(data.value === undefined) { return }
 
     stream.push(data.value)
+
+    // Should we introduce a line return?
+    if(data.return) {
+        // Go one row down + Go to the first column
+        stream.push([0x0D, 0x0A])
+
+        // Take a possible X offset into account
+        stream.push(Array(offsetX).fill(0x09))
+    }
 }
 
 /**
