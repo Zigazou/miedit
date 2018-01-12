@@ -255,6 +255,11 @@ Minitel.actions["drcs-create"] = function(stream, data) {
     })
     sextets.push(0x40 + (sextet << 4))
 
+    // Remove unnecessary values at the end of the sequence
+    while(sextets.length > 0 && sextets[sextets.length - 1] == 0x40) {
+        sextets.pop()
+    }
+
     // Two character sets are available
     const charset = data.charset === "G0" ? 0x42 : 0x43
 
@@ -305,6 +310,11 @@ Minitel.actions["drcs-black-white"] = function(stream, data, offsetX, offsetY) {
             }
         })
         sextets.push(0x40 + (sextet << 4))
+
+        // Remove unnecessary values at the end of the sequence
+        while(sextets.length > 0 && sextets[sextets.length - 1] == 0x40) {
+            sextets.pop()
+        }
 
         stream.push(sextets)
         stream.push(0x30)
