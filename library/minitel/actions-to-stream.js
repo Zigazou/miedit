@@ -270,13 +270,86 @@ Minitel.actions["drcs-create"] = function(stream, data) {
     }
 
     // Two character sets are available
-    const charset = data.charset === "G0" ? 0x42 : 0x43
+    const charset = data.charset !== "G1" ? 0x42 : 0x43
 
     // Send all the bytes
     stream.push([0x1f, 0x23, 0x20, 0x20, 0x20, charset, 0x49])
     stream.push([0x1f, 0x23, charCode, 0x30])
     stream.push(sextets)
     stream.push([0x30, 0x1f, 0x41, 0x41])
+}
+
+/**
+ * Handles "drcs-advanced-start" actions. Initializes character redefinition.
+ * @function
+ */
+Minitel.actions["drcs-advanced-start"] = function(stream, data) {
+    // Two character sets are available
+    const charset = data.charset !== "G1" ? 0x42 : 0x43
+    stream.push([0x1f, 0x23, 0x20, 0x20, 0x20, charset, 0x49])
+}
+
+/**
+ * Handles "drcs-advanced-char" actions. Set starting character.
+ * @function
+ */
+Minitel.actions["drcs-advanced-char"] = function(stream, data) {
+    if(data.char === undefined) return
+
+    // The character can either be specified as a character or as an ordinal
+    const charCode = data.char.length === 1
+                   ? data.char.charCodeAt(0)
+                   : parseInt(data.char, 10)
+
+    // The character code must be within visual ASCII characters
+    if(charCode === undefined || charCode <= 32 || charCode >= 127) return
+
+    // Send all the bytes
+    stream.push([0x1f, 0x23, charCode, 0x30])
+}
+
+/**
+ * Handles "drcs-advanced-def" actions. Redefines one character.
+ * @function
+ */
+Minitel.actions["drcs-advanced-def"] = function(stream, data) {
+    // Pixels are contained in checkboxes, we need to extract them.
+    const bits = []
+    range2([ 10, 8 ]).forEach((y, x) => {
+        bits.push(data["apx-" + x + "-" + y] ? 1 : 0)
+    })
+
+    // The character design is pushed 6 bits by 6 bits in the stream
+    const sextets = []
+    let bitCount = 0
+    let sextet = 0
+    bits.forEach(bit => {
+        sextet = (sextet << 1) | bit
+        bitCount++
+        if(bitCount === 6) {
+            sextets.push(0x40 + sextet)
+            bitCount = 0
+            sextet = 0
+        }
+    })
+    sextets.push(0x40 + (sextet << 4))
+
+    // Remove unnecessary values at the end of the sequence
+    while(sextets.length > 0 && sextets[sextets.length - 1] == 0x40) {
+        sextets.pop()
+    }
+
+    // Send all the bytes
+    stream.push(sextets)
+    stream.push([0x30])
+}
+
+/**
+ * Handles "drcs-advanced-end" actions. Ends character redefinition.
+ * @function
+ */
+Minitel.actions["drcs-advanced-end"] = function(stream, data) {
+    stream.push([0x1f, 0x41, 0x41])
 }
 
 /**

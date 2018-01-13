@@ -174,6 +174,10 @@ class MiTree {
             "drcs-std-g1": "Use standard G1",
             "drcs-drcs-g1": "Use DRCS G1",
             "drcs-black-white": "Black and white image to DRCS",
+            "drcs-advanced-start": "Start DRCS creation",
+            "drcs-advanced-char": "Select DRCS start character",
+            "drcs-advanced-def": "Define a DRCS character",
+            "drcs-advanced-end": "End DRCS creation",
             "smgraph": "Semigraphic characters",
             "content-delay": "Delay"
         }

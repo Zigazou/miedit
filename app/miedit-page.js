@@ -81,10 +81,10 @@ class MiEditPage {
 
         // Automatically attach events to handlers of this class
         this.ribbon.root.autocallback(this)
-        container.find(".content-graphics")[0].autocallback(this)
-        container.find(".drcs-black-white")[0].autocallback(this)
-        container.find(".drcs-actions")[0].autocallback(this)
-        container.find(".mosaic-exit")[0].autocallback(this)
+        container.find(".content-graphics").map((i, o) => o.autocallback(this))
+        container.find(".drcs-black-white").map((i, o) => o.autocallback(this))
+        container.find(".drcs-actions").map((i, o) => o.autocallback(this))
+        container.find(".mosaic-exit").map((i, o) => o.autocallback(this))
 
         const canvas = container.find("#minitel-screen")[0]
 
@@ -338,78 +338,101 @@ class MiEditPage {
      * @private
      */
     onDRCSAction(event, param) {
-        if(param === "drcs-vertical-symmetry") {
-            range2([0, 0], [8, 5]).forEach((x, y) => {
-                const chb1 = document.getElementById("px-" + x + "-" + y)
-                const chb2 = document.getElementById("px-" + x + "-" + (9 - y))
-
-                const swap = chb1.checked
-                chb1.checked = chb2.checked
-                chb2.checked = swap
-            })
-        } else if(param === "drcs-horizontal-symmetry") {
-            range2([0, 0], [4, 10]).forEach((x, y) => {
-                const chb1 = document.getElementById("px-" + x + "-" + y)
-                const chb2 = document.getElementById("px-" + (7 - x) + "-" + y)
-
-                const swap = chb1.checked
-                chb1.checked = chb2.checked
-                chb2.checked = swap
-            })
-        } else if(param === "drcs-shift-up") {
-            range2([0, 1], [8, 10]).forEach((x, y) => {
-                const src = document.getElementById("px-" + x + "-" + y)
-                const dst = document.getElementById("px-" + x + "-" + (y - 1))
-
-                dst.checked = src.checked
-            })
-
-            range(8).forEach(x => {
-                const dst = document.getElementById("px-" + x + "-9")
-                dst.checked = false
-            })
-        } else if(param === "drcs-shift-down") {
-            range2([0, 9], [8, 0]).forEach((x, y) => {
-                const src = document.getElementById("px-" + x + "-" + (y - 1))
-                const dst = document.getElementById("px-" + x + "-" + y)
-
-                dst.checked = src.checked
-            })
-
-            range(8).forEach(x => {
-                const dst = document.getElementById("px-" + x + "-0")
-                dst.checked = false
-            })
-        } else if(param === "drcs-shift-left") {
-            range2([0, 0], [7, 10]).forEach((x, y) => {
-                const src = document.getElementById("px-" + (x + 1) + "-" + y)
-                const dst = document.getElementById("px-" + x + "-" + y)
-
-                dst.checked = src.checked
-            })
-
-            range(10).forEach(y => {
-                const dst = document.getElementById("px-7-" + y)
-                dst.checked = false
-            })
-        } else if(param === "drcs-shift-right") {
-            range2([7, 0], [0, 10]).forEach((x, y) => {
-                const src = document.getElementById("px-" + (x - 1) + "-" + y)
-                const dst = document.getElementById("px-" + x + "-" + y)
-
-                dst.checked = src.checked
-            })
-
-            range(10).forEach(y => {
-                const dst = document.getElementById("px-0-" + y)
-                dst.checked = false
-            })
-        }
+        MiEditPage[param]("px")
 
         // Fire an Event for signalling that something has changed
         const evt = new Event("input", {"bubbles": true, "cancelable": false});
         document.getElementById("px-0-0").dispatchEvent(evt)
     }
+
+    /**
+     * When the user does an action a the DRCS character being edited.
+     * @param {HTMLEvent} event Event that generated the call
+     * @param {mixed} param Parameters of the event
+     * @private
+     */
+    onDRCSAdvAction(event, param) {
+        MiEditPage[param]("apx")
+
+        // Fire an Event for signalling that something has changed
+        const evt = new Event("input", {"bubbles": true, "cancelable": false});
+        document.getElementById("apx-0-0").dispatchEvent(evt)
+    }
+}
+
+MiEditPage.pixID = (base, x, y) => base + "-" + x + "-" + y
+
+MiEditPage.drcsSwap = (base, start, end, fnSwap) => {
+    range2(start, end).forEach((x, y) => {
+        const [ x2, y2 ] = fnSwap(x, y)
+        const chb1 = document.getElementById(MiEditPage.pixID(base, x, y))
+        const chb2 = document.getElementById(MiEditPage.pixID(base, x2, y2))
+
+        const swap = chb1.checked
+        chb1.checked = chb2.checked
+        chb2.checked = swap
+    })
+}
+
+MiEditPage["drcs-vertical-symmetry"] = function(base) {
+    MiEditPage.drcsSwap(base, [ 0, 0 ] , [ 8, 5 ], (x, y) => [ x, 9 - y ])
+}
+
+MiEditPage["drcs-horizontal-symmetry"] = function(base) {
+    MiEditPage.drcsSwap(base, [ 0, 0 ] , [ 4, 10 ], (x, y) => [ 7 - x, y ])
+}
+
+MiEditPage.drcsShift = function(base, start, end, fnSrc, fnDst, clear, fnClear) {
+    range2(start, end).forEach((x, y) => {
+        const [ xSrc, ySrc ] = fnSrc(x, y)
+        const [ xDst, yDst ] = fnDst(x, y)
+        const src = document.getElementById(MiEditPage.pixID(base, xSrc, ySrc))
+        const dst = document.getElementById(MiEditPage.pixID(base, xDst, yDst))
+
+        dst.checked = src.checked
+    })
+
+    range(clear).forEach(x => {
+        const [ xDst, yDst ] = fnClear(x)
+        const dst = document.getElementById(MiEditPage.pixID(base, xDst, yDst))
+        dst.checked = false
+    })
+}
+
+MiEditPage["drcs-shift-up"] = function(base) {
+    MiEditPage.drcsShift(
+        base,
+        [ 0, 1 ], [ 8, 10 ],
+        (x, y) => [ x, y ], (x, y) => [ x, y - 1 ],
+        8, x => [ x, 9 ]
+    )
+}
+
+MiEditPage["drcs-shift-down"] = function(base) {
+    MiEditPage.drcsShift(
+        base,
+        [ 0, 9 ], [ 8, 0 ],
+        (x, y) => [ x, y - 1 ], (x, y) => [ x, y ],
+        8, x => [ x, 0 ]
+    )
+}
+
+MiEditPage["drcs-shift-left"] = function(base) {
+    MiEditPage.drcsShift(
+        base,
+        [ 0, 0 ], [ 7, 10 ],
+        (x, y) => [ x + 1, y ], (x, y) => [ x, y ],
+        10, x => [ 7, x ]
+    )
+}
+
+MiEditPage["drcs-shift-right"] = function(base) {
+    MiEditPage.drcsShift(
+        base,
+        [ 7, 0 ], [ 0, 10 ],
+        (x, y) => [ x - 1, y ], (x, y) => [ x, y ],
+        10, x => [ 0, x ]
+    )
 }
 
 importHTML.install()
