@@ -86,7 +86,10 @@ Minitel.actions = {}
 Minitel.actions["content-string"] = function(stream, data, offsetX, offsetY) {
     if(data.value === undefined) { return }
 
-    stream.push(data.value)
+    const unoptimized = new Minitel.Stream()
+    unoptimized.push(data.value)
+
+    stream.push(unoptimized.optimizeRow())
 
     // Should we introduce a line return?
     if(data.return) {
