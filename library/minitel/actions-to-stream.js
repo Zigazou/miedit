@@ -410,7 +410,11 @@ Minitel.actions["drcs-black-white"] = function(stream, data, offsetX, offsetY) {
         stream.push([0x1f, 0x40 + y + offset + offsetY, 0x40 + x + offsetX + 1])
         stream.push([0x1b, 0x28, 0x20, 0x42])
         stream.push([0x1b, 0x50, 0x1b, 0x47])
-        stream.push(row)
+
+        const unoptimized = new Minitel.Stream()
+        unoptimized.push(row)
+
+        stream.push(unoptimized.optimizeRow())
     })
 }
 

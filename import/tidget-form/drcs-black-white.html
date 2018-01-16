@@ -3,16 +3,23 @@
   <h2>Create a bitmap in DRCS characters from black and white image</h2>
   <div>
     <div class="miedit-field">
+      <label for="drcs_black-white-file">File:</label>
+      <input
+        id="drcs-black-white-file"
+        type="file"
+      />
+      <button value="edit"
+        data-call="onImportBWImage"
+        data-param="drcs-black-white-file|drcs-black-white-image"
+      >Convert image</button>
+    </div>
+    <div class="miedit-field">
       <label for="drcs-black-white-image">Value:</label>
       <input
         id="drcs-black-white-image"
         name="image"
         type="text"
       />
-      <button value="edit"
-        data-call="onImportBWImage"
-        data-param="drcs-black-white-image"
-      >Import image</button>
     </div>
 
     <div class="miedit-field">

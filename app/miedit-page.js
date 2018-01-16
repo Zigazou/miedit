@@ -274,32 +274,42 @@ class MiEditPage {
      * @private
      */
     onImportBWImage(event, param) {
+        const [ fileID, imageID ] = param.split('|')
+        const fileElement = document.getElementById(fileID)
+        const imageElement = document.getElementById(imageID)
         const image = new Image()
+
+        // Get a list of the selected files in a FileList object
+        const files = fileElement.files
+
+        if(files.length !== 1) return
+
+        const imageFile = files[0]
+
+        // Only process image files.
+        if(!imageFile.type.match('image.*')) return
+
+        const reader = new FileReader()
 
         let loaded = false
 
-        // Since the image loading can take some time, the image conversion
-        // is held asynchronously.
-        function loadHandler() {
-            if(loaded) { return }
+        reader.onload = (event) => {
+            image.src = event.target.result
+            image.onload = () => {
+                if(loaded) return
 
-            loaded = true
+                loaded = true
 
-            // Converts the image to DRCS characters
-            const data = Drawing.bwdrcs(image)
+                // Inserts the encoded value in the BW input field
+                imageElement.value = JSON.stringify(Drawing.bwdrcs(image))
+                imageElement.dispatchEvent(new Event("input"))            
+            }
 
-            // Inserts the encoded value in the BW input field
-            document.getElementById(param).value = JSON.stringify(data)
+            if(image.complete) image.onload()
         }
 
-        // Asks for the URL of the image to import and convert
-        const url = window.prompt("Input the URL of the image to import", "")
-
-        if(url) {
-            image.src = url
-            image.onload = loadHandler
-            if(image.complete) loadHandler()
-        }
+        // Read in the image file as a data URL.
+        reader.readAsDataURL(imageFile);
     }
 
     /**
