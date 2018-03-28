@@ -400,8 +400,12 @@ Minitel.states =  {
         0x42: { goto: "drcs-define-validate-g0" },
         0x43: { goto: "drcs-define-validate-g1" }
     },
-    "drcs-define-validate-g0": { 0x49: { func: "drcsDefineCharset", arg: "G0" } },
-    "drcs-define-validate-g1": { 0x49: { func: "drcsDefineCharset", arg: "G1" } },
+    "drcs-define-validate-g0": {
+        0x49: { func: "drcsDefineCharset", arg: "G0" }
+    },
+    "drcs-define-validate-g1": {
+        0x49: { func: "drcsDefineCharset", arg: "G1" }
+    },
 
     // Define a character
     "drcs-start": { 0x30: { func: "drcsStart", goto: "drcs-read" } },
@@ -455,24 +459,50 @@ Minitel.states =  {
 
     "pro1": { "*": { notImplemented: "pro1Sequence" } },
     "pro2": {
-        0x69: { goto: "startScreenMode" },
-        0x6A: { goto: "stopScreenMode" },
+        0x69: { goto: "startFunction" },
+        0x6A: { goto: "stopFunction" },
     },
 
-    "startScreenMode": {
+    "startFunction": {
         0x43: { func: "setPageMode", arg: false },
+        0x45: { func: "setUppercaseMode", arg: false },
         0x46: { notImplemented: "startUpZoom" },
         0x47: { notImplemented: "startDownZoom" },
     },
 
-    "stopScreenMode": {
+    "stopFunction": {
         0x43: { func: "setPageMode", arg: true },
+        0x45: { func: "setUppercaseMode", arg: true },
         0x46: { notImplemented: "stopUpZoom" },
         0x47: { notImplemented: "stopDownZoom" },
     },
 
-    "pro3": { "*": { goto: "pro3-2" } },
+    "pro3": {
+        0x69: { goto: "pro3Start" },
+        0x6A: { goto: "pro3Stop" },
+        "*": { goto: "pro3-2" }
+    },
     "pro3-2": { "*": { goto: "pro3-3" } },
     "pro3-3": { "*": { notImplemented: "pro3Sequence" } },
+
+    "pro3Start": {
+        0x59: { goto: "startKeyboardFunction" },
+        "*": { goto: "pro3-3"}
+    },
+
+    "pro3Stop": {
+        0x59: { goto: "stopKeyboardFunction" },
+        "*": { goto: "pro3-3"}
+    },
+
+    "startKeyboardFunction": {
+        0x41: { func: "setExtendedKeyboard", arg: true },
+        0x43: { func: "setCursorKeyboard", arg: true }
+    },
+
+    "stopKeyboardFunction": {
+        0x41: { func: "setExtendedKeyboard", arg: false },
+        0x43: { func: "setCursorKeyboard", arg: false }
+    },
 }
 

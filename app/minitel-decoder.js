@@ -340,6 +340,36 @@ class MinitelDecoder {
     }
 
     /**
+     * Set the uppercase mode of the keyboard
+     * @param {boolean} bool true indicates the keyboard operates in uppercase
+     *                       false indicates the keyboard operates in lowercase
+     * @private
+     */
+    setUppercaseMode(bool) {
+        this.keyboard.setUppercaseMode(bool)
+    }
+
+    /**
+     * Set the extended mode of the keyboard
+     * @param {boolean} bool true indicates the keyboard works extended
+     *                       false indicates the keyboard works standard
+     * @private
+     */
+    setExtendedMode(bool) {
+        this.keyboard.setExtendedMode(bool)
+    }
+
+    /**
+     * Set the cursor keys of the keyboard
+     * @param {boolean} bool true indicates keyboard use cursor keys
+     *                       false indicates keyboard does not use cursor keys
+     * @private
+     */
+    setCursorKeys(bool) {
+        this.keyboard.setCursorKeys(bool)
+    }
+
+    /**
      * Set the current character type.
      * Doing so resets some attributes even if the current character type does
      * not change.

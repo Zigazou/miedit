@@ -23,4 +23,33 @@ object {
     height: auto;
 }
 
+.keyboard-grid {
+    border-top: 1px solid white;
+    border-right: 1px solid white;
+}
 
+.keyboard-grid button {
+    padding: 0;
+    height: 3em;
+    margin: 0;
+    width: 100%;
+    background-color: #462e22;
+    color: white;
+    border: none;
+    border-radius: 0;
+    border-left: 1px solid white;
+}
+
+.special button { background-color: #a0795a; }
+.send button { background-color: #a4943c; }
+.switch button { background-color: blue; }
+
+.keyboard-grid>div>div {
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 1px solid white;
+}
+
+.keyboard-grid>div>div>div { flex-grow: 1; }
+
+.hidden { display: none; }
