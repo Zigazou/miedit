@@ -517,6 +517,10 @@ class PageMemory {
      * @private
      */
     cursorRestore() {
+        if(!this.cursor.visible) {
+            return
+        }
+
         this.context.drawImage(
             // Source
             this.cursor.bgSave,
