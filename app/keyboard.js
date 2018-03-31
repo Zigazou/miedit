@@ -13,7 +13,7 @@
  * @name EmitterHandler
  * @function
  * @param {Int[]} sequence Minitel code sequence
-*/
+ */
 
 /**
  * Keyboard converts keys received by the browser into Minitel keys.
@@ -72,7 +72,7 @@ class Keyboard {
          * @member {EmitterHandler}
          * @private
          */
-        this.emitter = emitter
+        this.emitter = null
 
         /**
          * The alphabetical keys page.
@@ -100,7 +100,27 @@ class Keyboard {
 
         document.addEventListener("keydown", event => this.onkeydown(event))
         document.addEventListener("keyup", event => this.onkeyup(event))
+        document.addEventListener("keypress", event => this.onkeypress(event))
         document.getElementsByClassName("keyboard-grid")[0].autocallback(this)
+    }
+
+    /**
+     * Defines an EmitterHandler which will be called everytime a key is
+     * is pressed.
+     * @member {EmitterHandler}
+     */
+     setEmitter(emitter) {
+        this.emitter = emitter
+    }
+
+    /**
+     * Handles key presse events.
+     * @private
+     */
+    keypress(keycodes) {
+        if(this.emitter !== null && keycodes !== null) {
+            this.emitter(keycodes)
+        }
     }
 
     /**
@@ -109,12 +129,10 @@ class Keyboard {
      */
     onkeydown(event) {
         this.simulator.pressKey(event.key)
-        event.preventDefault()
-        this.keypress(event.key)
     }
 
     /**
-     * Handles switch butten event.
+     * Handles switch button event.
      * @private
      */
     onSwitch(event) {
@@ -125,8 +143,6 @@ class Keyboard {
             this.pageNAlpha.classList.remove("hidden")
             this.pageAlpha.classList.add("hidden")
         }
-
-        event.preventDefault()
     }
 
     /**
@@ -135,28 +151,27 @@ class Keyboard {
      */
     onkeyup(event) {
         this.simulator.releaseKey(event.key)
-        event.preventDefault()
     }
 
     /**
      * Handles key press events.
      * @private
      */
-    keypress(keycode) {
-        //minitelcode = keycode
-        //this.emitter(minitelcode)
+    onkeypress(event) {
+        this.kShift = event.shiftKey
+        this.keypress(this.toMinitel(event.key))
     }
 
     /**
      * Handles click events.
      * @private
      */
-    onclick(event) {
-        // Activates the virtual keyboard on mobiles.
-        event.target.focus()
-        event.target.click()
+    onclick(event, param) {
+        if(param === "Maj") {
+            this.kShift = !this.kShift
+        }
 
-        event.preventDefault()
+        this.keypress(this.toMinitel(param))
     }
 
     /**
@@ -190,31 +205,24 @@ class Keyboard {
      * Converts a key to a Minitel code sequence according to the current state
      * of the keyboard.
      * @param {String} key A string identifying a key.
-     * @return {Int[]} The Minitel code sequence corresponding
+     * @return {Int[]} The Minitel code sequence corresponding or null if the
+     *                 key cannot be converted.
      */
     toMinitel(key) {
-        // Mode videotex
-        // Envoi [ 0x13, 0x41 ]
-        // Retour [ 0x13, 0x42 ]
-        // Repetition [ 0x13, 0x43 ]
-        // Guide [ 0x13, 0x44 ]
-        // Annulation [ 0x13, 0x45 ]
-        // Sommaire [ 0x13, 0x46 ]
-        // Correction [ 0x13, 0x47 ]
-        // Suite [ 0x13, 0x48 ]
-    
-        // Haut [ 0x1B, 0x5B, 0x41 ]
-        // MajHaut [ 0x1B, 0x5B, 0x4D ]
-        // Bas [ 0x1B, 0x5B, 0x42 ]
-        // MajBas [ 0x1B, 0x5B, 0x4C ]
-        // Droite [ 0x1B, 0x5B, 0x42 ]
-        // MajDroite [ 0x1B, 0x5B, 0x34, 0x68 ] [ 0x1B, 0x5B, 0x34, 0x6C ]
-        // Gauche [ 0x1B, 0x5B, 0x44 ]
-        // MajGauche [ 0x1B, 0x5B, 0x50 ]
-        // CtrlGauche [ 0x7F ]
-        // Entree [ 0x0D ]
-        // MajEntree [ 0x1B, 0x5B, 0x48 ]
-        // CtrlEntree [ 0x1B, 0x5B, 0x32, 0x4A ]
+        if(key.length == 1) {
+            // Handles uppercase mode and shift key
+            if(this.kUppercase == !this.kShift) {
+                key = key.toUpperCase()
+            } else {
+                key = key.toLowerCase()
+            }
+        }
+
+        if(key in Minitel.keys["Videotex"]) {
+            return Minitel.keys["Videotex"][key]
+        }
+
+        return null
 
         // Mode C0
         // Haut [ 0x0B ]
@@ -259,40 +267,5 @@ class Keyboard {
         // Entree [ 0x0D ]
         // MajEntree [ 0x1B, 0x5B, 0x48 ]
         // CtrlEntree [ 0x1B, 0x5B, 0x32, 0x4A ]
-        
     }
 }
-/*
-MiKeyboard.specialKeys = [ "Ctrl", "Alt", "Shift", "AltGraph", "CapsLock" ]
-
-MiKeyboard.keys = {
-    "ArrowUp",
-    "ArrowDown",
-    "ArrowLeft",
-    "ArrowRight",
-    "Tab",
-    "Backspace",
-    "PageUp",
-    "PageDown",
-    "Delete",
-    "Insert",
-    "Home",
-    "End",
-    "F1",
-    "F2",
-    "F3",
-    "F4",
-    "F5",
-    "F6",
-    "F7",
-    "F8",
-    "F9",
-    "F10",
-    "F11",
-    "F12",
-    "ScrollLock",
-    "Pause",
-    "Escape",
-    "NumLock",
-}
-*/

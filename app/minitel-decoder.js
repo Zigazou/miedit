@@ -13,8 +13,10 @@ class MinitelDecoder {
      * Create a new MinitelDecoder.
      * @param {PageMemory} pageMemory The PageMemory against which apply the
      *                                decoded stream.
+     * @param {Keyboard} keyboard The keyboard emulator.
+     * @param {WebSocket} webSocket The web socket to communicate with.
      */
-    constructor(pageMemory) {
+    constructor(pageMemory, keyboard = null, socket = null) {
         /**
          * The current state of the decoder
          * @member {string}
@@ -75,6 +77,61 @@ class MinitelDecoder {
             charsetToDefine: undefined,
             startChar: undefined,
             count: 0,
+        }
+
+        /**
+         * Web socket to communicate with if any, null if no connection.
+         * @member {WebSocket}
+         * @private
+         */
+        this.socket = null
+
+        if(socket !== null) {
+            socket.onopen = openEvent => {
+                this.socket = socket
+
+                socket.onmessage = messageEvent => {
+                    const message = []
+                    range(messageEvent.data.length).forEach(offset => {
+                        message.push(messageEvent.data[offset].charCodeAt(0))
+                    })
+
+                    this.decodeList(message)
+                }
+            }
+        }
+
+        /**
+         * Indicates if keyboard keys must be sent to the screen (true) or not
+         * (false).
+         * @member {boolean} true for keys being sent to the screen (default for
+         *                   a Minitel), false otherwise.
+         * @private
+         */
+        this.keyboardToScreen = true
+
+        /**
+         * The keyboard emulator if any, null if no keyboard emulator available.
+         * @member {Keyboard}
+         * @private
+         */
+        this.keyboard = keyboard
+
+        if(keyboard !== null) {
+            const that = this
+            keyboard.setEmitter(function(keycodes) {
+                // Keyboard keys are sent to the screen if the Minitel is
+                // configured to do this.
+                if(that.keyboardToScreen) {
+                    that.decodeList(keycodes)
+                }
+
+                // Keyboard keys are to be sent to the socket if it has been
+                // properly open.
+                if(that.socket !== null) {
+                    that.socket.send(keycodes)
+                }
+            })
         }
     }
 
@@ -762,6 +819,41 @@ class MinitelDecoder {
     }
 
     /**
+     * Enable the extended keyboard
+     * @param {boolean} bool true to enable, false to disable.
+     * @private
+     */
+    setExtendedKeyboard(bool) {
+        if(this.keyboard !== null) {
+            this.keyboard.setExtendedMode(bool)
+        }
+    }
+    
+    /**
+     * Change the handling of cursor keys
+     * @param {boolean} bool true to use C0, false to use standard codes.
+     * @private
+     */
+    setCursorKeyboard(bool) {
+        if(this.keyboard !== null) {
+            this.keyboard.setCursorKeyboard(bool)
+        }
+    }
+
+    /**
+     * Set switch between two part of the Minitel architecture.
+     * @param {boolean} switchOn true to enable, false to disable.
+     * @param {string} destination may be only "screen" for the moment.
+     * @param {string} source may be only "keyboard" for the moment.
+     * @private
+     */
+    setSwitch(switchOn, destination, source) {
+        if(destination === "screen" && source === "keyboard") {
+            this.keyboardToScreen = switchOn
+        }
+    }
+
+    /**
      * Execute one character in the automaton
      * @param {string} char the character to execute
      * @private
@@ -813,7 +905,11 @@ class MinitelDecoder {
             let args = []
             if("arg" in action) {
                 // The function has predefined arguments
-                args = [action.arg]
+                if(Array.isArray(args)) {
+                    args = action.arg
+                } else {
+                    args = [action.arg]
+                }
             } else if("dynarg" in action) {
                 // The function should take its arguments in the previously
                 // executed characters
