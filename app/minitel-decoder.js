@@ -129,7 +129,10 @@ class MinitelDecoder {
                 // Keyboard keys are to be sent to the socket if it has been
                 // properly open.
                 if(that.socket !== null) {
-                    that.socket.send(keycodes)
+                    that.socket.send(keycodes.reduce(
+                        (accum, curr) => accum + String.fromCharCode(curr),
+                        ""
+                    ))
                 }
             })
         }
