@@ -905,7 +905,7 @@ class MinitelDecoder {
             let args = []
             if("arg" in action) {
                 // The function has predefined arguments
-                if(Array.isArray(args)) {
+                if(Array.isArray(action.arg)) {
                     args = action.arg
                 } else {
                     args = [action.arg]
