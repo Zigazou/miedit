@@ -86,6 +86,10 @@ class MinitelDecoder {
          */
         this.sender = sender
 
+        if(sender !== null) {
+            this.pm.setStatusCharacter(0x43)
+        }
+
         /**
          * Indicates if keyboard keys must be sent to the screen (true) or not
          * (false).
@@ -94,6 +98,10 @@ class MinitelDecoder {
          * @private
          */
         this.keyboardToScreen = true
+
+        if(sender !== null) {
+            this.keyboardToScreen = false
+        }
 
         /**
          * The keyboard emulator if any, null if no keyboard emulator available.

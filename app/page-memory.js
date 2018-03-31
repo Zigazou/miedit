@@ -64,6 +64,13 @@ class PageMemory {
          */
         this.globalMask = true
 
+        /**
+         * The status character shown in the upper right corner of the screen
+         * @member {int}
+         * @private
+         */
+        this.statusCharacter = 0x46
+
         // Helper array
         const rows = []
         rows.length = this.grid.rows
@@ -329,6 +336,15 @@ class PageMemory {
     }
 
     /**
+     * Defines the status character shown in the upper right corner of the
+     * Minitel screen.
+     * @param {int} code the Minitel code to display.
+     */
+    setStatusCharacter(code) {
+        this.statusCharacter = code;
+    }
+
+    /**
      * Render the screen.
      * @private
      */
@@ -341,7 +357,7 @@ class PageMemory {
 
         // Add the inverted F on the status line
         const fCell = new CharCell()
-        fCell.value = 0x46
+        fCell.value = this.statusCharacter
         fCell.invert = true
         this.memory[0][38] = fCell
 

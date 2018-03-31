@@ -64,7 +64,11 @@ class MinitelEmulator {
         this.decoder = new MinitelDecoder(
             this.pageMemory,
             keyboard,
-            message => socket.send(message)
+            message => {
+                if(this.socket !== null) {
+                    this.socket.send(message)
+                }
+            }
         )
 
         /**
