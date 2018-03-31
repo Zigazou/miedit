@@ -41,12 +41,31 @@ class MinitelEmulator {
             this.color ? Minitel.colors : Minitel.greys
         )
 
+        if(socket !== null) {
+            socket.onopen = openEvent => {
+                this.socket = socket
+
+                socket.onmessage = messageEvent => {
+                    const message = []
+                    range(messageEvent.data.length).forEach(offset => {
+                        message.push(messageEvent.data[offset].charCodeAt(0))
+                    })
+
+                    this.send(message)
+                }
+            }
+        }
+
         /**
          * The decoder
          * @member {MinitelDecoder}
          * @private
          */
-        this.decoder = new MinitelDecoder(this.pageMemory, keyboard, socket)
+        this.decoder = new MinitelDecoder(
+            this.pageMemory,
+            keyboard,
+            message => socket.send(message)
+        )
 
         /**
          * The queue

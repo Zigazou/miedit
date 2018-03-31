@@ -14,9 +14,9 @@ class MinitelDecoder {
      * @param {PageMemory} pageMemory The PageMemory against which apply the
      *                                decoded stream.
      * @param {Keyboard} keyboard The keyboard emulator.
-     * @param {WebSocket} webSocket The web socket to communicate with.
+     * @param {} sender The function to use to send message to the network.
      */
-    constructor(pageMemory, keyboard = null, socket = null) {
+    constructor(pageMemory, keyboard = null, sender = null) {
         /**
          * The current state of the decoder
          * @member {string}
@@ -80,26 +80,11 @@ class MinitelDecoder {
         }
 
         /**
-         * Web socket to communicate with if any, null if no connection.
-         * @member {WebSocket}
+         * A function to communicate with if any, null if no connection.
+         * @member {}
          * @private
          */
-        this.socket = null
-
-        if(socket !== null) {
-            socket.onopen = openEvent => {
-                this.socket = socket
-
-                socket.onmessage = messageEvent => {
-                    const message = []
-                    range(messageEvent.data.length).forEach(offset => {
-                        message.push(messageEvent.data[offset].charCodeAt(0))
-                    })
-
-                    this.decodeList(message)
-                }
-            }
-        }
+        this.sender = sender
 
         /**
          * Indicates if keyboard keys must be sent to the screen (true) or not
@@ -126,10 +111,10 @@ class MinitelDecoder {
                     that.decodeList(keycodes)
                 }
 
-                // Keyboard keys are to be sent to the socket if it has been
+                // Keyboard keys are to be sent to the network if it has been
                 // properly open.
-                if(that.socket !== null) {
-                    that.socket.send(keycodes.reduce(
+                if(that.sender !== null) {
+                    that.sender(keycodes.reduce(
                         (accum, curr) => accum + String.fromCharCode(curr),
                         ""
                     ))
