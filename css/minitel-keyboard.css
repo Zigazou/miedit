@@ -6,6 +6,8 @@ body {
 
 #miedit {
     width: 40em;
+    max-width: 100%;
+    height: auto;
     text-align: center;
     margin: auto;
 }
@@ -15,11 +17,13 @@ canvas {
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     width: 40em;
+    max-width: 100%;
     height: auto;
 }
 
 object {
     width: 40em;
+    max-width: 100%;
     height: auto;
 }
 
