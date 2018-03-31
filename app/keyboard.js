@@ -151,6 +151,7 @@ class Keyboard {
      */
     onkeyup(event) {
         this.simulator.releaseKey(event.key)
+        event.preventDefault()
     }
 
     /**
@@ -160,6 +161,7 @@ class Keyboard {
     onkeypress(event) {
         this.kShift = event.shiftKey
         this.keypress(this.toMinitel(event.key))
+        event.preventDefault()
     }
 
     /**

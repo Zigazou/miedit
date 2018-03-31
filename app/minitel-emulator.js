@@ -41,6 +41,8 @@ class MinitelEmulator {
             this.color ? Minitel.colors : Minitel.greys
         )
 
+        this.socket = null
+
         if(socket !== null) {
             socket.onopen = openEvent => {
                 this.socket = socket
@@ -61,14 +63,16 @@ class MinitelEmulator {
          * @member {MinitelDecoder}
          * @private
          */
+        const sender = message => {
+            if(this.socket !== null) {
+                this.socket.send(message)
+            }
+        }
+
         this.decoder = new MinitelDecoder(
             this.pageMemory,
             keyboard,
-            message => {
-                if(this.socket !== null) {
-                    this.socket.send(message)
-                }
-            }
+            socket !== null ? sender : null
         )
 
         /**
