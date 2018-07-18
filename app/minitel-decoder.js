@@ -595,9 +595,6 @@ class MinitelDecoder {
      * @private
      */
     locate(y, x) {
-        // Locate command is ignored while on row 0
-        if(this.pm.cursor.y === 0) return
-
         if(y === 0x30 || y === 0x31 || y === 0x32) {
             // This form of absolute positionning is indicated as deprecated
             // but is nonetheless supported by every Minitel. It moves the
