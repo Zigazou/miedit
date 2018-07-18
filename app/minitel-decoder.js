@@ -132,6 +132,37 @@ class MinitelDecoder {
     }
 
     /**
+     * Save state before entering the status row
+     * @private
+     */
+    saveState() {
+        /**
+         * A structure holding the state
+         * @member {Object}
+         * @property {Object} current current attributes
+         * @property {Object} waiting waiting attributes
+         * @property {Object} cursor current cursor position
+         * @private
+         */
+        this.savedState = {
+            current: Object.assign({}, this.current),
+            waiting: Object.assign({}, this.waiting),
+            cursor: { x: this.pm.cursor.x, y: this.pm.cursor.y },
+        }
+    }
+
+    /**
+     * Restore state after leaving the status row
+     * @private
+     */
+    restoreState() {
+        this.current = Object.assign({}, this.savedState.current)
+        this.waiting = Object.assign({}, this.savedState.waiting)
+        this.pm.cursor.x = this.savedState.cursor.x
+        this.pm.cursor.y = this.savedState.cursor.y
+    }
+
+    /**
      * Reset current attributes to default values
      * @private
      */
@@ -253,18 +284,18 @@ class MinitelDecoder {
         } else if(direction === "down") {
             // Move the cursor one row down
             if(this.pm.cursor.y === 0) {
-                this.pm.cursor.x = 0
-                this.pm.cursor.y = 1
+                // Restore the state before leaving the status row
+                this.restoreState()
             } else {
                 this.pm.cursor.y++
-            }
 
-            if(this.pm.cursor.y == this.pm.grid.rows) {
-                if(this.pageMode) {
-                    this.pm.cursor.y = 1
-                } else {
-                    this.pm.cursor.y = this.pm.grid.rows - 1
-                    this.pm.scroll("up")
+                if(this.pm.cursor.y == this.pm.grid.rows) {
+                    if(this.pageMode) {
+                        this.pm.cursor.y = 1
+                    } else {
+                        this.pm.cursor.y = this.pm.grid.rows - 1
+                        this.pm.scroll("up")
+                    }
                 }
             }
         } else if(direction === "firstColumn") {
@@ -461,6 +492,8 @@ class MinitelDecoder {
      * @private
      */
     setFgColor(color) {
+        if(this.pm.cursor.y === 0) return
+
         this.current.fgColor = color
     }
 
@@ -470,6 +503,8 @@ class MinitelDecoder {
      * @private
      */
     setBgColor(color) {
+        if(this.pm.cursor.y === 0) return
+
         if(this.current.charType === CharCell) {
             this.waiting.bgColor = color
         } else if(this.current.charType === MosaicCell) {
@@ -560,6 +595,9 @@ class MinitelDecoder {
      * @private
      */
     locate(y, x) {
+        // Locate command is ignored while on row 0
+        if(this.pm.cursor.y === 0) return
+
         if(y === 0x30 || y === 0x31 || y === 0x32) {
             // This form of absolute positionning is indicated as deprecated
             // but is nonetheless supported by every Minitel. It moves the
@@ -575,6 +613,9 @@ class MinitelDecoder {
         // Ignores everything that is outside of the screen
         if(x < 1 || x > 40) return
         if(y < 0 || y > 24) return
+
+        // Save current state before going on row 0
+        if(y === 0) this.saveState()
 
         // Minitel works from 1 to 40 while the PageMemory works with 0 to 39
         this.pm.cursor.x = x - 1

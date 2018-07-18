@@ -134,6 +134,27 @@ Minitel.Stream = class {
     }
 
     /**
+     * Generate repeat commands while checking for overflow.
+     * 
+     * @param {string} char
+     * @param {int} count 
+     */
+    generateRepeat(char, count) {
+        if(count == 1) {
+            return char
+        } else {
+            let repeats = []
+
+            while(count > 0x3F) {
+                repeats = repeats.concat([0x12, 0x7F])
+                count -= 0x3F
+            }
+
+            return repeats.concat([0x12, 0x40 + count])
+        }
+    }
+
+    /**
      * Generates an optimized version of the current stream. It won't properly
      * work when used on anything else than a row.
      *
@@ -190,11 +211,7 @@ Minitel.Stream = class {
                     next.charset = item
                 } else {
                     if(count > 0) {
-                        if(count == 1) {
-                            optimized.push(char)
-                        } else {
-                            optimized.push([0x12, 0x40 + count])
-                        }
+                        optimized.push(this.generateRepeat(char, count))
                         count = 0
                     }
 
@@ -209,11 +226,7 @@ Minitel.Stream = class {
                 }
 
                 if(count > 0 && (attributeChange || char !== item)) {
-                    if(count == 1) {
-                        optimized.push(char)
-                    } else {
-                        optimized.push([0x12, 0x40 + count])
-                    }
+                    optimized.push(this.generateRepeat(char, count))
                     count = 0
                 }
 
@@ -239,11 +252,7 @@ Minitel.Stream = class {
         })
 
         if(count > 0) {
-            if(count == 1) {
-                optimized.push(char)
-            } else {
-                optimized.push([0x12, 0x40 + count])
-            }
+            optimized.push(this.generateRepeat(char, count))
         }
 
         return optimized
