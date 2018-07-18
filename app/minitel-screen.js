@@ -11,6 +11,7 @@
 class MinitelScreen {
     /**
      * @param {HTMLCanvasElement} canvas
+     * @param {} color
      */
     constructor(canvas, color) {
         const grid = { cols: Minitel.columns, rows: Minitel.rows }
@@ -70,7 +71,6 @@ class MinitelScreen {
          */
         this.cursorShown = false
 
-        canvas.addEventListener("click", event => this.onClick(event))
         this.initRefresh(Minitel.B1200, 25)
     }
 
@@ -129,20 +129,4 @@ class MinitelScreen {
         this.queue = this.queue.slice(this.chunkSize)
         this.decoder.decodeList(chunk)
     }
-
-    /**
-     * Change colors (black and white or color)
-     */
-    changeColors() {
-        this.color = !this.color
-        this.pageMemory.changeColors(this.color)
-    }
-
-    onClick(event) {
-        if(event.button !== 0) return true
-        
-        this.changeColors()
-        return false
-    }
 }
-

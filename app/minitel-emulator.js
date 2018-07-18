@@ -100,7 +100,7 @@ class MinitelEmulator {
          */
         this.cursorShown = false
 
-        canvas.addEventListener("click", event => this.onClick(event))
+        canvas.addEventListener("click", event => this.onClick(event, keyboard))
         this.initRefresh(Minitel.B1200, 25)
     }
 
@@ -160,6 +160,7 @@ class MinitelEmulator {
         this.decoder.decodeList(chunk)
     }
 
+
     /**
      * Change colors (black and white or color)
      */
@@ -168,11 +169,49 @@ class MinitelEmulator {
         this.pageMemory.changeColors(this.color)
     }
 
-    onClick(event) {
-        if(event.button !== 0) return true
-        
-        this.changeColors()
+    onClick(event, keyboard) {
+        const keyword = this.pageMemory.getWordAt(
+            event.pageX - event.target.offsetLeft,
+            event.pageY - event.target.offsetTop
+        )
+
+        if(keyword === "") return true
+
+        let message = []
+        switch(keyword) {
+            case 'SOMMAIRE':
+                message = Minitel.keys['Videotex']['Sommaire']
+                break
+            case 'ANNULATION': break
+                message = Minitel.keys['Videotex']['Annulation']
+                break
+            case 'RETOUR': break
+                message = Minitel.keys['Videotex']['Retour']
+                break
+            case 'GUIDE': break
+                message = Minitel.keys['Videotex']['Guide']
+                break
+            case 'CORRECTION': break
+                message = Minitel.keys['Videotex']['Correction']
+                break
+            case 'SUITE': break
+                message = Minitel.keys['Videotex']['Suite']
+                break
+            case 'ENVOI': break
+                message = Minitel.keys['Videotex']['Envoi']
+                break
+
+            default:
+                // Convert the string to a code sequence
+                range(keyword.length).forEach(offset => {
+                    message.push(keyword.charCodeAt(offset))
+                })
+
+                message = message.concat(Minitel.keys['Videotex']['Envoi'])
+        }
+
+        keyboard.keypress(message)
+
         return false
     }
 }
-

@@ -552,4 +552,44 @@ class PageMemory {
             this.char.height
         )
     }
+
+    /**
+     * Get the word at a specific point
+     * @param {int} x X position of a pixel on the canvas
+     * @param {int} y Y position of a pixel on the canvas
+     */
+    getWordAt(x, y) {
+        // Ensures coordinates are valid
+        if(x < 0 || x >= this.canvas.offsetWidth) return ""
+        if(y < 0 || y >= this.canvas.offsetHeight) return ""
+
+        // Computes row and column
+        const col = Math.floor(x * this.grid.cols / this.canvas.offsetWidth)
+        const row = Math.floor(y * this.grid.rows / this.canvas.offsetHeight)
+
+        // A word cannot be retrieved from anything else than a CharCell
+        if(!(this.memory[row][col] instanceof CharCell)) return ""
+
+        // Find the first readable character on the left
+        let first = col
+        while(   first >= 0
+              && this.memory[row][first] instanceof CharCell
+              && this.memory[row][first].value !== 0x20
+        ) first--
+
+        // Find the last readable character on the right
+        let last = col
+        while(   last < this.grid.cols
+            && this.memory[row][last] instanceof CharCell
+            && this.memory[row][last].value !== 0x20
+        ) last++
+
+        // Concat each character from first to last
+        let string = ""
+        this.memory[row].slice(first + 1, last).forEach(cell => {
+            string += String.fromCharCode(cell.value)
+        })
+
+        return string
+    }
 }
