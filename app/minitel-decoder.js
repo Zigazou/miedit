@@ -492,8 +492,6 @@ class MinitelDecoder {
      * @private
      */
     setFgColor(color) {
-        if(this.pm.cursor.y === 0) return
-
         this.current.fgColor = color
     }
 
@@ -503,8 +501,6 @@ class MinitelDecoder {
      * @private
      */
     setBgColor(color) {
-        if(this.pm.cursor.y === 0) return
-
         if(this.current.charType === CharCell) {
             this.waiting.bgColor = color
         } else if(this.current.charType === MosaicCell) {
