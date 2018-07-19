@@ -203,6 +203,24 @@ Minitel.specialChars = {
 }
 
 /**
+ * List of PC to Minitel keys.
+ * @member {Object.<string, string>}
+ */
+Minitel.pcToMinitelKeys = {
+    "Enter": "Envoi",
+    "Tab": "Suite",
+    "ArrowDown": "Suite",
+    "ArrowUp": "Retour",
+    "Backspace": "Correction",
+    "ArrowLeft": "Annulation",
+    "ArrowRight": "Envoi",
+    "Home": "Sommaire",
+    "Escape": "Annulation",
+    "F1": "Guide",
+    "F2": "Repetition",
+}
+
+/**
  * List of key codes used by Minitel for its keyboard.
  * @member {Object.<string, Object<string, number[]>>}
  */
