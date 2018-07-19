@@ -467,7 +467,7 @@ Minitel.states =  {
         0x17: { error: "unrecognized17" },
         0x18: { func: "clear", arg: "eol" },
         0x19: { goto: "g2" },
-        0x1A: { notImplemented: "errorSignal" },
+        0x1A: { func: "print", arg: 0x7F },
         0x1B: { goto: "esc"},
         0x1C: { error: "unrecognized1C" },
         0x1D: { error: "unrecognized1D" },
