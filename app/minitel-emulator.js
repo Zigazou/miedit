@@ -182,22 +182,22 @@ class MinitelEmulator {
             case 'SOMMAIRE':
                 message = Minitel.keys['Videotex']['Sommaire']
                 break
-            case 'ANNULATION': break
+            case 'ANNULATION':
                 message = Minitel.keys['Videotex']['Annulation']
                 break
-            case 'RETOUR': break
+            case 'RETOUR':
                 message = Minitel.keys['Videotex']['Retour']
                 break
-            case 'GUIDE': break
+            case 'GUIDE':
                 message = Minitel.keys['Videotex']['Guide']
                 break
-            case 'CORRECTION': break
+            case 'CORRECTION':
                 message = Minitel.keys['Videotex']['Correction']
                 break
-            case 'SUITE': break
+            case 'SUITE':
                 message = Minitel.keys['Videotex']['Suite']
                 break
-            case 'ENVOI': break
+            case 'ENVOI':
                 message = Minitel.keys['Videotex']['Envoi']
                 break
 

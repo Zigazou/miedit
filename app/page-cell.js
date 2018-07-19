@@ -99,6 +99,16 @@ class CharCell extends Cell {
     }
 
     /**
+     * Tests if the character in the cell is alphanumeric (true) or not (false).
+     * @return {boolean}
+     */
+    isAlphanumerical() {
+        return (this.value >= 0x41 && this.value <= 0x5A)
+            || (this.value >= 0x61 && this.value <= 0x7A)
+            || (this.value >= 0x31 && this.value <= 0x39)
+    }
+
+    /**
      * Returns a copy of the CharCell.
      * @return {CharCell} a copy of the CharCell
      */

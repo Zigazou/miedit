@@ -574,14 +574,14 @@ class PageMemory {
         let first = col
         while(   first >= 0
               && this.memory[row][first] instanceof CharCell
-              && this.memory[row][first].value !== 0x20
+              && this.memory[row][first].isAlphanumerical()
         ) first--
 
         // Find the last readable character on the right
         let last = col
         while(   last < this.grid.cols
             && this.memory[row][last] instanceof CharCell
-            && this.memory[row][last].value !== 0x20
+            && this.memory[row][last].isAlphanumerical()
         ) last++
 
         // Concat each character from first to last
