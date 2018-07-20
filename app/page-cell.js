@@ -109,6 +109,23 @@ class CharCell extends Cell {
     }
 
     /**
+     * Verify that two cells have the same attributes values (true) or not
+     * (false).
+     * @param {CharCell} cell 
+     * @return {boolean}
+     */
+    hasSameAttributes(cell) {
+        return cell.fgColor === this.fgColor
+            && cell.blink === this.blink
+            && cell.invert === this.invert
+            && cell.mult.width === this.mult.width
+            && cell.mult.height === this.mult.height
+            && cell.part.x === this.part.x
+            && cell.part.y === this.part.y
+            && cell.drcs === this.drcs
+    }
+
+    /**
      * Returns a copy of the CharCell.
      * @return {CharCell} a copy of the CharCell
      */

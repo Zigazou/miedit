@@ -568,19 +568,22 @@ class PageMemory {
         const row = Math.floor(y * this.grid.rows / this.canvas.offsetHeight)
 
         // A word cannot be retrieved from anything else than a CharCell
-        if(!(this.memory[row][col] instanceof CharCell)) return ""
+        const origin = this.memory[row][col]
+        if(!(origin instanceof CharCell)) return ""
 
         // Find the first readable character on the left
-        let first = col
+        let first = col - 1
         while(   first >= 0
               && this.memory[row][first] instanceof CharCell
+              && this.memory[row][first].hasSameAttributes(origin)
               && this.memory[row][first].isAlphanumerical()
         ) first--
 
         // Find the last readable character on the right
-        let last = col
+        let last = col + 1
         while(   last < this.grid.cols
             && this.memory[row][last] instanceof CharCell
+            && this.memory[row][last].hasSameAttributes(origin)
             && this.memory[row][last].isAlphanumerical()
         ) last++
 
