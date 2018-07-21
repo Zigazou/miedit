@@ -570,6 +570,7 @@ class PageMemory {
         // A word cannot be retrieved from anything else than a CharCell
         const origin = this.memory[row][col]
         if(!(origin instanceof CharCell)) return ""
+        if(!origin.isAlphanumerical()) return ""
 
         // Find the first readable character on the left
         let first = col - 1
