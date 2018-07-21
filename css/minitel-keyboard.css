@@ -27,11 +27,6 @@ object {
     height: auto;
 }
 
-.keyboard-grid {
-    border-top: 1px solid white;
-    border-right: 1px solid white;
-}
-
 .keyboard-grid button {
     padding: 0;
     height: 3em;
@@ -40,8 +35,13 @@ object {
     background-color: #462e22;
     color: white;
     border: none;
-    border-radius: 0;
-    border-left: 1px solid white;
+    border-radius: 0.4em 1em 0.4em 0.4em;
+    border: 0.3em solid #202020;
+    text-shadow: 0.05em 0.05em 0.1em black;
+}
+
+.special button, .send button .switch button {
+    text-shadow: 0.05em 0.05em 0.1em #462e22;
 }
 
 .special button { background-color: #a0795a; }
@@ -51,7 +51,6 @@ object {
 .keyboard-grid>div>div {
     display: flex;
     flex-wrap: wrap;
-    border-bottom: 1px solid white;
 }
 
 .keyboard-grid>div>div>div { flex-grow: 1; }
