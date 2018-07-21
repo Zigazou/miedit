@@ -46,7 +46,10 @@ object {
 
 .special button { background-color: #a0795a; }
 .send button { background-color: #a4943c; }
-.switch button { background-color: blue; }
+.switch button {
+    width: 4em;
+    background-color: blue;
+}
 
 .keyboard-grid>div>div {
     display: flex;
@@ -54,5 +57,35 @@ object {
 }
 
 .keyboard-grid>div>div>div { flex-grow: 1; }
+.keyboard-grid>div>div>div.switch { flex-grow: 0; }
+
+.form-config {
+    display: flex;
+    color: #ddd;
+    font-family: sans-serif;
+    text-align: left;
+}
+
+.form-config fieldset {
+    flex-grow: 1;
+    margin-right: 1em;
+    border-radius: 0.3em;
+}
+
+.form-config fieldset:last-child { margin-right: 0; }
+
+.config-speed>div, .config-color>div { margin: 0.8em 0; }
+
+.config-help { column-count: 2; }
+
+.config-help kbd {
+    display: inline-block;
+    width: 2em;
+    margin: 0 0.3em 0.4em 0;
+    text-align: center;
+    font-size: 150%;
+    border: 0.05em solid white;
+    border-radius: 0.3em;
+}
 
 .hidden { display: none; }

@@ -14,8 +14,14 @@
   <!-- The Minitel virtual keyboard is drawn with standard buttons -->
   <div class="keyboard-functions">
     <div class="row-special-keys-1">
-      <div class="special">
-        <button data-call="onclick" data-param="Fnct">Fnct</button>
+      <div class="switch">
+        <button data-call="onConfig">⚙</button>
+      </div>
+      <div class="switch">
+        <button data-call="onAlpha">A</button>
+      </div>
+      <div class="switch">
+        <button data-call="onNAlpha">⌥</button>
       </div>
       <div class="special">
         <button data-call="onclick" data-param="Sommaire">Sommaire</button>
@@ -32,8 +38,8 @@
     </div>
 
     <div class="row-special-keys-2">
-      <div class="switch">
-        <button data-call="onSwitch">A/*</button>
+      <div class="special">
+        <button data-call="onclick" data-param="Fnct">Fnct</button>
       </div>
       <div class="special">
         <button data-call="onclick" data-param="Connexion">Cnx/fin</button>
@@ -290,5 +296,64 @@
       </div>
     </div>
   </div>
-</div>
 
+  <div class="keyboard-page page-config hidden">
+    <form class="form-config" data-change="onSettingChanged">
+      <fieldset class="config-speed">
+        <legend>Vitesse</legend>
+        <div>
+          <input type="radio" name="config-speed" id="speed-1" value="1200"
+                 checked="checked" />
+          <label for="speed-1">
+            1200 <abbr title="bits par seconde">bps</abbr>
+          </label>
+        </div>
+        <div>
+          <input type="radio" name="config-speed" id="speed-4" value="4800" />
+          <label for="speed-4">
+            4800 <abbr title="bits par seconde">bps</abbr>
+          </label>
+        </div>
+        <div>
+          <input type="radio" name="config-speed" id="speed-9" value="9600" />
+          <label for="speed-9">
+            9600 <abbr title="bits par seconde">bps</abbr>
+          </label>
+        </div>
+        <div>
+          <input type="radio" name="config-speed" id="speed-f" value="FULL" />
+          <label for="speed-f">Max</label>
+        </div>
+      </fieldset>
+
+      <fieldset class="config-color">
+        <legend>Mode</legend>
+        <div>
+          <input type="radio" name="config-color" id="color-bw"
+                 value="false" checked="checked" />
+          <label for="color-bw">
+            <abbr title="noir et blanc">n&amp;b</abbr>
+          </label>
+        </div>
+        <div>
+          <input type="radio" name="config-color" id="color-co" value="true" />
+          <label for="color-co">couleur</label>
+        </div>
+      </fieldset>
+
+      <fieldset class="config-help">
+        <legend>Touches</legend>
+        <div><kbd>F1</kbd> Guide</div>
+        <div><kbd>F2</kbd> Répétition</div>
+        <div><kbd>⤶</kbd> Envoi</div>
+        <div><kbd>⟵</kbd> Correction</div>
+        <div><kbd>↖</kbd> Sommaire</div>
+        <div><kbd>↑</kbd> Retour</div>
+        <div><kbd>↓</kbd> Suite</div>
+        <div><kbd>←</kbd> Annulation</div>
+        <div><kbd>→</kbd> Envoi</div>
+        <div><kbd>⇥</kbd> Suite</div>
+      </fieldset>
+    </form>
+  </div>
+</div>

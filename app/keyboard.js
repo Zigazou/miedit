@@ -16,6 +16,13 @@
  */
 
 /**
+ * The ConfigHandler callback handles settings changes.
+ * @name ConfigHandler
+ * @function
+ * @param {Object} settings Settings value
+ */
+
+/**
  * Keyboard converts keys received by the browser into Minitel keys.
  */
 class Keyboard {
@@ -23,8 +30,10 @@ class Keyboard {
      * @param {HTMLElement} container Element containing all keyboard elements.
      * @param {EmitterHandler} emitter An emitter handler that will be called
      *                                 everytime a key generates Minitel codes.
+     * @param {ConfigHandler} emitter A config handler that will be called
+     *                                 everytime the user changes a setting.
      */
-    constructor(container, emitter) {
+    constructor(container, emitter, config) {
         /**
          * Remembers if the ctrl key is down.
          * @member {boolean}
@@ -73,6 +82,22 @@ class Keyboard {
          * @private
          */
         this.emitter = null
+        this.setEmitter(emitter)
+
+        /**
+         * The ConfigHandler associated with the keyboard.
+         * @member {ConfigHandler}
+         * @private
+         */
+        this.config = null
+        this.setEmitter(config)
+
+        /**
+         * The ConfigHandler associated with the keyboard.
+         * @member {ConfigHandler}
+         * @private
+         */
+        this.config = null
 
         /**
          * The alphabetical keys page.
@@ -87,6 +112,13 @@ class Keyboard {
          * @private
          */
         this.pageNAlpha = container.getElementsByClassName("page-non-alpha")[0]
+
+        /**
+         * The config page.
+         * @member {HTMLElement}
+         * @private
+         */
+        this.pageConfig = container.getElementsByClassName("page-config")[0]
 
         const keydown = container.getElementsByClassName(
             "minitel-standardkey-down"
@@ -110,17 +142,55 @@ class Keyboard {
      * @member {EmitterHandler}
      */
      setEmitter(emitter) {
+        if(emitter === undefined) emitter = null
+
         this.emitter = emitter
     }
 
     /**
-     * Handles key presse events.
+     * Handles key press events.
      * @private
      */
     keypress(keycodes) {
         if(this.emitter !== null && keycodes !== null) {
             this.emitter(keycodes)
         }
+    }
+
+    /**
+     * Defines a ConfigHandler which will be called everytime a setting is
+     * changed by the user.
+     * @member {ConfigHandler}
+     */
+    setConfig(config) {
+        if(config === undefined) config = null
+
+        this.config = config
+    }
+
+    /**
+     * Handles settings changes.
+     * @param {HTMLEvent} event 
+     * @param {string} param
+     * @private
+     */
+    onSettingChanged(event, param) {
+        if(this.config === null) return
+
+        const speed = event
+                    .target
+                    .querySelector('input[name="config-speed"]:checked')
+                    .value
+
+        const color = event
+                    .target
+                    .querySelector('input[name="config-color"]:checked')
+                    .value
+
+        this.config({
+            speed: speed,
+            color: color === "true"
+        })
     }
 
     /**
@@ -132,17 +202,33 @@ class Keyboard {
     }
 
     /**
-     * Handles switch button event.
+     * Handles Alpha button event.
      * @private
      */
-    onSwitch(event) {
-        if(this.pageAlpha.classList.contains("hidden")) {
-            this.pageAlpha.classList.remove("hidden")
-            this.pageNAlpha.classList.add("hidden")
-        } else {
-            this.pageNAlpha.classList.remove("hidden")
-            this.pageAlpha.classList.add("hidden")
-        }
+    onAlpha(event) {
+        this.pageNAlpha.classList.add("hidden")
+        this.pageConfig.classList.add("hidden")
+        this.pageAlpha.classList.remove("hidden")
+    }
+
+    /**
+     * Handles NAlpha button event.
+     * @private
+     */
+    onNAlpha(event) {
+        this.pageAlpha.classList.add("hidden")
+        this.pageConfig.classList.add("hidden")
+        this.pageNAlpha.classList.remove("hidden")
+    }
+
+    /**
+     * Handles Config button event.
+     * @private
+     */
+    onConfig(event) {
+        this.pageAlpha.classList.add("hidden")
+        this.pageNAlpha.classList.add("hidden")
+        this.pageConfig.classList.remove("hidden")
     }
 
     /**

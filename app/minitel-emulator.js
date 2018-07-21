@@ -58,17 +58,17 @@ class MinitelEmulator {
             }
         }
 
-        /**
-         * The decoder
-         * @member {MinitelDecoder}
-         * @private
-         */
         const sender = message => {
             if(this.socket !== null) {
                 this.socket.send(message)
             }
         }
 
+        /**
+         * The decoder
+         * @member {MinitelDecoder}
+         * @private
+         */
         this.decoder = new MinitelDecoder(
             this.pageMemory,
             keyboard,
@@ -100,8 +100,32 @@ class MinitelEmulator {
          */
         this.cursorShown = false
 
+        /**
+         * Current speed
+         * @param {string}
+         */
+        this.speed = "1200"
+
         canvas.addEventListener("click", event => this.onClick(event, keyboard))
         this.initRefresh(Minitel.B1200, 25)
+
+        keyboard.setConfig(settings => {
+            // Set color
+            if(this.color !== settings.color) {
+                this.color = settings.color
+                this.pageMemory.changeColors(settings.color)
+            }
+
+            // Set speed
+            if(this.speed !== settings.speed) {
+                this.speed = settings.speed
+                if(settings.speed === "FULL") {
+                    this.initRefresh(0, 25)
+                } else {
+                    this.initRefresh(parseInt(settings.speed), 25)
+                }
+            }
+        })
     }
 
     /**
@@ -116,7 +140,12 @@ class MinitelEmulator {
 
         // Minitel uses 9 bits for each code (7 bit of data, 1 parity bit and
         // 1 stop bit)
-        this.chunkSize = (bandwidth / 9) / (1000 / rate)
+        if(bandwidth === 0) {
+            this.chunkSize = 2048
+        } else {
+            this.chunkSize = (bandwidth / 9) / (1000 / rate)
+        }
+
         this.timer = window.setInterval(() => { this.sendChunk() }, rate)
     }
 
@@ -160,16 +189,13 @@ class MinitelEmulator {
         this.decoder.decodeList(chunk)
     }
 
-
     /**
-     * Change colors (black and white or color)
+     * Handles clicks on the Minitel screen.
+     * @param {HTMLEvent} event The event
+     * @param {Keyboard} keyboard Keyboard which will receive the keys
      */
-    changeColors() {
-        this.color = !this.color
-        this.pageMemory.changeColors(this.color)
-    }
-
     onClick(event, keyboard) {
+        // Get the word where the user clicked
         const rect = event.target.getBoundingClientRect()
         const keyword = this.pageMemory.getWordAt(
             event.pageX - rect.left - window.scrollX,
@@ -178,6 +204,7 @@ class MinitelEmulator {
 
         if(keyword === "") return true
 
+        // The keyword can designate a special Minitel key.
         let message = []
         switch(keyword) {
             case 'SOMMAIRE':
@@ -208,6 +235,7 @@ class MinitelEmulator {
                     message.push(keyword.charCodeAt(offset))
                 })
 
+                // Append the ENVOI key code sequence
                 message = message.concat(Minitel.keys['Videotex']['Envoi'])
         }
 
