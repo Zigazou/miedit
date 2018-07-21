@@ -35,7 +35,7 @@ object {
     background-color: #462e22;
     color: white;
     border: none;
-    border-radius: 0.4em 1em 0.4em 0.4em;
+    border-radius: 1em 0.4em 0.4em 0.4em;
     border: 0.3em solid #202020;
     text-shadow: 0.05em 0.05em 0.1em black;
 }
