@@ -120,17 +120,10 @@ class Keyboard {
          */
         this.pageConfig = container.getElementsByClassName("page-config")[0]
 
-        const keydown = container.getElementsByClassName(
-            "minitel-standardkey-down"
-        )[0]
+        this.simulator = new KeySimulator(
+            container.getElementsByClassName("minitel-standardkey")[0]
+        )
 
-        const keyup = container.getElementsByClassName(
-            "minitel-standardkey-up"
-        )[0]
-
-        this.simulator = new KeySimulator(keydown, keyup)
-
-        document.addEventListener("keydown", event => this.onkeydown(event))
         document.addEventListener("keyup", event => this.onkeyup(event))
         document.addEventListener("keypress", event => this.onkeypress(event))
         document.getElementsByClassName("keyboard-grid")[0].autocallback(this)
@@ -218,14 +211,6 @@ class Keyboard {
     }
 
     /**
-     * Handles key down events.
-     * @private
-     */
-    onkeydown(event) {
-        this.simulator.pressKey(event.key)
-    }
-
-    /**
      * Handles Alpha button event.
      * @private
      */
@@ -260,7 +245,6 @@ class Keyboard {
      * @private
      */
     onkeyup(event) {
-        this.simulator.releaseKey(event.key)
         event.preventDefault()
     }
 
@@ -279,6 +263,8 @@ class Keyboard {
      * @private
      */
     onclick(event, param) {
+        this.simulator.pressKey(param)
+
         if(param === "Maj") {
             this.kShift = !this.kShift
         }
