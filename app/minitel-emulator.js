@@ -170,9 +170,10 @@ class MinitelEmulator {
     }
 
     onClick(event, keyboard) {
+        const rect = event.target.getBoundingClientRect()
         const keyword = this.pageMemory.getWordAt(
-            event.pageX - event.target.offsetLeft,
-            event.pageY - event.target.offsetTop
+            event.pageX - rect.left - window.scrollX,
+            event.pageY - rect.top - window.scrollY
         )
 
         if(keyword === "") return true
