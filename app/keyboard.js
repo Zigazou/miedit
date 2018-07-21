@@ -169,6 +169,30 @@ class Keyboard {
     }
 
     /**
+     * Select the speed on the config form.
+     * @param {string} speed "1200", "4800", "9600" or "FULL"
+     */
+    selectSpeed(speed) {
+        this.pageConfig.querySelectorAll('input[name="config-speed"]').forEach(
+            element => {
+                if(element.value === speed) element.checked = true
+            }
+        )
+    }
+
+    /**
+     * Select the color on the config form.
+     * @param {string} color "true" or "false"
+     */
+    selectColor(color) {
+        this.pageConfig.querySelectorAll('input[name="config-color"]').forEach(
+            element => {
+                if(element.value === color) element.checked = true
+            }
+        )
+    }
+
+    /**
      * Handles settings changes.
      * @param {HTMLEvent} event 
      * @param {string} param
@@ -188,7 +212,7 @@ class Keyboard {
                     .value
 
         this.config({
-            speed: speed,
+            speed: speed === "FULL" ? 0 : parseInt(speed),
             color: color === "true"
         })
     }

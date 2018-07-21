@@ -11,11 +11,10 @@
 class MinitelEmulator {
     /**
      * @param {HTMLCanvasElement} canvas
-     * @param {boolean} color true if emulation is in color, false for b&w.
      * @param {Keyboard} keyboard The keyboard emulator.
      * @param {WebSocket} socket The socket to communicate with.
      */
-    constructor(canvas, color, keyboard, socket) {
+    constructor(canvas, keyboard, socket) {
         const grid = { cols: Minitel.columns, rows: Minitel.rows }
         const char = { width: Minitel.charWidth, height: Minitel.charHeight }
 
@@ -27,20 +26,19 @@ class MinitelEmulator {
          * Should we show colors or black and white?
          * @param {boolean}
          */
-        this.color = color ? true : false
+        this.color = undefined
 
         /**
          * The page memory
          * @member {PageMemory}
          * @private
          */
-        this.pageMemory = new PageMemory(
-            grid,
-            char,
-            canvas,
-            this.color ? Minitel.colors : Minitel.greys
-        )
+        this.pageMemory = new PageMemory(grid, char, canvas, Minitel.greys)
 
+        /**
+         * The socket associated to the emulator
+         * @member {Socket}
+         */
         this.socket = null
 
         if(socket !== null) {
@@ -101,30 +99,26 @@ class MinitelEmulator {
         this.cursorShown = false
 
         /**
-         * Current speed
-         * @param {string}
+         * Keyboard associated with the emulator
+         * @member {Keyboard}
+         * @private
          */
-        this.speed = "1200"
+        this.keyboard = keyboard
+
+        /**
+         * Current speed, 0 for maximum speed
+         * @param {number}
+         */
+        this.bandwidth = -1
+
+        this.setColor(false)
+        this.setRefresh(Minitel.B1200)
 
         canvas.addEventListener("click", event => this.onClick(event, keyboard))
-        this.initRefresh(Minitel.B1200, 25)
 
         keyboard.setConfig(settings => {
-            // Set color
-            if(this.color !== settings.color) {
-                this.color = settings.color
-                this.pageMemory.changeColors(settings.color)
-            }
-
-            // Set speed
-            if(this.speed !== settings.speed) {
-                this.speed = settings.speed
-                if(settings.speed === "FULL") {
-                    this.initRefresh(0, 25)
-                } else {
-                    this.initRefresh(parseInt(settings.speed), 25)
-                }
-            }
+            this.setColor(settings.color)
+            this.setRefresh(settings.speed)
         })
     }
 
@@ -140,11 +134,9 @@ class MinitelEmulator {
 
         // Minitel uses 9 bits for each code (7 bit of data, 1 parity bit and
         // 1 stop bit)
-        if(bandwidth === 0) {
-            this.chunkSize = 2048
-        } else {
-            this.chunkSize = (bandwidth / 9) / (1000 / rate)
-        }
+        this.chunkSize = bandwidth === 0
+                       ? 2048
+                       : (bandwidth / 9) / (1000 / rate)
 
         this.timer = window.setInterval(() => { this.sendChunk() }, rate)
     }
@@ -187,6 +179,40 @@ class MinitelEmulator {
         const chunk = this.queue.slice(0, this.chunkSize)
         this.queue = this.queue.slice(this.chunkSize)
         this.decoder.decodeList(chunk)
+    }
+
+    /**
+     * Tells the emulator to use color (true) or black & white (false)
+     * @param {boolean} color 
+     */
+    setColor(color) {
+        if(this.color !== color) {
+            this.color = color
+            this.pageMemory.changeColors(color)
+            this.keyboard.selectColor(color ? "true" : "false")
+        }
+
+        return this
+    }
+
+    /**
+     * 
+     * @param {number} bandwidth Bits per second or 0 for maximum speed
+     * @param {?number} rate Refresh rate of the screen in hertz, 25 by default
+     */
+    setRefresh(bandwidth, rate) {
+        if(this.bandwidth !== bandwidth) {
+            // Refresh rate, 25 Hz by default
+            if(rate === undefined) rate = 25
+
+            this.bandwidth = bandwidth
+            this.initRefresh(bandwidth, rate)
+            this.keyboard.selectSpeed(
+                bandwidth === 0 ? "FULL" : bandwidth.toString()
+            )
+        }
+
+        return this
     }
 
     /**

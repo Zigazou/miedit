@@ -17,7 +17,7 @@
  *                            keyboard grid.
  * @param {string} webSocketURL URL of the web socket to connect to.
  */
-function minitel(screenCanvasId, color, keyboardId, webSocketURL) {
+function minitel(screenCanvasId, color, speed, keyboardId, webSocketURL) {
     importHTML
         .install()
         .then(() => {
@@ -26,8 +26,9 @@ function minitel(screenCanvasId, color, keyboardId, webSocketURL) {
             const screen = new MinitelScreen(canvas)
             const keyboard = new Keyboard(document.getElementById(keyboardId))
 
-            new MinitelEmulator(canvas, color, keyboard, socket)
+            new MinitelEmulator(canvas, keyboard, socket).setColor(color)
+                                                         .setRefresh(speed)
         })
 }
 
-minitel("minitel-screen", false, "miedit", "wss://minitel.ouep.eu/ws/")
+minitel("minitel-screen", true, 9600, "miedit", "ws://example.com")
