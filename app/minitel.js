@@ -16,9 +16,10 @@
  * @param {number} speed 1200, 4800, 9600 bps or 0 for max speed.
  * @param {string} keyboardId Identifier of an HTML element which contains the
  *                            keyboard grid.
+ * @param {string} bipId Identifier of the bip audio element.
  * @param {string} webSocketURL URL of the web socket to connect to.
  */
-function minitel(screenCanvasId, color, speed, keyboardId, webSocketURL) {
+function minitel(screenCanvasId, color, speed, keyboardId, bipId, webSocketURL) {
     importHTML
         .install()
         .then(() => {
@@ -26,10 +27,18 @@ function minitel(screenCanvasId, color, speed, keyboardId, webSocketURL) {
             const canvas = document.getElementById(screenCanvasId)
             const screen = new MinitelScreen(canvas)
             const keyboard = new Keyboard(document.getElementById(keyboardId))
+            const bip = document.getElementById(bipId)
 
-            new MinitelEmulator(canvas, keyboard, socket).setColor(color)
-                                                         .setRefresh(speed)
+            new MinitelEmulator(canvas, keyboard, socket, bip).setColor(color)
+                                                              .setRefresh(speed)
         })
 }
 
-minitel("minitel-screen", true, 9600, "miedit", "ws://example.com")
+minitel(
+    "minitel-screen",
+    true,
+    9600,
+    "miedit",
+    "minitel-bip",
+    "ws://example.com"
+)

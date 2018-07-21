@@ -466,7 +466,7 @@ Minitel.states =  {
         0x04: { error: "unrecognized04" },
         0x05: { notImplemented: "askId" },
         0x06: { error: "unrecognized06" },
-        0x07: { notImplemented: "beep" },
+        0x07: { func: "beep" },
         0x08: { func: "moveCursor", arg: "left" },
         0x09: { func: "moveCursor", arg: "right" },
         0x0A: { func: "moveCursor", arg: "down" },

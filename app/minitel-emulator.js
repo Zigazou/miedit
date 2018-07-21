@@ -13,8 +13,9 @@ class MinitelEmulator {
      * @param {HTMLCanvasElement} canvas
      * @param {Keyboard} keyboard The keyboard emulator.
      * @param {WebSocket} socket The socket to communicate with.
+     * @param {HTMLAudioElement} bip The Minitel bip sound.
      */
-    constructor(canvas, keyboard, socket) {
+    constructor(canvas, keyboard, socket, bip) {
         const grid = { cols: Minitel.columns, rows: Minitel.rows }
         const char = { width: Minitel.charWidth, height: Minitel.charHeight }
 
@@ -74,7 +75,8 @@ class MinitelEmulator {
         this.decoder = new MinitelDecoder(
             this.pageMemory,
             keyboard,
-            socket !== null ? sender : null
+            socket !== null ? sender : null,
+            bip
         )
 
         /**

@@ -15,8 +15,9 @@ class MinitelDecoder {
      *                                decoded stream.
      * @param {Keyboard} keyboard The keyboard emulator.
      * @param {} sender The function to use to send message to the network.
+     * @param {HTMLAudioElement} bip The bip sound.
      */
-    constructor(pageMemory, keyboard = null, sender = null) {
+    constructor(pageMemory, keyboard = null, sender = null, bip = null) {
         /**
          * The current state of the decoder
          * @member {string}
@@ -129,6 +130,13 @@ class MinitelDecoder {
                 }
             })
         }
+
+        /**
+         * The bip sound
+         * @member {HTMLAudioElement}
+         * @private
+         */
+        this.bip = bip
     }
 
     /**
@@ -421,6 +429,17 @@ class MinitelDecoder {
      */
     setPageMode(bool) {
         this.pageMode = bool
+    }
+
+    /**
+     * Emits a beep sound
+     * @private
+     */
+    beep() {
+        if(this.bip !== null) {
+            this.bip.currentTime = 0
+            this.bip.play()
+        }
     }
 
     /**
