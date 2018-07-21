@@ -94,7 +94,8 @@ class MiEditPage {
          * @member {MinitelScreen}
          * @private
          */
-        this.miscreen = new MinitelScreen(canvas, true)
+        const bip = document.getElementById("minitel-bip")
+        this.miscreen = new MinitelScreen(canvas, true, bip)
 
         const events = [
             "value_changed.mitree",

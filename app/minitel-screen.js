@@ -12,8 +12,9 @@ class MinitelScreen {
     /**
      * @param {HTMLCanvasElement} canvas
      * @param {} color
+     * @param {HTMLAudioElement} bip
      */
-    constructor(canvas, color) {
+    constructor(canvas, color, bip=null) {
         const grid = { cols: Minitel.columns, rows: Minitel.rows }
         const char = { width: Minitel.charWidth, height: Minitel.charHeight }
 
@@ -44,7 +45,7 @@ class MinitelScreen {
          * @member {MinitelDecoder}
          * @private
          */
-        this.decoder = new MinitelDecoder(this.pageMemory)
+        this.decoder = new MinitelDecoder(this.pageMemory, null, null, bip)
 
         /**
          * The queue
