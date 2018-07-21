@@ -54,6 +54,10 @@ class MinitelEmulator {
                     this.send(message)
                 }
             }
+
+            socket.onclose = closeEvent => {
+                this.pageMemory.setStatusCharacter(0x46)
+            }
         }
 
         const sender = message => {
