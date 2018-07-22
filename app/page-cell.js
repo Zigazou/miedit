@@ -103,9 +103,9 @@ class CharCell extends Cell {
      * @return {boolean}
      */
     isAlphanumerical() {
-        return (this.value >= 0x41 && this.value <= 0x5A)
-            || (this.value >= 0x61 && this.value <= 0x7A)
-            || (this.value >= 0x31 && this.value <= 0x39)
+        return (this.value >= 0x41 && this.value <= 0x5A) // A-Z
+            || (this.value >= 0x61 && this.value <= 0x7A) // a-z
+            || (this.value >= 0x30 && this.value <= 0x39) // 0-9
     }
 
     /**
