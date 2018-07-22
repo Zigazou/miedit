@@ -238,7 +238,7 @@ class MinitelEmulator {
 
         // The keyword can designate a special Minitel key.
         let message = []
-        switch(keyword) {
+        switch(keyword.toUpperCase()) {
             case 'SOMMAIRE':
                 message = Minitel.keys['Videotex']['Sommaire']
                 break
