@@ -166,11 +166,7 @@ class Keyboard {
      * @param {string} speed "1200", "4800", "9600" or "FULL"
      */
     selectSpeed(speed) {
-        this.pageConfig.querySelectorAll('input[name="config-speed"]').forEach(
-            element => {
-                if(element.value === speed) element.checked = true
-            }
-        )
+        this.pageConfig.querySelector('.config-speed>select').value = speed
     }
 
     /**
@@ -178,11 +174,7 @@ class Keyboard {
      * @param {string} color "true" or "false"
      */
     selectColor(color) {
-        this.pageConfig.querySelectorAll('input[name="config-color"]').forEach(
-            element => {
-                if(element.value === color) element.checked = true
-            }
-        )
+        this.pageConfig.querySelector('.config-color>select').value = color
     }
 
     /**
@@ -194,15 +186,12 @@ class Keyboard {
     onSettingChanged(event, param) {
         if(this.config === null) return
 
-        const speed = event.target.querySelector('.config-speed>select')
-        const speedValue = speed.options[speed.selectedIndex].value
-
-        const color = event.target.querySelector('.config-color>select')
-        const colorValue = color.options[color.selectedIndex].value
+        const speed = event.target.querySelector('.config-speed>select').value
+        const color = event.target.querySelector('.config-color>select').value
 
         this.config({
-            speed: speedValue === "FULL" ? 0 : parseInt(speedValue),
-            color: colorValue === "true"
+            speed: speed === "FULL" ? 0 : parseInt(speed),
+            color: color === "true"
         })
     }
 
