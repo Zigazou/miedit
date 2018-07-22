@@ -517,7 +517,7 @@ class PageMemory {
      * @private
      */
     cursorRestore() {
-        if(!this.cursor.visible) {
+        if(!this.cursor.visible && !this.getBlink()) {
             return
         }
 

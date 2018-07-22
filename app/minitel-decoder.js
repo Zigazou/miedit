@@ -155,7 +155,11 @@ class MinitelDecoder {
         this.savedState = {
             current: Object.assign({}, this.current),
             waiting: Object.assign({}, this.waiting),
-            cursor: { x: this.pm.cursor.x, y: this.pm.cursor.y },
+            cursor: {
+                x: this.pm.cursor.x,
+                y: this.pm.cursor.y,
+                visible: this.pm.cursor.visible,
+            },
         }
     }
 
@@ -168,6 +172,7 @@ class MinitelDecoder {
         this.waiting = Object.assign({}, this.savedState.waiting)
         this.pm.cursor.x = this.savedState.cursor.x
         this.pm.cursor.y = this.savedState.cursor.y
+        this.pm.cursor.visible = this.savedState.cursor.visible
     }
 
     /**
@@ -627,7 +632,10 @@ class MinitelDecoder {
         if(y < 0 || y > 24) return
 
         // Save current state before going on row 0
-        if(y === 0) this.saveState()
+        if(y === 0) {
+            this.saveState()
+            this.showCursor(false)
+        }
 
         // Minitel works from 1 to 40 while the PageMemory works with 0 to 39
         this.pm.cursor.x = x - 1
