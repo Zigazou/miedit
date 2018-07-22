@@ -517,9 +517,8 @@ class PageMemory {
      * @private
      */
     cursorRestore() {
-        if(!this.cursor.visible && !this.getBlink()) {
-            return
-        }
+        if(this.cursor.lastY === 0) return
+        if(!this.cursor.visible && this.lastBlink) return
 
         this.context.drawImage(
             // Source
@@ -541,7 +540,8 @@ class PageMemory {
      * @private
      */
     drawCursor() {
-        if(!this.cursor.visible || !this.getBlink()) return
+        if(this.cursor.y === 0) return
+        if(!this.cursor.visible || this.lastBlink) return
 
         const cell = this.memory[this.cursor.y][this.cursor.x]
         this.context.fillStyle = this.colors[cell.fgColor]
