@@ -27,9 +27,11 @@ object {
     height: auto;
 }
 
+/* Keyboard */
+
 .keyboard-grid button {
     padding: 0;
-    height: 3em;
+    height: 3.2em;
     margin: 0;
     width: 100%;
     background-color: #462e22;
@@ -38,6 +40,14 @@ object {
     border-radius: 1em 0.4em 0.4em 0.4em;
     border: 0.3em solid #202020;
     text-shadow: 0.05em 0.05em 0.1em black;
+    font-size: 65%;
+}
+
+@media screen and (orientation:landscape) {
+    .keyboard-grid button {
+        height: 3em;
+        font-size: inherit;
+    }
 }
 
 .special button, .send button .switch button {
@@ -46,9 +56,14 @@ object {
 
 .special button { background-color: #a0795a; }
 .send button { background-color: #a4943c; }
+
 .switch button {
-    width: 4em;
+    width: 3em;
     background-color: blue;
+}
+
+@media screen and (orientation:landscape) {
+    .switch button { width: 4em; }
 }
 
 .keyboard-grid>div>div {
@@ -60,23 +75,44 @@ object {
 .keyboard-grid>div>div>div.switch { flex-grow: 0; }
 
 .form-config {
-    display: flex;
     color: #ddd;
     font-family: sans-serif;
     text-align: left;
+    font-size: 80%;
 }
 
-.form-config fieldset {
+.config-color, .config-speed {
+    display: flex;
+    align-items: center;
+}
+
+.config-speed { margin-top: 0.5em; }
+
+.form-config label { width: 33%; }
+.form-config select {
     flex-grow: 1;
-    margin-right: 1em;
-    border-radius: 0.3em;
+    font-size: 95%;
 }
 
-.form-config fieldset:last-child { margin-right: 0; }
+@media screen and (orientation:landscape) {
+    .form-config { font-size: inherit; }
+    .form-config select { font-size: inherit; }
+}
 
 .config-speed>div, .config-color>div { margin: 0.8em 0; }
 
-.config-help { column-count: 2; }
+.config-help {
+    margin-top: 1em;
+    column-count: 3;
+    font-size: 85%;
+}
+
+@media screen and (orientation:landscape) {
+    .config-help {
+        column-count: 2;
+        font-size: inherit;
+    }
+}
 
 .config-help kbd {
     display: inline-block;

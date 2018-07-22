@@ -194,19 +194,15 @@ class Keyboard {
     onSettingChanged(event, param) {
         if(this.config === null) return
 
-        const speed = event
-                    .target
-                    .querySelector('input[name="config-speed"]:checked')
-                    .value
+        const speed = event.target.querySelector('.config-speed>select')
+        const speedValue = speed.options[speed.selectedIndex].value
 
-        const color = event
-                    .target
-                    .querySelector('input[name="config-color"]:checked')
-                    .value
+        const color = event.target.querySelector('.config-color>select')
+        const colorValue = color.options[color.selectedIndex].value
 
         this.config({
-            speed: speed === "FULL" ? 0 : parseInt(speed),
-            color: color === "true"
+            speed: speedValue === "FULL" ? 0 : parseInt(speedValue),
+            color: colorValue === "true"
         })
     }
 

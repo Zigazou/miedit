@@ -295,50 +295,25 @@
 
   <div class="keyboard-page page-config hidden">
     <form class="form-config" data-change="onSettingChanged">
-      <fieldset class="config-speed">
-        <legend>Vitesse</legend>
-        <div>
-          <input type="radio" name="config-speed" id="speed-1" value="1200"
-                 checked="checked" />
-          <label for="speed-1">
-            1200 <abbr title="bits par seconde">bps</abbr>
-          </label>
-        </div>
-        <div>
-          <input type="radio" name="config-speed" id="speed-4" value="4800" />
-          <label for="speed-4">
-            4800 <abbr title="bits par seconde">bps</abbr>
-          </label>
-        </div>
-        <div>
-          <input type="radio" name="config-speed" id="speed-9" value="9600" />
-          <label for="speed-9">
-            9600 <abbr title="bits par seconde">bps</abbr>
-          </label>
-        </div>
-        <div>
-          <input type="radio" name="config-speed" id="speed-f" value="FULL" />
-          <label for="speed-f">Max</label>
-        </div>
-      </fieldset>
+      <div class="config-speed">
+        <label for="config-speed">Vitesse</label>
+        <select name="config-speed" id="config-speed">
+          <option value="1200" selected="selected">1200 bps</option>
+          <option value="4800">4800 bps</option>
+          <option value="9600">9600 bps</option>
+          <option value="FULL">maximum</option>
+        </select>
+      </div>
 
-      <fieldset class="config-color">
-        <legend>Mode</legend>
-        <div>
-          <input type="radio" name="config-color" id="color-bw"
-                 value="false" checked="checked" />
-          <label for="color-bw">
-            <abbr title="noir et blanc">n&amp;b</abbr>
-          </label>
-        </div>
-        <div>
-          <input type="radio" name="config-color" id="color-co" value="true" />
-          <label for="color-co">couleur</label>
-        </div>
-      </fieldset>
+      <div class="config-color">
+        <label for="config-color">Mode</label>
+        <select name="config-color" id="config-color">
+          <option value="false" selected="selected">noir et blanc</option>
+          <option value="true">couleur</option>
+        </select>
+      </div>
 
-      <fieldset class="config-help">
-        <legend>Touches</legend>
+      <div class="config-help">
         <div><kbd>F1</kbd> Guide</div>
         <div><kbd>F2</kbd> Répétition</div>
         <div><kbd>⤶</kbd> Envoi</div>
@@ -349,7 +324,7 @@
         <div><kbd>←</kbd> Annulation</div>
         <div><kbd>→</kbd> Envoi</div>
         <div><kbd>⇥</kbd> Suite</div>
-      </fieldset>
+      </div>
     </form>
   </div>
 </div>
