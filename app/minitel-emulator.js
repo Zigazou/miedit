@@ -240,14 +240,10 @@ class MinitelEmulator {
         let message = []
         switch(keyword.toUpperCase()) {
             case 'SOMMAIRE':
-                message = Minitel.keys['Videotex']['Sommaire']
-                break
             case 'SOMM':
                 message = Minitel.keys['Videotex']['Sommaire']
                 break
             case 'ANNULATION':
-                message = Minitel.keys['Videotex']['Annulation']
-                break
             case 'ANNUL':
                 message = Minitel.keys['Videotex']['Annulation']
                 break
@@ -258,8 +254,6 @@ class MinitelEmulator {
                 message = Minitel.keys['Videotex']['Guide']
                 break
             case 'CORRECTION':
-                message = Minitel.keys['Videotex']['Correction']
-                break
             case 'CORR':
                 message = Minitel.keys['Videotex']['Correction']
                 break
@@ -270,8 +264,6 @@ class MinitelEmulator {
                 message = Minitel.keys['Videotex']['Envoi']
                 break
             case 'REPETITION':
-                message = Minitel.keys['Videotex']['Repetition']
-                break
             case 'REPET':
                 message = Minitel.keys['Videotex']['Repetition']
                 break
