@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="420.4mm" width="589.3mm" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="0 0 589.32165 420.44208">
+<g transform="translate(-3.203 -2.353)">
+<path stroke-linejoin="round" style="color:#000000" d="m17.14 13.93v1579h903.6v-79.64h410.7v79.64h903v-1579z" transform="scale(.2646)" stroke="#000" stroke-linecap="round" stroke-width="10.07" fill="#505050"/>
+</g>
+<g transform="translate(72.6 -15.53)">
+<g id="mk-espace" class="mi-key">
+<path style="color:#000000" d="m54.5 370.2-5.58 5.579v19.93l2.262 2.261h241l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+</g>
+<path style="color:#000000" d="m363.4 370.1-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="none"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="50.8px" line-height="5.29166651px" y="239.53705" x="-20.847023" fill="#000000"><tspan font-family="sans-serif" y="257.41296" x="-20.847023" stroke-width=".2646px"/></text>
+<g id="mk-r" class="mi-key">
+<path style="color:#000000" d="m142.7 250.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="270.90915" x="157.53249" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="270.90915" x="157.53249" stroke-width=".1741px">R</tspan></text>
+</g>
+<g id="mk-t" class="mi-key">
+<path style="color:#000000" d="m193.5 250.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="270.90915" x="208.5215" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="270.90915" x="208.5215" stroke-width=".1741px">T</tspan></text>
+</g>
+<g id="mk-e" class="mi-key">
+<path style="color:#000000" d="m91.91 250.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="270.90915" x="106.44905" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="270.90915" x="106.44905" stroke-width=".1741px">E</tspan></text>
+</g>
+<g id="mk-z" class="mi-key">
+<path style="color:#000000" d="m41.11 250.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="270.90915" x="55.176579" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="270.90915" x="55.176579" stroke-width=".1741px">Z</tspan></text>
+</g>
+<g id="mk-a" class="mi-key">
+<path style="color:#000000" d="m-9.953 250.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="270.90915" x="4.0930977" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="270.90915" x="4.0930977" stroke-width=".1741px">A</tspan></text>
+</g>
+<g id="mk-y" class="mi-key">
+<path style="color:#000000" d="m248 250.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="270.90915" x="261.96689" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="270.90915" x="261.96689" stroke-width=".1741px">Y</tspan></text>
+</g>
+<g id="mk-u" class="mi-key">
+<path style="color:#000000" d="m298.8 250.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="270.71695" x="312.86133" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="270.71695" x="312.86133" stroke-width=".1741px">U</tspan></text>
+</g>
+<g id="mk-i" class="mi-key">
+<path style="color:#000000" d="m349.6 250.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="270.90915" x="363.47232" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="270.90915" x="363.47232" stroke-width=".1741px">I</tspan></text>
+</g>
+<g id="mk-o" class="mi-key">
+<path style="color:#000000" d="m400.4 250.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="270.81723" x="415.31161" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="270.81723" x="415.31161" stroke-width=".1741px">O</tspan></text>
+</g>
+<g id="mk-p" class="mi-key">
+<path style="color:#000000" d="m451.2 250.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="270.90915" x="466.30054" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="270.90915" x="466.30054" stroke-width=".1741px">P</tspan></text>
+</g>
+<g id="mk-q" class="mi-key">
+<path style="color:#000000" d="m3.238 289.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="309.50296" x="17.752337" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="309.50296" x="17.752337" stroke-width=".1741px">Q</tspan></text>
+</g>
+<g id="mk-s" class="mi-key">
+<path style="color:#000000" d="m54.04 289.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="309.76205" x="68.819611" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="309.76205" x="68.819611" stroke-width=".1741px">S</tspan></text>
+</g>
+<g id="mk-d" class="mi-key">
+<path style="color:#000000" d="m104.8 289.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="309.85397" x="120.08734" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="309.85397" x="120.08734" stroke-width=".1741px">D</tspan></text>
+</g>
+<g id="mk-f" class="mi-key">
+<path style="color:#000000" d="m155.6 289.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="309.85397" x="170.55321" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="309.85397" x="170.55321" stroke-width=".1741px">F</tspan></text>
+</g>
+<g id="mk-g" class="mi-key">
+<path style="color:#000000" d="m209.6 289.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="309.76205" x="223.95908" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="309.76205" x="223.95908" stroke-width=".1741px">G</tspan></text>
+</g>
+<g id="mk-h" class="mi-key">
+<path style="color:#000000" d="m260.4 289.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="309.85397" x="275.5607" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="309.85397" x="275.5607" stroke-width=".1741px">H</tspan></text>
+</g>
+<g id="mk-j" class="mi-key">
+<path style="color:#000000" d="m311.2 289.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="309.66174" x="325.75952" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="309.66174" x="325.75952" stroke-width=".1741px">J</tspan></text>
+</g>
+<g id="mk-k" class="mi-key">
+<path style="color:#000000" d="m362.8 289.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="309.85397" x="377.82883" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="309.85397" x="377.82883" stroke-width=".1741px">K</tspan></text>
+</g>
+<g id="mk-l" class="mi-key">
+<path style="color:#000000" d="m413.9 289.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="309.85397" x="428.36166" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="309.85397" x="428.36166" stroke-width=".1741px">L</tspan></text>
+</g>
+<g id="mk-m" class="mi-key">
+<path style="color:#000000" d="m465.5 289.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="309.85397" x="479.82974" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="309.85397" x="479.82974" stroke-width=".1741px">M</tspan></text>
+</g>
+<g id="mk-v" class="mi-key">
+<path style="color:#000000" d="m182.6 331.1-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="351.11826" x="196.59174" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="351.11826" x="196.59174" stroke-width=".1741px">V</tspan></text>
+</g>
+<g id="mk-c" class="mi-key">
+<path style="color:#000000" d="m131.8 331.1-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="351.02631" x="145.79178" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="351.02631" x="145.79178" stroke-width=".1741px">C</tspan></text>
+</g>
+<g id="mk-x" class="mi-key">
+<path style="color:#000000" d="m80.24 331.1-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="351.11826" x="94.897308" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="351.11826" x="94.897308" stroke-width=".1741px">X</tspan></text>
+</g>
+<g id="mk-w" class="mi-key">
+<path style="color:#000000" d="m29.44 331.1-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="351.11826" x="44.664268" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="351.11826" x="44.664268" stroke-width=".1741px">W</tspan></text>
+</g>
+<g id="mk-b" class="mi-key">
+<path style="color:#000000" d="m236.4 331.1-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="351.11826" x="250.41563" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="351.11826" x="250.41563" stroke-width=".1741px">B</tspan></text>
+</g>
+<g id="mk-n" class="mi-key">
+<path style="color:#000000" d="m287.2 331.1-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="351.11826" x="301.49911" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="351.11826" x="301.49911" stroke-width=".1741px">N</tspan></text>
+</g>
+<g id="mk-esc" class="mi-key">
+<path style="color:#000000" d="m15.36 211.3-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="21.88px" line-height="2.27964497px" y="223.24385" x="28.618713" fill="#000000"><tspan font-family="sans-serif" font-size="10.94px" y="223.24385" x="28.618713" stroke-width=".1140px">Esc</tspan></text>
+</g>
+<g id="mk-fnct" class="mi-key">
+<path style="color:#000000" d="m-50.5 164.9-5.58 5.579v15.77l2.262 2.261h29.6l2.131-2.131v-21.48z" stroke="#000" stroke-width="1.065" fill="#916661"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="21.88px" line-height="2.27964497px" y="177.69753" x="-39.889469" fill="#fefbfb"><tspan font-family="sans-serif" font-size="10.94px" y="177.69753" x="-39.889469" stroke-width=".1140px" fill="#fefbfb">Fnct</tspan></text>
+</g>
+<g id="mk-ctrl" class="mi-key">
+<path style="color:#000000" d="m-48.36 289.9-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="21.88px" line-height="2.27964497px" y="303.37466" x="-39.605988" fill="#000000"><tspan font-family="sans-serif" font-size="10.94px" y="303.37466" x="-39.605988" stroke-width=".1140px">Ctrl</tspan></text>
+</g>
+<path style="color:#000000" d="m-24.79 327.6-5.58 5.579v26.78l2.262 2.261h42.07l2.131-2.131v-32.49z" stroke="#009300" stroke-width="2.665" fill="none"/>
+<path style="color:#000000" d="m-51.44 286.6-5.58 5.579v26.78l2.262 2.261h42.07l2.131-2.131v-32.49z" stroke="#d10000" stroke-width="2.665" fill="none"/>
+<g id="mk-virgule" class="mi-key">
+<path style="color:#000000" d="m66.16 211.3-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="227.85707" x="80.593987" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="227.85707" x="80.593987" stroke-width=".1741px">,</tspan></text>
+</g>
+<g id="mk-point" class="mi-key">
+<path style="color:#000000" d="m442.1 798.5-21.09 21.09v75.33l8.549 8.547h134.7l8.055-8.053v-96.8z" transform="scale(.2646)" stroke="#000" stroke-width="4.025" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="227.85707" x="131.39398" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="227.85707" x="131.39398" stroke-width=".1741px">.</tspan></text>
+</g>
+<g id="mk-apostrophe" class="mi-key">
+<path style="color:#000000" d="m170.2 211.3-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="230.7865" x="184.69139" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="230.7865" x="184.69139" stroke-width=".1741px">’</tspan></text>
+</g>
+<g id="mk-point-virgule" class="mi-key">
+<path style="color:#000000" d="m221.5 211.3-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="228.80205" x="235.58835" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="228.80205" x="235.58835" stroke-width=".1741px">;</tspan></text>
+</g>
+<g id="mk-moins" class="mi-key">
+<path style="color:#000000" d="m272.3 211.3-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="228.80205" x="286.73938" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="228.80205" x="286.73938" stroke-width=".1741px">−</tspan></text>
+</g>
+<g id="mk-deux-points" class="mi-key">
+<path style="color:#000000" d="m323.1 211.3-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="229.08554" x="337.18839" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="229.08554" x="337.18839" stroke-width=".1741px">:</tspan></text>
+</g>
+<g id="mk-point-interrogation" class="mi-key">
+<path style="color:#000000" d="m373.9 211.3-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="33.43px" line-height="3.4823668px" y="231.16449" x="388.26709" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="16.72px" y="231.16449" x="388.26709" stroke-width=".1741px">?</tspan></text>
+</g>
+<g id="mk-un" class="mi-key">
+<path style="color:#000000" d="m362.6 42.29-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="letter-spacing:0px;text-decoration-color:#000000;font-variant-numeric:normal;text-orientation:mixed;shape-padding:0;word-spacing:0px;text-decoration-line:none;font-variant-position:normal;font-feature-settings:normal;font-variant-alternates:normal;text-indent:0;dominant-baseline:auto;font-variant-caps:normal;white-space:normal;text-decoration-style:solid;text-align:center;font-variant-ligatures:normal;text-anchor:middle;text-transform:none" font-family="sans-serif" xml:space="preserve" font-size="18.36px" line-height="3.82496572px" y="62.684231" x="378.03455" font-weight="bold" fill="#000000"><tspan style="letter-spacing:0px;text-decoration-color:#000000;font-variant-numeric:normal;text-orientation:mixed;shape-padding:0;word-spacing:0px;text-decoration-line:none;font-variant-position:normal;font-feature-settings:normal;font-variant-alternates:normal;text-indent:0;dominant-baseline:auto;font-variant-caps:normal;white-space:normal;text-decoration-style:solid;text-align:center;font-variant-ligatures:normal;text-anchor:middle;text-transform:none" font-family="sans-serif" font-size="18.36px" line-height="3.82496572px" y="62.684231" x="378.03455" font-weight="bold" fill="#000000">1</tspan></text>
+</g>
+<g id="mk-quatre" class="mi-key">
+<path style="color:#000000" d="m362.6 82.48-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.72z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="letter-spacing:0px;text-decoration-color:#000000;font-variant-numeric:normal;text-orientation:mixed;shape-padding:0;word-spacing:0px;text-decoration-line:none;font-variant-position:normal;font-feature-settings:normal;font-variant-alternates:normal;text-indent:0;dominant-baseline:auto;font-variant-caps:normal;white-space:normal;text-decoration-style:solid;text-align:center;font-variant-ligatures:normal;text-anchor:middle;text-transform:none" font-family="sans-serif" xml:space="preserve" font-size="18.36px" line-height="3.82496572px" y="102.87941" x="377.11658" font-weight="bold" fill="#000000"><tspan style="letter-spacing:0px;text-decoration-color:#000000;font-variant-numeric:normal;text-orientation:mixed;shape-padding:0;word-spacing:0px;text-decoration-line:none;font-variant-position:normal;font-feature-settings:normal;font-variant-alternates:normal;text-indent:0;dominant-baseline:auto;font-variant-caps:normal;white-space:normal;text-decoration-style:solid;text-align:center;font-variant-ligatures:normal;text-anchor:middle;text-transform:none" font-family="sans-serif" font-size="18.36px" line-height="3.82496572px" y="102.87941" x="377.11658" font-weight="bold" fill="#000000">4</tspan></text>
+</g>
+<g id="mk-sept" class="mi-key">
+<path style="color:#000000" d="m362.6 122-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="letter-spacing:0px;text-decoration-color:#000000;font-variant-numeric:normal;text-orientation:mixed;shape-padding:0;word-spacing:0px;text-decoration-line:none;font-variant-position:normal;font-feature-settings:normal;font-variant-alternates:normal;text-indent:0;dominant-baseline:auto;font-variant-caps:normal;white-space:normal;text-decoration-style:solid;text-align:center;font-variant-ligatures:normal;text-anchor:middle;text-transform:none" font-family="sans-serif" xml:space="preserve" font-size="18.36px" line-height="3.82496572px" y="142.35875" x="377.01559" font-weight="bold" fill="#000000"><tspan style="letter-spacing:0px;text-decoration-color:#000000;font-variant-numeric:normal;text-orientation:mixed;shape-padding:0;word-spacing:0px;text-decoration-line:none;font-variant-position:normal;font-feature-settings:normal;font-variant-alternates:normal;text-indent:0;dominant-baseline:auto;font-variant-caps:normal;white-space:normal;text-decoration-style:solid;text-align:center;font-variant-ligatures:normal;text-anchor:middle;text-transform:none" font-family="sans-serif" font-size="18.36px" line-height="3.82496572px" y="142.35875" x="377.01559" font-weight="bold" fill="#000000">7</tspan></text>
+</g>
+<g id="mk-huit" class="mi-key">
+<path style="color:#000000" d="m414.2 122-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="36.72px" line-height="3.82496572px" y="142.28531" x="428.70923" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="18.36px" y="142.28531" x="428.70923" stroke-width=".1912px">8</tspan></text>
+</g>
+<g id="mk-cinq" class="mi-key">
+<path style="color:#000000" d="m414.2 82.48-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.72z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="letter-spacing:0px;text-decoration-color:#000000;font-variant-numeric:normal;text-orientation:mixed;shape-padding:0;word-spacing:0px;text-decoration-line:none;font-variant-position:normal;font-feature-settings:normal;font-variant-alternates:normal;text-indent:0;dominant-baseline:auto;font-variant-caps:normal;white-space:normal;text-decoration-style:solid;text-align:center;font-variant-ligatures:normal;text-anchor:middle;text-transform:none" font-family="sans-serif" xml:space="preserve" font-size="18.36px" line-height="3.82496572px" y="102.66827" x="428.73676" font-weight="bold" fill="#000000"><tspan style="letter-spacing:0px;text-decoration-color:#000000;font-variant-numeric:normal;text-orientation:mixed;shape-padding:0;word-spacing:0px;text-decoration-line:none;font-variant-position:normal;font-feature-settings:normal;font-variant-alternates:normal;text-indent:0;dominant-baseline:auto;font-variant-caps:normal;white-space:normal;text-decoration-style:solid;text-align:center;font-variant-ligatures:normal;text-anchor:middle;text-transform:none" font-family="sans-serif" font-size="18.36px" line-height="3.82496572px" y="102.66827" x="428.73676" font-weight="bold" fill="#000000">5</tspan></text>
+</g>
+<g id="mk-deux" class="mi-key">
+<path style="color:#000000" d="m414.2 42.29-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="letter-spacing:0px;text-decoration-color:#000000;font-variant-numeric:normal;text-orientation:mixed;shape-padding:0;word-spacing:0px;text-decoration-line:none;font-variant-position:normal;font-feature-settings:normal;font-variant-alternates:normal;text-indent:0;dominant-baseline:auto;font-variant-caps:normal;white-space:normal;text-decoration-style:solid;text-align:center;font-variant-ligatures:normal;text-anchor:middle;text-transform:none" font-family="sans-serif" xml:space="preserve" font-size="18.36px" line-height="3.82496572px" y="62.82193" x="428.72757" font-weight="bold" fill="#000000"><tspan style="letter-spacing:0px;text-decoration-color:#000000;font-variant-numeric:normal;text-orientation:mixed;shape-padding:0;word-spacing:0px;text-decoration-line:none;font-variant-position:normal;font-feature-settings:normal;font-variant-alternates:normal;text-indent:0;dominant-baseline:auto;font-variant-caps:normal;white-space:normal;text-decoration-style:solid;text-align:center;font-variant-ligatures:normal;text-anchor:middle;text-transform:none" font-family="sans-serif" font-size="18.36px" line-height="3.82496572px" y="62.82193" x="428.72757" font-weight="bold" fill="#000000">2</tspan></text>
+</g>
+<g id="mk-trois" class="mi-key">
+<path style="color:#000000" d="m464.2 42.29-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="letter-spacing:0px;text-decoration-color:#000000;font-variant-numeric:normal;text-orientation:mixed;shape-padding:0;word-spacing:0px;text-decoration-line:none;font-variant-position:normal;font-feature-settings:normal;font-variant-alternates:normal;text-indent:0;dominant-baseline:auto;font-variant-caps:normal;white-space:normal;text-decoration-style:solid;text-align:center;font-variant-ligatures:normal;text-anchor:middle;text-transform:none" font-family="sans-serif" xml:space="preserve" font-size="18.36px" line-height="3.82496572px" y="62.61079" x="478.7258" font-weight="bold" fill="#000000"><tspan style="letter-spacing:0px;text-decoration-color:#000000;font-variant-numeric:normal;text-orientation:mixed;shape-padding:0;word-spacing:0px;text-decoration-line:none;font-variant-position:normal;font-feature-settings:normal;font-variant-alternates:normal;text-indent:0;dominant-baseline:auto;font-variant-caps:normal;white-space:normal;text-decoration-style:solid;text-align:center;font-variant-ligatures:normal;text-anchor:middle;text-transform:none" font-family="sans-serif" font-size="18.36px" line-height="3.82496572px" y="62.61079" x="478.7258" font-weight="bold" fill="#000000">3</tspan></text>
+</g>
+<g id="mk-six" class="mi-key">
+<path style="color:#000000" d="m464.2 82.48-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.72z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="letter-spacing:0px;text-decoration-color:#000000;font-variant-numeric:normal;text-orientation:mixed;shape-padding:0;word-spacing:0px;text-decoration-line:none;font-variant-position:normal;font-feature-settings:normal;font-variant-alternates:normal;text-indent:0;dominant-baseline:auto;font-variant-caps:normal;white-space:normal;text-decoration-style:solid;text-align:center;font-variant-ligatures:normal;text-anchor:middle;text-transform:none" font-family="sans-serif" xml:space="preserve" font-size="18.36px" line-height="3.82496572px" y="102.80597" x="478.67072" font-weight="bold" fill="#000000"><tspan style="letter-spacing:0px;text-decoration-color:#000000;font-variant-numeric:normal;text-orientation:mixed;shape-padding:0;word-spacing:0px;text-decoration-line:none;font-variant-position:normal;font-feature-settings:normal;font-variant-alternates:normal;text-indent:0;dominant-baseline:auto;font-variant-caps:normal;white-space:normal;text-decoration-style:solid;text-align:center;font-variant-ligatures:normal;text-anchor:middle;text-transform:none" font-family="sans-serif" font-size="18.36px" line-height="3.82496572px" y="102.80597" x="478.67072" font-weight="bold" fill="#000000">6</tspan></text>
+</g>
+<g id="mk-neuf" class="mi-key">
+<path style="color:#000000" d="m464.2 122-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="36.72px" line-height="3.82496572px" y="142.27614" x="478.73495" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="18.36px" y="142.27614" x="478.73495" stroke-width=".1912px">9</tspan></text>
+</g>
+<g id="mk-zero" class="mi-key">
+<path style="color:#000000" d="m414.2 161.4-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#d4d4d4"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="36.72px" line-height="3.82496572px" y="181.6787" x="428.71838" fill="#000000"><tspan font-family="sans-serif" font-weight="bold" font-size="18.36px" y="181.6787" x="428.71838" stroke-width=".1912px">0</tspan></text>
+</g>
+<g id="mk-diese" stroke="#000" class="mi-key">
+<path style="color:#000000" d="m464.2 161.4-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke-width="1.065" fill="#d4d4d4"/>
+<g transform="translate(-2.717 -.7568)" stroke-linecap="round" stroke-width="1.2">
+<path style="color:#000000" d="m478.8 166.9v18.24"/>
+<path style="color:#000000" d="m484.6 166.9v18.24"/>
+<path style="color:#000000" d="m472.2 172.7h18.24"/>
+<path style="color:#000000" d="m472.2 179.2h18.24"/>
+</g>
+</g>
+<g id="mk-etoile" stroke="#000" class="mi-key">
+<path style="color:#000000" d="m362.6 161.4-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke-width="1.065" fill="#d4d4d4"/>
+<g transform="translate(-1.441 -1.143)" stroke-linecap="round" stroke-width="1.2">
+<path style="color:#000000" d="m369.3 176.4h18.24"/>
+<path style="color:#000000" d="m378.5 185.5v-18.2"/>
+<path style="color:#000000" d="m372 182.8 12.9-12.9"/>
+<path style="color:#000000" d="m384.9 182.8-12.9-12.9"/>
+</g>
+</g>
+<g id="mk-marche-arret" class="mi-key">
+<path style="color:#000000" d="m310.2 82.48-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.72z" stroke="#000" stroke-width="1.065" fill="#916661"/>
+<g transform="translate(-.9404 .4924)" stroke-linecap="round" stroke-width="1.2">
+<path style="color:#000000" d="m325.4 93.28v-8.13" stroke="#fff"/>
+<path style="color:#000000" fill="none" stroke="#fdfdfd" d="m328.7 90.39a6.898 6.898 0 0 1 3.532 7.705 6.898 6.898 0 0 1 -6.604 5.313 6.898 6.898 0 0 1 -6.769 -5.101 6.898 6.898 0 0 1 3.286 -7.813"/>
+</g>
+</g>
+<g id="mk-telephone" class="mi-key">
+<path style="color:#000000" d="m310.2 41.94-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke="#000" stroke-width="1.065" fill="#916661"/>
+<g transform="translate(-1.479 .6745)" stroke="#fff" stroke-linecap="round" stroke-width="1.2" fill="none">
+<path style="color:#000000" d="m321.6 51.91 9.327 5.385 2.239-2.239 4.371 1.832v4.243l-4.687 1.256-4.336-1.162-9.225-5.326-3.461-3.461-1.126-4.202 3.675-2.122 3.391 2.689z"/>
+<path style="color:#000000" d="m317.8 46.87 3.567 2.717"/>
+<path style="color:#000000" d="m332.5 55.76 4.866 2.126"/>
+</g>
+</g>
+<g id="mk-guide" class="mi-key">
+<path style="color:#000000" d="m36.47 125.9-5.58 5.579v16.12l2.262 2.261h51.35l2.131-2.131v-21.83z" stroke="#000" stroke-width="1.065" fill="#916661"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="16.46px" line-height="1.71481657px" y="137.93671" x="49.446075" fill="#fefbfb"><tspan font-family="sans-serif" font-size="8.231px" y="137.93671" x="49.446075" stroke-width=".08574px" fill="#fefbfb">Guide</tspan></text>
+</g>
+<g id="mk-correction" class="mi-key">
+<path style="color:#000000" d="m105.3 125.9-5.579 5.579v16.12l2.262 2.261h51.35l2.131-2.131v-21.83z" stroke="#000" stroke-width="1.065" fill="#916661"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="16.46px" line-height="1.71481657px" y="137.93671" x="126.22966" fill="#fefbfb"><tspan font-family="sans-serif" font-size="8.231px" y="137.93671" x="126.22966" stroke-width=".08574px" fill="#fefbfb">Correction</tspan></text>
+</g>
+<g id="mk-annulation" class="mi-key">
+<path style="color:#000000" d="m105 87.02-5.58 5.579v16.12l2.262 2.261h51.35l2.131-2.131v-21.88z" stroke="#000" stroke-width="1.065" fill="#916661"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="16.46px" line-height="1.71481657px" y="98.190002" x="126.68375" fill="#fefbfb"><tspan font-family="sans-serif" font-size="8.231px" y="98.190002" x="126.68375" stroke-width=".08574px" fill="#fefbfb">Annulation</tspan></text>
+</g>
+<g id="mk-sommaire" class="mi-key">
+<path style="color:#000000" d="m36.47 87.02-5.58 5.579v16.12l2.262 2.261h51.35l2.131-2.131v-21.88z" stroke="#000" stroke-width="1.065" fill="#916661"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="16.46px" line-height="1.71481657px" y="98.190002" x="57.202168" fill="#fefbfb"><tspan font-family="sans-serif" font-size="8.231px" y="98.190002" x="57.202168" stroke-width=".08574px" fill="#fefbfb">Sommaire</tspan></text>
+</g>
+<g id="mk-retour" class="mi-key">
+<path style="color:#000000" d="m173.5 87.02-5.58 5.579v16.12l2.262 2.261h51.35l2.131-2.131v-21.88z" stroke="#000" stroke-width="1.065" fill="#916661"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="16.46px" line-height="1.71481657px" y="98.190002" x="187.48759" fill="#fefbfb"><tspan font-family="sans-serif" font-size="8.231px" y="98.190002" x="187.48759" stroke-width=".08574px" fill="#fefbfb">Retour</tspan></text>
+</g>
+<g id="mk-suite" class="mi-key">
+<path style="color:#000000" d="m173 125.9-5.58 5.579v16.12l2.262 2.261h51.35l2.131-2.131v-21.83z" stroke="#000" stroke-width="1.065" fill="#916661"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="16.46px" line-height="1.71481657px" y="137.93671" x="184.34932" fill="#fefbfb"><tspan font-family="sans-serif" font-size="8.231px" y="137.93671" x="184.34932" stroke-width=".08574px" fill="#fefbfb">Suite</tspan></text>
+</g>
+<g id="mk-envoi" class="mi-key">
+<path style="color:#000000" d="m241.8 125.9-5.58 5.579v16.12l2.262 2.261h51.35l2.131-2.131v-21.83z" stroke="#000" stroke-width="1.065" fill="#916661"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="16.46px" line-height="1.71481657px" y="137.93671" x="253.7224" fill="#fefbfb"><tspan font-family="sans-serif" font-size="8.231px" y="137.93671" x="253.7224" stroke-width=".08574px" fill="#fefbfb">Envoi</tspan></text>
+</g>
+<g id="mk-repetition" class="mi-key">
+<path style="color:#000000" d="m242.1 87.02-5.58 5.579v16.12l2.262 2.261h51.35l2.131-2.131v-21.88z" stroke="#000" stroke-width="1.065" fill="#916661"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="16.46px" line-height="1.71481657px" y="98.190002" x="262.20413" fill="#fefbfb"><tspan font-family="sans-serif" font-size="8.231px" y="98.190002" x="262.20413" stroke-width=".08574px" fill="#fefbfb">Répétition</tspan></text>
+</g>
+<g id="mk-connexion-fin" class="mi-key">
+<path style="color:#000000" d="m-48.2 46.56-5.58 5.579v16.12l2.262 2.261h51.35l2.128-2.13v-21.83z" stroke="#000" stroke-width="1.065" fill="#916661"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal" font-family="Minitel" xml:space="preserve" font-size="16.46px" line-height="1.71481657px" y="56.423637" x="-46.241741" fill="#fefbfb"><tspan font-family="sans-serif" font-size="8.231px" y="56.423637" x="-46.241741" stroke-width=".08574px" fill="#fefbfb">Connexion</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal" font-family="Minitel" xml:space="preserve" font-size="16.46px" line-height="1.71481657px" y="64.890305" x="-46.587448" fill="#fefbfb"><tspan font-family="sans-serif" font-size="8.231px" y="64.890305" x="-46.587448" stroke-width=".08574px" fill="#fefbfb">Fin</tspan></text>
+</g>
+<g id="mk-gauche" stroke="#000" class="mi-key">
+<path style="color:#000000" d="m312.3 370.1-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke-width="1.065" fill="#d4d4d4"/>
+<g transform="translate(.4371 -3.608)" stroke-linecap="round" stroke-width="2">
+<path style="color:#000000" d="m334.1 387.1h-12" fill="none"/>
+<path stroke-linejoin="round" style="color:#000000" d="m322.1 387.1v2.071l-3.588-2.071 3.588-2.071z"/>
+</g>
+</g>
+<g id="mk-droite" stroke="#000" class="mi-key">
+<path style="color:#000000" d="m363.4 370.1-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke-width="1.065" fill="#d4d4d4"/>
+<g transform="rotate(180 352.1 385.2)" stroke-linecap="round" stroke-width="2">
+<path style="color:#000000" d="m334.1 387.1h-12" fill="none"/>
+<path stroke-linejoin="round" style="color:#000000" d="m322.1 387.1v2.071l-3.588-2.071 3.588-2.071z"/>
+</g>
+</g>
+<g id="mk-bas" stroke="#000" class="mi-key">
+<path style="color:#000000" d="m1.902 370.1-5.58 5.579v19.93l2.262 2.261h35.65l2.131-2.131v-25.64z" stroke-width="1.065" fill="#d4d4d4"/>
+<g transform="rotate(-90 169.3 540)" stroke-linecap="round" stroke-width="2">
+<path style="color:#000000" d="m334.1 387.1h-12" fill="none"/>
+<path stroke-linejoin="round" style="color:#000000" d="m322.1 387.1v2.071l-3.588-2.071 3.588-2.071z"/>
+</g>
+</g>
+<g id="mk-haut" stroke="#000" class="mi-key">
+<path style="color:#000000" d="m-48.9 370.1-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke-width="1.065" fill="#d4d4d4"/>
+<g transform="rotate(90 147.9 204.7)" stroke-linecap="round" stroke-width="2">
+<path style="color:#000000" d="m334.1 387.1h-12" fill="none"/>
+<path stroke-linejoin="round" style="color:#000000" d="m322.1 387.1v2.071l-3.588-2.071 3.588-2.071z"/>
+</g>
+</g>
+<path style="color:#000000" d="m335.4 327.7-5.58 5.579v26.78l2.262 2.261h42.07l2.131-2.131v-32.6z" stroke="#009300" stroke-width="2.665" fill="none"/>
+<g id="mk-maj-droite" stroke="#000" class="mi-key">
+<path style="color:#000000" d="m338.5 331.1-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke-width="1.065" fill="#d4d4d4"/>
+<path stroke-linejoin="round" style="color:#000000" d="m348.7 343.9 4.777-4.777 4.777 4.777h-1.771v7.049h-5.847v-7.049h-1.938" stroke-linecap="round" stroke-width="1.1" fill="none"/>
+</g>
+<g id="mk-maj-gauche" stroke="#000" class="mi-key">
+<path style="color:#000000" d="m-21.63 331.1-5.58 5.579v19.93l2.262 2.261h35.64l2.131-2.131v-25.64z" stroke-width="1.065" fill="#d4d4d4"/>
+<path stroke-linejoin="round" style="color:#000000" d="m-12.43 343.9 4.777-4.777 4.777 4.777h-1.771v7.049h-5.847v-7.049h-1.938" stroke-linecap="round" stroke-width="1.1" fill="none"/>
+</g>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="21.88px" line-height="2.27964497px" y="122.14915" x="63.296936" fill="#000000"><tspan font-family="sans-serif" font-size="10.94px" y="122.14915" x="63.296936" stroke-width=".1140px">Impr</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="21.88px" line-height="2.27964497px" y="84.741112" x="63.430573" fill="#000000"><tspan font-family="sans-serif" font-size="10.94px" y="84.741112" x="63.430573" stroke-width=".1140px">Mem</tspan></text>
+<g font-family="Minitel" fill="#ff4141">
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="21.88px" line-height="2.27964497px" y="41.844334" x="-4.885376"><tspan font-size="10.94px" y="41.844334" x="-4.8853765" font-family="sans-serif" fill="#ff4141">Brk</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="27.54px" line-height="2.86866212px" y="82.458992" x="147.95259"><tspan font-size="13.77px" y="82.458992" x="147.95259" font-family="sans-serif" fill="#ff4141">£</tspan></text>
+<g font-size="21.88px">
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="2.27964497px" y="121.6918" x="152.91968"><tspan font-size="10.94px" y="121.6918" x="152.91968" font-family="sans-serif" fill="#ff4141">ç</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="2.27964497px" y="122.77849" x="221.56961"><tspan font-size="10.94px" y="122.77849" x="221.56961" font-family="sans-serif" fill="#ff4141">ß</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="2.27964497px" y="82.618538" x="219.39609"><tspan font-size="10.94px" y="82.618538" x="219.39609" font-family="sans-serif" fill="#ff4141">Œ</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="2.27964497px" y="82.618538" x="285.75943"><tspan font-size="10.94px" y="82.618538" x="285.75943" font-family="sans-serif" fill="#ff4141">œ</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="2.27964497px" y="158.12885" x="-23.028227"><tspan font-size="10.94px" y="158.12885" x="-23.028227" font-family="sans-serif" fill="#ff4141">Maj</tspan></text>
+</g>
+</g>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="21.88px" line-height="2.27964497px" y="158.12885" x="-52.491463" fill="#00cf00"><tspan font-size="10.94px" y="158.12885" x="-52.491463" font-family="sans-serif" fill="#00cf00">Min</tspan></text>
+<g font-family="Minitel" fill="#ff4141">
+<g font-size="21.88px">
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="2.27964497px" y="328.15479" x="106.74731"><tspan font-size="10.94px" y="328.15479" x="106.74731" font-family="sans-serif" fill="#ff4141">Can</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="2.27964497px" y="288.65628" x="290.61346"><tspan font-size="10.94px" y="288.65628" x="290.61346" font-family="sans-serif" fill="#ff4141">BS</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="2.27964497px" y="288.65628" x="341.59299"><tspan font-size="10.94px" y="288.65628" x="341.59299" font-family="sans-serif" fill="#ff4141">LF</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="2.27964497px" y="248.63821" x="375.27963"><tspan font-size="10.94px" dx="0 -1.1339289" y="248.63821" x="375.27963" font-family="sans-serif" fill="#ff4141">Tab</tspan></text>
+</g>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="16.15px" line-height="1.68252265px" y="370.48712" x="478.15732"><tspan font-size="8.076px" y="370.48712" x="478.15732" font-family="sans-serif" fill="#ff4141">E. Page</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="16.15px" line-height="1.68252265px" y="369.35123" x="341.04807"><tspan font-size="8.076px" y="369.35123" x="341.04807" font-family="sans-serif" fill="#ff4141">Del</tspan></text>
+</g>
+<path style="color:#000000" d="m-53.24 162.1-5.58 5.579v21.7l2.262 2.261h35.12l2.131-2.131v-27.41z" stroke="#640092" stroke-width="2.665" fill="none"/>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="16.15px" line-height="1.68252265px" y="368.78433" x="311.33868" fill="#009300"><tspan font-size="8.076px" y="368.78433" x="311.33868" font-family="sans-serif" fill="#009300">Sup. C</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="16.15px" line-height="1.68252265px" y="368.78433" x="370.41644" fill="#00cf00"><tspan font-size="8.076px" y="368.78433" x="370.41644" font-family="sans-serif" fill="#00cf00">Ins. C</tspan></text>
+<g id="mk-entree" stroke="#000" class="mi-key">
+<path style="color:#000000" d="m449.5 373.9-5.58 5.579v16.12l2.262 2.261h51.35l2.131-2.131v-21.9z" stroke-width="1.065" fill="#d4d4d4"/>
+<g stroke-linecap="round" stroke-width="2">
+<path style="color:#000000" d="m471.4 383.4h-13.4" fill="none"/>
+<g stroke-linejoin="round">
+<path style="color:#000000" d="m458 383.4v2.071l-3.588-2.071 3.588-2.071z"/>
+<path style="color:#000000" d="m471.4 383.4v-3.9"/>
+<path style="color:#000000" d="m471.4 383.4v-3.9"/>
+</g>
+</g>
+</g>
+<path stroke-linejoin="round" style="color:#000000" d="m460.3 369.1h-12.57l-5.244-6" stroke="#00ce00" stroke-linecap="round" stroke-width="2.165" fill="none"/>
+<path stroke-linejoin="round" style="color:#000000" d="m444.1 364.9-1.617 1.294-.6245-4.095 3.859 1.507z" stroke="#00ce00" stroke-linecap="round" stroke-width="2.165" fill="#00ce00"/>
+<g font-family="Minitel" fill="#00cf00">
+<g font-size="16.15px">
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="1.68252265px" y="368.78433" x="311.33868"><tspan font-size="8.076px" y="368.78433" x="311.33868" font-family="sans-serif" fill="#00cf00">Sup. C</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="1.68252265px" y="366.79996" x="-43.628208"><tspan font-size="8.076px" y="366.79996" x="-43.628208" font-family="sans-serif" fill="#00cf00">Sup. L</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="1.68252265px" y="368.07565" x="13.115468"><tspan font-size="8.076px" y="368.07565" x="13.115469" font-family="sans-serif" fill="#00cf00">Ins. L</tspan></text>
+</g>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="21.9px" line-height="2.28158379px" y="203.02313" x="172.21802"><tspan font-size="10.95px" y="203.02313" x="172.21802" font-family="sans-serif" fill="#00cf00">@</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="33.11px" line-height="3.44872451px" y="204.0584" x="111.79652"><tspan font-size="16.55px" y="204.0584" x="111.79652" font-family="sans-serif" fill="#00cf00">&gt;</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="33.11px" line-height="3.44872451px" y="204.0584" x="60.261513"><tspan font-size="16.55px" y="204.0584" x="60.261513" font-family="sans-serif" fill="#00cf00">&lt;</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="21.9px" line-height="2.28158379px" y="203.02313" x="223.6386"><tspan font-size="10.95px" y="203.02313" x="223.6386" font-family="sans-serif" fill="#00cf00">+</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="21.9px" line-height="2.28158379px" y="203.02313" x="273.63696"><tspan font-size="10.95px" y="203.02313" x="273.63696" font-family="sans-serif" fill="#00cf00">=</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="46.5px" line-height="4.84330368px" y="213.72435" x="321.89624"><tspan font-size="23.25px" y="213.72435" x="321.89624" font-family="sans-serif" fill="#00cf00">*</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="37.22px" line-height="3.87687516px" y="209.80807" x="369.61014"><tspan font-size="18.61px" y="209.80807" x="369.61014" font-family="sans-serif" fill="#00cf00">/</tspan></text>
+<g font-size="24.92px">
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="2.59539247px" y="160.08698" x="357.47122"><tspan font-size="12.46px" y="160.08698" x="357.47122" font-family="sans-serif" fill="#00cf00">[</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="2.59539247px" y="160.08698" x="458.22098"><tspan font-size="12.46px" y="160.08698" x="458.22098" font-family="sans-serif" fill="#00cf00">]</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="2.59539247px" y="160.08698" x="407.98782"><tspan font-size="12.46px" y="160.08698" x="407.98782" font-family="sans-serif" fill="#00cf00">↑</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="2.59539247px" y="121.91138" x="406.28714"><tspan font-size="12.46px" y="121.91138" x="406.28714" font-family="sans-serif" fill="#00cf00">(</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="2.59539247px" y="121.91138" x="461.5856"><tspan font-size="12.46px" y="121.91138" x="461.5856" font-family="sans-serif" fill="#00cf00">)</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="2.59539247px" y="82.185852" x="459.88492"><tspan font-size="12.46px" y="82.185852" x="459.88492" font-family="sans-serif" fill="#00cf00">&amp;</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="2.59539247px" y="82.185852" x="408.04556"><tspan font-size="12.46px" y="82.185852" x="408.04556" font-family="sans-serif" fill="#00cf00">%</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" line-height="2.59539247px" y="82.185852" x="357.24551"><tspan font-size="12.46px" y="82.185852" x="357.24551" font-family="sans-serif" fill="#00cf00">$</tspan></text>
+</g>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="37.04px" line-height="3.85785174px" y="42.21487" x="356.67834"><tspan font-size="18.52px" y="42.21487" x="356.67834" font-family="sans-serif" fill="#00cf00">!</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="38.77px" line-height="4.03874445px" y="46.320511" x="406.15475"><tspan font-size="19.39px" dx="0 -1.630022" y="46.320511" x="406.15475" font-family="sans-serif" fill="#00cf00">’’</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="24.92px" line-height="2.59539247px" y="38.624096" x="459.03458"><tspan font-size="12.46px" y="38.624096" x="459.03458" font-family="sans-serif" fill="#00cf00">#</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="24.92px" line-height="2.59539247px" y="125.25224" x="358.74658"><tspan font-size="12.46px" y="125.25224" x="358.74658" font-family="sans-serif" fill="#00cf00">’</tspan></text>
+</g>
+<g>
+<circle stroke-linejoin="round" style="color:#000000" cx="295.5" stroke-linecap="round" cy="74.39" r="2.84" stroke="#009300" stroke-width="1.765" fill="none"/>
+<path stroke-linejoin="round" style="color:#000000" d="m298.8 74.32h15.13" stroke="#009300" stroke-linecap="round" stroke-width="2.365" fill="none"/>
+<path style="color:#000000" d="m1453 233.5v13.26h7.576v-5.809h5.682v5.809h7.576v-13.3z" transform="matrix(.2646 0 0 .2646 -75.8 13.18)" fill="#009300"/>
+</g>
+<g font-family="Minitel" fill="#00cf00">
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="26.9px" line-height="2.80249548px" y="82.910545" x="238.51848"><tspan font-size="13.45px" y="82.910545" x="238.51848" font-family="sans-serif" fill="#00cf00">{</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="26.9px" line-height="2.80249548px" y="122.80053" x="239.78801"><tspan font-size="13.45px" y="122.80053" x="239.78801" font-family="sans-serif" fill="#00cf00">}</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="15.92px" line-height="1.65836215px" y="118.66335" x="169.49243"><tspan font-weight="bold" font-size="7.96px" y="118.66335" x="169.49243" font-family="sans-serif" fill="#00cf00">\</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="15.92px" line-height="1.65836215px" y="79.775642" x="169.29198"><tspan font-weight="bold" font-size="7.96px" y="79.775642" x="169.29198" font-family="sans-serif" fill="#00cf00">/</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="31.9px" line-height="3.32288003px" y="84.931931" x="97.96698"><tspan font-size="15.95px" y="84.931931" x="97.96698" font-family="sans-serif" fill="#00cf00">\</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="31.9px" line-height="3.32288003px" y="88.339615" x="32.285492"><tspan font-size="15.95px" y="88.339615" x="32.285492" font-family="sans-serif" fill="#00cf00">^</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="51.49px" line-height="5.36382437px" y="135.43459" x="32.424828"><tspan font-size="25.75px" y="135.43459" x="32.424828" font-family="sans-serif" fill="#00cf00">¨</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" xml:space="preserve" font-size="27.93px" line-height="2.90911341px" y="122.63906" x="100.43163"><tspan font-size="13.96px" y="122.63906" x="100.43163" font-family="sans-serif" fill="#00cf00">§</tspan></text>
+</g>
+<g transform="translate(14.03 5.412)" stroke="#000b00" stroke-linecap="round" stroke-width="1.065" fill="none">
+<rect style="color:#000000" height="2.606" width="3.274" y="69.85" x="104.6"/>
+<path style="color:#000000" d="m107.9 69.85 4.811-3.14v8.486l-4.811-2.74z"/>
+</g>
+<g transform="translate(11.49 47.48)" stroke="#000b00" stroke-linecap="round" stroke-width="1.065" fill="none">
+<rect style="color:#000000" height="2.606" width="3.274" y="69.85" x="104.6"/>
+<path style="color:#000000" d="m107.9 69.85 4.811-3.14v8.486l-4.811-2.74z"/>
+</g>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="15.92px" line-height="1.65836215px" y="80.644272" x="133.6115" fill="#009300"><tspan font-weight="bold" font-size="7.96px" y="80.644272" x="133.6115" font-family="sans-serif" fill="#000000">−</tspan></text>
+<text style="font-variant-ligatures:normal;letter-spacing:0px;font-variant-numeric:normal;text-anchor:middle;word-spacing:0px;font-variant-caps:normal;font-feature-settings:normal;text-align:center" font-family="Minitel" xml:space="preserve" font-size="15.92px" line-height="1.65836215px" y="122.6724" x="132.40878" fill="#009300"><tspan font-weight="bold" font-size="7.96px" y="122.6724" x="132.40878" font-family="sans-serif" fill="#000000">+</tspan></text>
+</g>
+<style type="text/css">.mi-key {
+    fill: #ffec02;
+    stroke: #ffec02;
+    stroke-opacity: 1;
+    stroke-width: 4;
+    stroke-miterlimit: 4;
+    stroke-dasharray: none;
+}</style>
+</svg>
