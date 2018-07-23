@@ -30,8 +30,10 @@ class PageMemory {
      * @param {HTMLCanvasElement} canvas The canvas which will be used as the
      *                                   screen.
      * @param {boolean} color true for color, false for black and white
+     * @param {?HTMLCanvasElement} cancur The canvas which will be used to draw
+     *                                    the cursor.
      */
-    constructor(grid, char, canvas, color) {
+    constructor(grid, char, canvas, color, cancur) {
         const frameRate = 50 // Frame per second
 
         /**
@@ -75,32 +77,20 @@ class PageMemory {
         const rows = []
         rows.length = this.grid.rows
 
-        const bgSave = document.createElement("canvas")
-        bgSave.width = this.char.width
-        bgSave.height = this.char.height
-        const cursorCtx = bgSave.getContext("2d")
-        cursorCtx.imageSmoothingEnabled = false
-
         /**
          * Cursor position and visibility
          * @member {Object}
          * @property {integer} x X position
          * @property {integer} y Y position
          * @property {boolean} visible Is the cursor visible or not?
-         * @property {CanvasRenderingContext2D} ctx Cursor context
-         * @property {HTMLCanvasElement} bgSave Cursor saving area
-         * @property {integer=} lastX Last X position
-         * @property {integer=} lastY Last Y position
+         * @property {HTMLCanvasElement} canvas Canvas on which to draw cursor
          * @private
          */
         this.cursor = {
             x: 0,
             y: 1,
             visible: false,
-            ctx: cursorCtx,
-            bgSave: bgSave,
-            lastX: undefined,
-            lastY: undefined
+            canvas: cancur
         }
 
         /**
@@ -161,12 +151,15 @@ class PageMemory {
         this.changeColors(color)
 
         /**
-         * Timer ID of the refresh timer.
+         * Timer ID of the screen refresh timer.
          * @member {number}
          * @private
          */
         this.refresh = window.setInterval(
-            () => { this.render() },
+            () => {
+                this.render()
+                this.drawCursor()
+            },
             1000 / frameRate
         )
     }
@@ -199,6 +192,7 @@ class PageMemory {
                 this.memory[y][x] = new MosaicCell()
             })
         })
+
         this.forceRedraw()
     }
 
@@ -209,6 +203,15 @@ class PageMemory {
     getBlink() {
         const msecs = (new Date()).getTime()
         return (msecs % 1500) >= 750
+    }
+
+    /**
+     * Get cursor blink state.
+     * @return {boolean}
+     */
+    getCursorBlink() {
+        const msecs = (new Date()).getTime()
+        return (msecs % 900) >= 450
     }
 
     /**
@@ -363,8 +366,6 @@ class PageMemory {
 
         const blink = this.getBlink()
 
-        this.cursorRestore()
-
         // Draw each cell
         range(0, this.grid.rows).forEach(row => {
             // Draw the row only if needed
@@ -379,9 +380,6 @@ class PageMemory {
 
             this.blinking[row] = blinkRow
         })
-
-        this.cursorSave()
-        this.drawCursor()
 
         this.lastBlink = blink
     }
@@ -490,62 +488,26 @@ class PageMemory {
     }
 
     /**
-     * Save the cursor area
-     * @private
-     */
-    cursorSave() {
-        this.cursor.ctx.drawImage(
-            // Source
-            this.canvas,
-            this.cursor.x * this.char.width,
-            this.cursor.y * this.char.height,
-            this.char.width,
-            this.char.height,
-
-            // Destination
-            0, 0,
-            this.char.width,
-            this.char.height
-        )
-
-        this.cursor.lastX = this.cursor.x
-        this.cursor.lastY = this.cursor.y
-    }
-
-    /**
-     * Restore the cursor area
-     * @private
-     */
-    cursorRestore() {
-        if(this.cursor.lastY === 0) return
-        if(!this.cursor.visible && this.lastBlink) return
-
-        this.context.drawImage(
-            // Source
-            this.cursor.bgSave,
-            0, 0,
-            this.char.width,
-            this.char.height,
-
-            // Destination
-            this.cursor.lastX * this.char.width,
-            this.cursor.lastY * this.char.height,
-            this.char.width,
-            this.char.height
-        )
-    }
-
-    /**
      * Draw the cursor
      * @private
      */
     drawCursor() {
-        if(this.cursor.y === 0) return
-        if(!this.cursor.visible || this.lastBlink) return
+        // Do nothing if there is no cursor canvas
+        if(this.cursor.canvas === undefined) return
 
+        // Clear the cursor canvas
+        const ctx = this.cursor.canvas.getContext('2d')
+        ctx.clearRect(0, 0, this.cursor.canvas.width, this.cursor.canvas.height)
+
+        // Do nothing if cursor should not be visible
+        if(this.cursor.y === 0) return
+        if(!this.cursor.visible) return
+        if(this.getCursorBlink()) return
+
+        // Draw the cursor
         const cell = this.memory[this.cursor.y][this.cursor.x]
-        this.context.fillStyle = this.colors[cell.fgColor]
-        this.context.fillRect(
+        ctx.fillStyle = this.colors[cell.fgColor]
+        ctx.fillRect(
             this.cursor.x * this.char.width,
             this.cursor.y * this.char.height,
             this.char.width,

@@ -12,6 +12,8 @@ body {
     margin: auto;
 }
 
+.minitel-container { position:relative; }
+
 canvas {
     image-rendering: crisp-edges;
     image-rendering: pixelated;
@@ -19,6 +21,13 @@ canvas {
     width: 40em;
     max-width: 100%;
     height: auto;
+}
+
+#minitel-cursor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none
 }
 
 object {

@@ -14,14 +14,21 @@ class MinitelEmulator {
      * @param {Keyboard} keyboard The keyboard emulator.
      * @param {WebSocket} socket The socket to communicate with.
      * @param {HTMLAudioElement} bip The Minitel bip sound.
+     * @param {?HTMLCanvasElement} cancur The cursor canvas.
      */
-    constructor(canvas, keyboard, socket, bip) {
+    constructor(canvas, keyboard, socket, bip, cancur) {
         const grid = { cols: Minitel.columns, rows: Minitel.rows }
         const char = { width: Minitel.charWidth, height: Minitel.charHeight }
 
         // Resize canvas based on Minitel characteristics
         canvas.width = char.width * grid.cols
         canvas.height = char.height * grid.rows
+
+        // Resize the cursor canvas to the Minitel canvas size.
+        if(cancur !== undefined) {
+            cancur.width = canvas.width
+            cancur.height = canvas.height
+        }
 
         /**
          * Should we show colors or black and white?
@@ -34,7 +41,13 @@ class MinitelEmulator {
          * @member {PageMemory}
          * @private
          */
-        this.pageMemory = new PageMemory(grid, char, canvas, Minitel.greys)
+        this.pageMemory = new PageMemory(
+            grid,
+            char,
+            canvas,
+            Minitel.greys,
+            cancur
+        )
 
         /**
          * The socket associated to the emulator
