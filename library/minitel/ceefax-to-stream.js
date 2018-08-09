@@ -7,10 +7,10 @@
 
 /**
  * @namespace Minitel
- */ 
+ */
 var Minitel = Minitel || {}
 
-/** 
+/**
  * Convert a Ceefax row to a Minitel row
  * @param {number[]} row Ceefax codes for one row
  * @return {Stream}
@@ -24,7 +24,9 @@ Minitel.convertCeefaxRow = function(row) {
      * @param {boolean} sep Separated or not
      */
     function setColors(array, fg, bg, sep) {
-        array.push([0x1b, 0x40 + fg, 0x1b, 0x50 + bg, 0x1b, 0x59 + (sep ? 1 : 0)])
+        array.push(
+            [0x1b, 0x40 + fg, 0x1b, 0x50 + bg, 0x1b, 0x59 + (sep ? 1 : 0)]
+        )
     }
 
     const destination = new Minitel.Stream()
@@ -107,7 +109,7 @@ Minitel.convertCeefaxRow = function(row) {
                 hold = true
                 break
 
-            // Release graphics            
+            // Release graphics
             case 0x1f:
                 hold = false
                 break
@@ -115,7 +117,7 @@ Minitel.convertCeefaxRow = function(row) {
 
         // Handles attributes
         if(c < 0x20) {
-            if(hold || held != 0x20) {
+            if(hold || held !== 0x20) {
                 if(c === 0x1d || c === 0x1c) {
                     // Swap colors must be applied before held character
                     destination.push(control)
@@ -143,7 +145,7 @@ Minitel.convertCeefaxRow = function(row) {
         }
 
         // In graphics mode capital letters are still characters
-        if(c >= 0x40 && c <=0x5f) {
+        if(c >= 0x40 && c <= 0x5f) {
             destination.push([0x0f, c, 0x0e])
             if(hold && c & 0x20) held = c
             continue
@@ -164,7 +166,7 @@ Minitel.convertCeefaxRow = function(row) {
     return destination.optimizeRow().trimRow()
 }
 
-/** 
+/**
  * Draw a Ceefax row in an array of numbers
  * @param {number[]} row Ceefax codes for one row
  * @return {number[][]}
@@ -251,7 +253,7 @@ Minitel.drawCeefaxRow = function(row) {
                 hold = true
                 break
 
-            // Release graphics            
+            // Release graphics
             case 0x1f:
                 hold = false
                 break
@@ -259,7 +261,7 @@ Minitel.drawCeefaxRow = function(row) {
 
         // Handles attributes
         if(c < 0x20) {
-            if(hold || held != 0x20) {
+            if(hold || held !== 0x20) {
                 if(c === 0x1d || c === 0x1c) {
                     // Swap colors must be applied before held character
                     current = { fg: next.fg, bg: next.bg, sep: next.sep }
@@ -307,7 +309,7 @@ Minitel.drawCeefaxRow = function(row) {
         }
 
         // In graphics mode capital letters are still characters
-        if(c >= 0x40 && c <=0x5f) {
+        if(c >= 0x40 && c <= 0x5f) {
             drawPixels(
                 destination,
                 col,
@@ -374,13 +376,15 @@ Minitel.decodeEditTfURL = function(url) {
     const base64urlchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                          + "abcdefghijklmnopqrstuvwxyz"
                          + "0123456789-_"
-    for(let c of url) src.push(base64urlchars.indexOf(c))
+    for(let c of url) {
+        src.push(base64urlchars.indexOf(c))
+    }
 
     // Extract 7 bits codes from the 6 bits codes array
     const codes = []
     for(let p = 0; p < src.length; p += 7) {
         for(let i = 1; i < 7 && p + i <= src.length; i++) {
-            codes.push((src[p + i - 1] << i | src[p + i] >> (6 - i)) & 0x7f)
+            codes.push((src[p + i - 1] << i | src[p + i] >> 6 - i) & 0x7f)
         }
     }
 
@@ -407,7 +411,6 @@ Minitel.drawCeefax = function(url) {
     page.shift()
 
     let destination = []
-    let ignoreNext = false
     for(let row of page) {
         destination = destination.concat(Minitel.drawCeefaxRow(row))
     }

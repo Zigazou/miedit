@@ -5,6 +5,11 @@
  */
 
 /**
+ * @namespace Minitel
+ */
+var Minitel = Minitel || {}
+
+/**
  * @typedef {Object} ChangedPoint
  * @property {number} x X coordinate of the pixel
  * @property {number} y Y coordinate of the pixel
@@ -34,7 +39,7 @@
  */
 
 /**
- * @callback zoneCallback 
+ * @callback zoneCallback
  * @param {number} value Value representing the attributes of the pixel
  * @param {number} x X coordinate of the pixel
  * @param {number} y Y coordinate of the pixel
@@ -45,7 +50,7 @@
  * A MosaicZone is an object containing pixel values.
  * It is used to then copy and paste values in a MosaicMemory.
  */
-class MosaicZone {
+Minitel.MosaicZone = class {
     /**
      * @param {number} width Width in pixels of the zone
      * @param {number} height Height in pixel of the zone
@@ -107,7 +112,7 @@ class MosaicZone {
  *       `------------------------------------- transparent      0x100
  *
  */
-class MosaicMemory {
+Minitel.MosaicMemory = class {
     /**
      * @param {number} width Width in pixels of the mosaic drawing
      * @param {number} height Height in pixels of the mosaic drawing
@@ -171,11 +176,11 @@ class MosaicMemory {
      * the coordinates are valid before calling this method.
      * @param {number} x X coordinate
      * @param {number} y Y coordinate
-     * @return {number} the color of the pixel (0 to 7) 
+     * @return {number} the color of the pixel (0 to 7)
      */
     getColor(x, y) {
         const value = this.memory[x + y * this.width]
-        return (value & 0x100 ? -1 : value & 7)
+        return value & 0x100 ? -1 : value & 7
     }
 
     /**
@@ -195,24 +200,24 @@ class MosaicMemory {
         }
 
         // Defines coordinates of all the pixels making our point
-        let points = undefined
+        let points
         if(pointSize === 1) {
-            points = [ [x, y] ]
+            points = [[x, y]]
         } else if(pointSize === 2) {
-            points = [ [x, y], [x + 1, y], [x + 1, y + 1], [x, y + 1] ]
+            points = [[x, y], [x + 1, y], [x + 1, y + 1], [x, y + 1]]
         } else {
-            points = [ [ x, y], [x + 1, y], [x - 1, y], [x, y - 1], [x, y + 1] ]
+            points = [[x, y], [x + 1, y], [x - 1, y], [x, y - 1], [x, y + 1]]
         }
 
         // Draw each pixel if its coordinates are valid
-        points.filter(xy => { return this.validCoordinates(xy[0], xy[1]) })
+        points.filter(xy => this.validCoordinates(xy[0], xy[1]))
               .forEach(point => {
             const offset = point[0] + point[1] * this.width
-            const value = MosaicMemory.colorToValue(
+            const value = Minitel.MosaicMemory.colorToValue(
                 color, back, separated, blink
             )
 
-            this._setPoint(offset, value)
+            this.drawPixel(offset, value)
         })
     }
 
@@ -222,7 +227,7 @@ class MosaicMemory {
      * @param {number} value Value of the pixel to draw
      * @private
      */
-    _setPoint(offset, value) {
+    drawPixel(offset, value) {
         // Do nothing if the pixel has already the same value
         if(this.memory[offset] === value) return
 
@@ -243,8 +248,12 @@ class MosaicMemory {
      */
     getChangedPoints() {
         const points = Array.from(this.changedPoints.values(), offset => {
-            const oldPixel = MosaicMemory.toPixel(this.backupMemory[offset])
-            const newPixel = MosaicMemory.toPixel(this.memory[offset])
+            const oldPixel = Minitel.MosaicMemory.toPixel(
+                this.backupMemory[offset]
+            )
+
+            const newPixel = Minitel.MosaicMemory.toPixel(this.memory[offset])
+
             return {
                 x: offset % this.width,
                 y: Math.floor(offset / this.width),
@@ -259,12 +268,12 @@ class MosaicMemory {
             }
         })
 
-        // Clears the list of changed points        
+        // Clears the list of changed points
         this.changedPoints = new Set()
 
         return points
     }
-    
+
     /**
      * Resets the mosaic drawing with an encoded string.
      * @param {string=} string the encoded string.
@@ -275,7 +284,7 @@ class MosaicMemory {
             string = "ai".repeat(this.size)
         } else if(string.length === this.size) {
             // Old format? Converts it to the new format
-            string = MosaicMemory.oldToNewFormat(string)
+            string = Minitel.MosaicMemory.oldToNewFormat(string)
         } else if(string.length !== 2 * this.size) {
             // Invalid string size? Sets an empty mosaic drawing
             string = "ai".repeat(this.size)
@@ -283,9 +292,11 @@ class MosaicMemory {
 
         // Draws each pixels
         range(0, string.length, 2).forEach(offset => {
-            this._setPoint(
+            this.drawPixel(
                 offset >> 1,
-                MosaicMemory.charToValue(string[offset] + string[offset + 1])
+                Minitel.MosaicMemory.charToValue(
+                    string[offset] + string[offset + 1]
+                )
             )
         })
     }
@@ -295,57 +306,53 @@ class MosaicMemory {
      * @return {string} the encoded string.
      */
     toString() {
-        return this.memory.map(MosaicMemory.toChar).join("")
+        return this.memory.map(Minitel.MosaicMemory.toChar).join("")
     }
 
     /**
      * Moves the mosaic drawing up
-     * @param {number} offset Offset to shift
      */
-    shiftUp(offset) {
+    shiftUp() {
         const source = this.memory.slice()
         this.memory.forEach((value, offset) => {
-            this._setPoint(offset, source[(offset + this.width) % this.size])
+            this.drawPixel(offset, source[(offset + this.width) % this.size])
         })
     }
 
     /**
      * Moves the mosaic drawing down
-     * @param {number} offset Offset to shift
      */
-    shiftDown(offset) {
+    shiftDown() {
         const source = this.memory.slice()
         this.memory.forEach((value, offset) => {
             offset += this.width
-            this._setPoint(offset % this.size, source[offset - this.width])
+            this.drawPixel(offset % this.size, source[offset - this.width])
         })
     }
 
     /**
      * Moves the mosaic drawing left
-     * @param {number} offset Offset to shift
      */
-    shiftLeft(offset) {
+    shiftLeft() {
         const source = this.memory.slice()
         this.memory.forEach((value, offset) => {
             const srcOffset = (offset + 1) % this.width === 0
                             ? offset + 1 - this.width
                             : offset + 1
-            this._setPoint(offset, source[srcOffset])
+            this.drawPixel(offset, source[srcOffset])
         })
     }
 
     /**
      * Moves the mosaic drawing right
-     * @param {number} offset Offset to shift
      */
-    shiftRight(offset) {
+    shiftRight() {
         const source = this.memory.slice()
         this.memory.forEach((value, offset) => {
             const srcOffset = offset % this.width === 0
                             ? offset - 1 + this.width
                             : offset - 1
-            this._setPoint(offset, source[srcOffset])
+            this.drawPixel(offset, source[srcOffset])
         })
     }
 
@@ -377,7 +384,7 @@ class MosaicMemory {
             })
         })
 
-        return new MosaicZone(width, height, points)
+        return new Minitel.MosaicZone(width, height, points)
     }
 
     /**
@@ -387,8 +394,10 @@ class MosaicMemory {
      */
     putRect(zone, destination) {
         zone.forEach((value, x, y) => {
-            const pixel = MosaicMemory.toPixel(value)
-            if(pixel.transparent) { return }
+            const pixel = Minitel.MosaicMemory.toPixel(value)
+            if(pixel.transparent) {
+                return
+            }
 
             this.setPoint(
                 x + destination.x,
@@ -483,7 +492,7 @@ class MosaicMemory {
  * Characters used to encode a MosaicMemory to a string (32 values)
  * @static
  */
-MosaicMemory.codeChars = "abcdefghijklmnopqrstuvwxyz012345"
+Minitel.MosaicMemory.codeChars = "abcdefghijklmnopqrstuvwxyz012345"
 
 /**
  * Converts a value to a Pixel object.
@@ -492,7 +501,7 @@ MosaicMemory.codeChars = "abcdefghijklmnopqrstuvwxyz012345"
  * @return {Pixel} the pixel corresponding to the value
  * @static
  */
-MosaicMemory.toPixel = function(value) {
+Minitel.MosaicMemory.toPixel = function(value) {
     return {
         color: value & 0x100 ? -1 : value & 0x7,
         back: value & 0x100 ? -1 : (value & 0x38) >> 3,
@@ -509,9 +518,9 @@ MosaicMemory.toPixel = function(value) {
  * @return {string} A 2 characters string
  * @static
  */
-MosaicMemory.toChar = function(value) {
-    return MosaicMemory.codeChars[value & 0x1f]
-         + MosaicMemory.codeChars[value >> 5]
+Minitel.MosaicMemory.toChar = function(value) {
+    return Minitel.MosaicMemory.codeChars[value & 0x1f]
+         + Minitel.MosaicMemory.codeChars[value >> 5]
 }
 
 /**
@@ -521,13 +530,13 @@ MosaicMemory.toChar = function(value) {
  * @return {number} The value
  * @static
  */
-MosaicMemory.pixelToValue = function(pixel) {
+Minitel.MosaicMemory.pixelToValue = function(pixel) {
     const transparent = pixel.color < 0 || pixel.transparent
     if(transparent) {
         return 0x100
     } else {
-        return (pixel.color & 0x7)
-             | (((pixel.separated ? pixel.back : pixel.color) & 0x7) << 3)
+        return pixel.color & 0x7
+             | ((pixel.separated ? pixel.back : pixel.color) & 0x7) << 3
              | (pixel.separated ? 0x40 : 0)
              | (pixel.blink ? 0x80 : 0)
     }
@@ -543,12 +552,12 @@ MosaicMemory.pixelToValue = function(pixel) {
  * @return {number} The value
  * @static
  */
-MosaicMemory.colorToValue = function(color, back, separated, blink) {
+Minitel.MosaicMemory.colorToValue = function(color, back, separated, blink) {
     if(color < 0) {
         return 0x100
     } else {
-        return (color & 0x7)
-             | (((separated ? back : color) & 0x7) << 3)
+        return color & 0x7
+             | ((separated ? back : color) & 0x7) << 3
              | (separated ? 0x40 : 0)
              | (blink ? 0x80 : 0)
     }
@@ -561,14 +570,14 @@ MosaicMemory.colorToValue = function(color, back, separated, blink) {
  * @return {number} The value
  * @static
  */
-MosaicMemory.charToValue = function(char) {
+Minitel.MosaicMemory.charToValue = function(char) {
     if(char.length !== 2) return 0x100
 
-    const first = MosaicMemory.codeChars.indexOf(char[0])
-    const second = MosaicMemory.codeChars.indexOf(char[1])
+    const first = Minitel.MosaicMemory.codeChars.indexOf(char[0])
+    const second = Minitel.MosaicMemory.codeChars.indexOf(char[1])
 
     if(first < 0 || second < 0) return 0x100
-    return first | (second << 5)
+    return first | second << 5
 }
 
 /**
@@ -578,37 +587,41 @@ MosaicMemory.charToValue = function(char) {
  * @return {string} The encoded string
  * @static
  */
-MosaicMemory.oldToNewFormat = function(oldFormat) {
+Minitel.MosaicMemory.oldToNewFormat = function(oldFormat) {
     const fullChars = "abcdefgh"
     const sepChars = "ABCDEFGH"
 
     let newFormat = ""
-    oldFormat.split("").forEach(char => {
-        const pixel = {
-            color: 0,
-            back: 0,
-            separated: false,
-            blink: false,
-            transparent: true
-        }
-            
-        if(char !== "-") {
-            let value = fullChars.indexOf(char)
-            if(value >= 0) {
-                pixel.color = value
-                pixel.transparent = false
-            } else {
-                value = sepChars.indexOf(char)
+    oldFormat.split("").forEach(
+        char => {
+            const pixel = {
+                color: 0,
+                back: 0,
+                separated: false,
+                blink: false,
+                transparent: true
+            }
+
+            if(char !== "-") {
+                let value = fullChars.indexOf(char)
                 if(value >= 0) {
                     pixel.color = value
-                    pixel.separated = true
                     pixel.transparent = false
+                } else {
+                    value = sepChars.indexOf(char)
+                    if(value >= 0) {
+                        pixel.color = value
+                        pixel.separated = true
+                        pixel.transparent = false
+                    }
                 }
             }
+
+            newFormat += Minitel.MosaicMemory.toChar(
+                Minitel.MosaicMemory.pixelToValue(pixel)
+            )
         }
- 
-        newFormat += MosaicMemory.toChar(MosaicMemory.pixelToValue(pixel))
-   })
+    )
 
     return newFormat
 }

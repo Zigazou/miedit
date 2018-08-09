@@ -14,13 +14,16 @@
   </head>
   <body>
     <div id="miedit">
-      <div class="migrid">
-        <audio id="minitel-bip">
-          <source src="sound/minitel-bip.mp3" type="audio/mpeg"/>
-          Too bad, your browser does not support HTML5 audio or mp3 format.
-        </audio>      
-        <canvas id="minitel-screen"></canvas>
-        <div id="minitel-position"></div>
+      <div class="emulator-container">
+        <x-minitel data-speed="1200" data-color="true">
+          <canvas class="minitel-screen" data-minitel="screen"></canvas>
+          <canvas class="minitel-cursor" data-minitel="cursor"></canvas>
+
+          <audio class="minitel-beep" data-minitel="beep">
+            <source src="sound/minitel-bip.mp3" type="audio/mpeg"/>
+            Too bad, your browser does not support HTML5 audio or mp3 format.
+          </audio>      
+        </x-minitel>
       </div>
 
       <import src="import/ribbon.html"></import>
@@ -65,7 +68,7 @@
           <import src="import/tidget-form/empty.html"></import>
         </div>
 
-        <import src="import/minitel-mosaic.html"></import>
+        <import src="import/miedit-mosaic.html"></import>
       </div>
     </div>
     <script src="library/generichelper/generichelper.js"></script>
@@ -77,12 +80,18 @@
     <script src="library/split-rows/split-rows.js"></script>
     <script src="library/finite-stack/finite-stack.js"></script>
     <script src="library/lz-string/lz-string.js"></script>
+    <script src="library/settings-suite/settings-suite.js"></script>
 
     <script src="library/minitel/constant.js"></script>
     <script src="library/minitel/stream.js"></script>
+    <script src="library/minitel/text-grid.js"></script>
+    <script src="library/minitel/char-size.js"></script>
+    <script src="library/minitel/elements.js"></script>
     <script src="library/minitel/graphics-to-stream.js"></script>
     <script src="library/minitel/actions-to-stream.js"></script>
     <script src="library/minitel/ceefax-to-stream.js"></script>
+    <script src="library/minitel/protocol.js"></script>
+    <script src="library/minitel/start-emulators.js"></script>
 
     <script src="library/drawing/circle.js"></script>
     <script src="library/drawing/filled-circle.js"></script>
@@ -97,16 +106,18 @@
     <script src="library/jstree/dist/jstree.js"></script>
     <script src="library/simple-ribbon/simple-ribbon.js"></script>
 
-    <script src="app/font-sprite.js"></script>
-    <script src="app/page-cell.js"></script>
-    <script src="app/page-memory.js"></script>
-    <script src="app/mosaic-memory.js"></script>
-    <script src="app/minitel-decoder.js"></script>
-    <script src="app/minitel-screen.js"></script>
-    <script src="app/minitel-mosaic.js"></script>
+    <script src="library/minitel/font-sprite.js"></script>
+    <script src="library/minitel/page-cell.js"></script>
+    <script src="library/minitel/vram.js"></script>
+    <script src="library/minitel/vdu-cursor.js"></script>
+    <script src="library/minitel/vdu.js"></script>
+    <script src="library/minitel/mosaic-memory.js"></script>
+    <script src="library/minitel/decoder.js"></script>
+    <script src="library/minitel/minitel-emulator.js"></script>
 
-    <script src="app/mitree.js"></script>
-    <script src="app/mistorage.js"></script>
+    <script src="library/miedit/mitree.js"></script>
+    <script src="library/miedit/mistorage.js"></script>
+    <script src="library/miedit/mimosaic.js"></script>
     <script src="app/miedit-page.js"></script>
   </body>
 </html>

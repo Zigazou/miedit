@@ -9,29 +9,40 @@
   </head>
   <body>
     <div id="minitel-viewer">
-      <div id="minitel-container">
-        <audio id="minitel-bip">
+      <x-minitel data-speed="1200" data-color="true">
+        <canvas class="minitel-screen" data-minitel="screen"></canvas>
+
+        <audio class="minitel-beep" data-minitel="beep">
           <source src="sound/minitel-bip.mp3" type="audio/mpeg"/>
           Too bad, your browser does not support HTML5 audio or mp3 format.
         </audio>      
-        <canvas id="minitel-screen" />
-      </div>
+      </x-minitel>
       <div id="minitel-glass"></div>
     </div>
+
     <script src="library/generichelper/generichelper.js"></script>
     <script src="library/query-parameters/query-parameters.js"></script>
     <script src="library/finite-stack/finite-stack.js"></script>
     <script src="library/lz-string/lz-string.js"></script>
+    <script src="library/settings-suite/settings-suite.js"></script>
 
     <script src="library/minitel/constant.js"></script>
+    <script src="library/minitel/text-grid.js"></script>
+    <script src="library/minitel/char-size.js"></script>
+    <script src="library/minitel/elements.js"></script>
+    <script src="library/minitel/protocol.js"></script>
     <script src="library/minitel/stream.js"></script>
+    <script src="library/minitel/start-emulators.js"></script>
 
-    <script src="app/font-sprite.js"></script>
-    <script src="app/page-cell.js"></script>
-    <script src="app/page-memory.js"></script>
-    <script src="app/minitel-decoder.js"></script>
-    <script src="app/minitel-screen.js"></script>
+    <script src="library/minitel/font-sprite.js"></script>
+    <script src="library/minitel/page-cell.js"></script>
+    <script src="library/minitel/vram.js"></script>
+    <script src="library/minitel/vdu-cursor.js"></script>
+    <script src="library/minitel/vdu.js"></script>
+    <script src="library/minitel/decoder.js"></script>
+    <script src="library/minitel/minitel-emulator.js"></script>
+    <script src="library/minitel/start-emulators.js"></script>
     
-    <script src="app/minitel-real-viewer.js"></script>
+    <script src="app/minitel-viewer.js"></script>
   </body>
 </html>

@@ -7,7 +7,7 @@
 
 /**
  * @namespace Minitel
- */ 
+ */
 var Minitel = Minitel || {}
 
 /**
@@ -49,7 +49,7 @@ Minitel.Stream = class {
      * @param {} item Any value to insert in the queue.
      */
     push(item) {
-        let toPush = undefined
+        let toPush
 
         if(typeof item === "number") {
             // Number
@@ -63,9 +63,12 @@ Minitel.Stream = class {
                 this.items[this.length] = item.items[i]
                 this.length++
             })
-        } else if(item !== undefined && typeof item[Symbol.iterator] === "function") {
+        } else if(item !== undefined
+                  && typeof item[Symbol.iterator] === "function") {
             // Iterable object
-            for(let value of item) this.push(value)
+            for(let value of item) {
+                this.push(value)
+            }
         }
 
         if(toPush !== undefined) {
@@ -76,7 +79,7 @@ Minitel.Stream = class {
                     this.length++
                 })
             } else if(toPush > 0x7f) {
-                // Minitel does not understand values above 0x7f 
+                // Minitel does not understand values above 0x7f
                 return
             } else {
                 this.items[this.length] = toPush
@@ -123,8 +126,13 @@ Minitel.Stream = class {
                 continue
             }
 
-            if(this.items[i] === 0x1b) i++
-            if(this.items[i] === 0x1f) i+= 2
+            if(this.items[i] === 0x1b) {
+                i++
+            }
+
+            if(this.items[i] === 0x1f) {
+                i += 2
+            }
         }
 
         const trimmed = new Minitel.Stream()
@@ -135,12 +143,12 @@ Minitel.Stream = class {
 
     /**
      * Generate repeat commands while checking for overflow.
-     * 
-     * @param {string} char
-     * @param {int} count 
+     *
+     * @param {string} char Character to repeat
+     * @param {int} count How many times to repeat
      */
     generateRepeat(char, count) {
-        if(count == 1) {
+        if(count === 1) {
             return char
         } else {
             let repeats = []
@@ -173,7 +181,7 @@ Minitel.Stream = class {
             fg: undefined,
             separated: undefined,
             blink: undefined,
-            charset: undefined,
+            charset: undefined
         }
 
         const next = {
@@ -181,7 +189,7 @@ Minitel.Stream = class {
             fg: moveFirst ? 0x47 : undefined,
             separated: undefined,
             blink: undefined,
-            charset: undefined,
+            charset: undefined
         }
 
         const optimized = new Minitel.Stream()
@@ -220,8 +228,10 @@ Minitel.Stream = class {
             } else {
                 let attributeChange = false
                 for(let attr in next) {
-                    if(next[attr] === undefined) continue
-                    if(next[attr] === current[attr]) continue
+                    if(next[attr] === undefined
+                       || next[attr] === current[attr]) {
+                        continue
+                    }
                     attributeChange = true
                 }
 

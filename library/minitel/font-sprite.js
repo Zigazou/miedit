@@ -3,10 +3,15 @@
  * @file font-sprite
  * @author Frédéric BISSON <zigazou@free.fr>
  * @version 1.0
- * 
+ *
  * FontSprite uses a sprite sheet (usually a PNG image) to print characters
  * on a canvas. It handles colors.
  */
+
+/**
+ * @namespace Minitel
+ */
+var Minitel = Minitel || {}
 
 /**
  * @typedef {Object} Point
@@ -30,7 +35,7 @@
  * A FontSprite is a facility which draws bitmap characters on a canvas based
  * on a sprite map, a PNG image with white pixels and background transparency.
  */
-class FontSprite {
+Minitel.FontSprite = class {
     /**
      * Create a FontSprite.
      * @param {string} sheetURL The URL of the sprite sheet to use.
@@ -101,13 +106,13 @@ class FontSprite {
             canvas.height = source.height
 
             const ctx = canvas.getContext("2d")
-            const [ wid, hei ] = [ canvas.width, canvas.height ]
+            const [width, height] = [canvas.width, canvas.height]
 
-            ctx.clearRect(0, 0, wid, hei)
-            ctx.drawImage(source, 0, 0, wid, hei, 0, 0, wid, hei)
+            ctx.clearRect(0, 0, width, height)
+            ctx.drawImage(source, 0, 0, width, height, 0, 0, width, height)
             ctx.fillStyle = color
             ctx.globalCompositeOperation = "source-in"
-            ctx.fillRect(0, 0, wid, hei)
+            ctx.fillRect(0, 0, width, height)
 
             return canvas
         }
@@ -136,11 +141,9 @@ class FontSprite {
         range(this.spriteNumber).forEach(ord => {
             this.allCoordinates.push({
                 "x": Math.floor(ord / this.grid.rows) * this.char.width,
-                "y": (ord % this.grid.rows) * this.char.height,
+                "y": ord % this.grid.rows * this.char.height
             })
         })
-
-        return 
     }
 
     /**
@@ -163,8 +166,8 @@ class FontSprite {
     /**
      * @param {CanvasRenderingContext2D} ctx Context used for drawing
      * @param {number} ord Character ordinal
-     * @param {number} x Destination x coordinate 
-     * @param {number} y Destination y coordinate 
+     * @param {number} x Destination x coordinate
+     * @param {number} y Destination y coordinate
      * @param {Object} part Part of the character (when doubling is used)
      * @param {number} part.x 0=left part
      * @param {number} part.y 0=bottom part
@@ -181,7 +184,7 @@ class FontSprite {
 
         const offset = {
             x: Math.floor(part.x * this.char.width / mult.width),
-            y: Math.floor(part.y * this.char.height / mult.height),
+            y: Math.floor(part.y * this.char.height / mult.height)
         }
 
         if(color === undefined) color = 0
@@ -282,6 +285,11 @@ class FontSprite {
      *                          byte corresponding to 8 pixels of a line.
      */
     defineChar(ord, design) {
+        if(ord <= 32 || ord >= 127) return
+        if(design.length !== 10) return
+
+        const coords = this.toCoordinates(ord)
+
         const defineOneChar = (spriteSheetColor, color) => {
             const ctx = spriteSheetColor.getContext("2d")
             ctx.globalCompositeOperation = "source-over"
@@ -293,7 +301,7 @@ class FontSprite {
                 byte = byte & 0xff
 
                 range(8).forEach(bitPosition => {
-                    if(byte & (1 << (7 - bitPosition))) {
+                    if(byte & 1 << 7 - bitPosition) {
                         ctx.fillRect(
                             coords.x + bitPosition, coords.y + offsetY,
                             1, 1
@@ -303,13 +311,10 @@ class FontSprite {
             })
         }
 
-        if(ord <= 32 || ord >= 127) return
-        if(design.length !== 10) return
-
-        const coords = this.toCoordinates(ord)
         this.spriteSheetColors.color.forEach((spriteSheetColor, index) => {
             defineOneChar(spriteSheetColor, Minitel.colors[index])
         })
+
         this.spriteSheetColors.gray.forEach((spriteSheetColor, index) => {
             defineOneChar(spriteSheetColor, Minitel.grays[index])
         })

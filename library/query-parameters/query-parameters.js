@@ -5,12 +5,14 @@
  * @return {?string} The value or undefined if not available
  */
 function queryParameters(varName) {
-    function decode(str) { return decodeURIComponent(str.replace('+', ' ')) }
+    function decode(str) {
+        return decodeURIComponent(str.replace('+', ' '))
+    }
 
     const value = window.location.search.substring(1)
         .split("&")
-        .filter(function(cpl) { return cpl.startsWith(varName + '=') })
-        .map(function(cpl) { return cpl.substr(varName.length + 1) })
+        .filter(cpl => cpl.startsWith(varName + '='))
+        .map(cpl => cpl.substr(varName.length + 1))
 
-    return (value.length === 1 ? decode(value[0]) : undefined)
+    return value.length === 1 ? decode(value[0]) : undefined
 }

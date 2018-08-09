@@ -1,5 +1,5 @@
 /**
- * @file minitel-mosaic.js
+ * @file mimosaic.js
  * @author Frédéric BISSON <zigazou@free.fr>
  * @version 1.0
  *
@@ -7,7 +7,12 @@
  * real graphic with character based only screen. In the case of Videotex and
  * the Minitel, a mosaic character holds 6 pixels (2 per width, 3 per height).
  */
- 
+
+/**
+ * @namespace MiEdit
+ */
+var MiEdit = MiEdit || {}
+
 /**
  * @typedef {Object} Point
  * @property {number} x X coordinate
@@ -19,16 +24,16 @@
  */
 
 /**
- * @callback previewCallback 
+ * @callback previewCallback
  * @param {CanvasRenderingContext2D} ctx Canvas context with which the function
  *                                       can draw
  */
 
 /**
- * MinitelMosaic is the GUI allowing the user to draw and import/export a mosaic
+ * MiEdit.MiMosaic is the GUI allowing the user to draw and import/export a mosaic
  * drawing.
  */
-class MinitelMosaic {
+MiEdit.MiMosaic = class {
     /**
      * @param {HTMLElement} root DOM element containing all the other elements
      *                           making the GUI of the mosaic drawing editor
@@ -53,7 +58,7 @@ class MinitelMosaic {
 
         /**
          * Canvas dimensions in real pixels
-         * @member {Object} 
+         * @member {Object}
          * @property {number} width Width of the canvas in pixels
          * @property {number} height Height of the canvas in pixels
          * @private
@@ -118,7 +123,7 @@ class MinitelMosaic {
          * @member {MosaicMemory}
          * @private
          */
-        this.memory = new MosaicMemory(
+        this.memory = new Minitel.MosaicMemory(
             this.resolution.width,
             this.resolution.height
         )
@@ -159,7 +164,7 @@ class MinitelMosaic {
         this.clipboard = {
             bitmap: [],
             width: 0,
-            height: 0,
+            height: 0
         }
 
         /**
@@ -297,7 +302,7 @@ class MinitelMosaic {
         if(this.undo.stack.length > 100) this.undo.stack.shift()
 
         // Update the index
-        this.undo.index = this.undo.stack.length - 1        
+        this.undo.index = this.undo.stack.length - 1
     }
 
     /**
@@ -366,7 +371,7 @@ class MinitelMosaic {
      * @param {HTMLEvent} event Event that generated the call
      * @param {mixed} param Parameters of the event
      */
-    onImportEditTf(event, param) {
+    onImportEditTf(event) {
         this.memory = Minitel.drawCeefax(event.target[0].value)
         this.drawPoints()
     }
@@ -418,7 +423,7 @@ class MinitelMosaic {
      * @param {HTMLEvent} event Event that generated the call
      * @param {mixed} param Parameters of the event
      */
-    onErase(event, param) {
+    onErase(event) {
         this.color = -1
         this.setCurrentIcon("mosaic-current-foreground", event.target)
     }
@@ -468,7 +473,7 @@ class MinitelMosaic {
      * @param {HTMLEvent} event Event that generated the call
      * @param {mixed} param Parameters of the event
      */
-    onText(event, param) {
+    onText(event) {
         // Show the text editor form
         document.getElementById("graphics-text-form").classList.add("visible")
 
@@ -480,7 +485,7 @@ class MinitelMosaic {
      * @param {HTMLEvent} event Event that generated the call
      * @param {mixed} param Parameters of the event
      */
-    onSetText(event, param) {
+    onSetText(event) {
         document.getElementById("graphics-text-form")
                 .classList.remove("visible")
 
@@ -500,10 +505,10 @@ class MinitelMosaic {
             form["text-compress"].checked
         )
 
-        // Copy the generated image in the clipboard        
-        this.clipboard = new MosaicZone(
+        // Copy the generated image in the clipboard
+        this.clipboard = new Minitel.MosaicZone(
             drawing.width, drawing.height,
-            drawing.bitmap.map(MosaicMemory.pixelToValue)
+            drawing.bitmap.map(Minitel.MosaicMemory.pixelToValue)
         )
 
         // Switch to the paste tool
@@ -512,7 +517,7 @@ class MinitelMosaic {
 
     /**
      * Draws a preview on the preview layer given a user drawing function.
-     * 
+     *
      * @param {previewCallback} func Function called which will do the actual
      *                               drawing of the preview. The function does
      *                               not have to take care of context opening
@@ -535,7 +540,7 @@ class MinitelMosaic {
      * It converts the click screen position to a coordinates in the mosaic
      * drawing system. Handler methods must begin with "onTool" followed by
      * the identifier of the tool.
-     * 
+     *
      * @param {HTMLEvent} event The event that generated the call
      * @param {string} actionType The action to execute
      * @private
@@ -587,7 +592,7 @@ class MinitelMosaic {
      * @param {HTMLEvent} event Event that generated the call
      * @param {mixed} param Parameters of the event
      */
-    onUndo(event, param) {
+    onUndo() {
         this.doUndo()
     }
 
@@ -596,7 +601,7 @@ class MinitelMosaic {
      * @param {HTMLEvent} event Event that generated the call
      * @param {mixed} param Parameters of the event
      */
-    onRedo(event, param) {
+    onRedo() {
         this.doRedo()
     }
 
@@ -637,7 +642,7 @@ class MinitelMosaic {
      * @param {Point} point Coordinates of the point where the action occured
      * @param {HTMLEvent} event The event that initiated the call
      */
-    onToolFill(actionType, point, event) {
+    onToolFill(actionType, point) {
         if(actionType === "down") {
             this.startUndo()
             this.fillArea(point, this.color, this.separated)
@@ -675,7 +680,7 @@ class MinitelMosaic {
                     ctx.stroke()
                 }
             })
-        } else if(   this.tool.isDrawing
+        } else if(this.tool.isDrawing
                   && (actionType === "up" || actionType === "out")
             ) {
             this.tool.isDrawing = false
@@ -709,7 +714,7 @@ class MinitelMosaic {
      * @param {Point} point Coordinates of the point where the action occured
      * @param {HTMLEvent} event The event that initiated the call
      */
-    onToolCurve(actionType, point, event) {
+    onToolCurve(actionType, point) {
         if(actionType === "down" && this.tool.start === undefined) {
             this.tool.start = point
         } else if(actionType === "move" && this.tool.start !== undefined) {
@@ -732,7 +737,7 @@ class MinitelMosaic {
 
                 ctx.stroke()
             })
-        } else if(   actionType === "up"
+        } else if(actionType === "up"
                   && this.tool.start !== undefined
                   && this.endPoint === undefined
             ) {
@@ -755,7 +760,7 @@ class MinitelMosaic {
      * @param {Point} point Coordinates of the point where the action occured
      * @param {HTMLEvent} event The event that initiated the call
      */
-    onToolCopy(actionType, point, event) {
+    onToolCopy(actionType, point) {
         if(actionType === "down") {
             this.tool.isDrawing = true
             this.tool.start = point
@@ -787,12 +792,12 @@ class MinitelMosaic {
      * @param {Point} point Coordinates of the point where the action occured
      * @param {HTMLEvent} event The event that initiated the call
      */
-    onToolPaste(actionType, point, event) {
+    onToolPaste(actionType, point) {
         if(actionType === "down") {
             point.x = Math.floor(point.x - this.clipboard.width / 2)
             point.y = Math.floor(point.y - this.clipboard.height / 2)
 
-            this.startUndo()        
+            this.startUndo()
             this.pasteRect(point)
             this.stopUndo()
         } else if(actionType === "move") {
@@ -832,14 +837,6 @@ class MinitelMosaic {
             this.tool.isDrawing = true
             this.tool.start = point
         } else if(actionType === "move" && this.tool.isDrawing) {
-            const fromCoords = this.convertCoordinates(
-                this.tool.start.x, this.tool.start.y, 0, false
-            )
-
-            const toCoords = this.convertCoordinates(
-                point.x, point.y, 0, false
-            )
-
             this.previewDo(ctx => {
                 ctx.fillStyle = Minitel.colors[this.color]
                 ctx.strokeStyle = Minitel.colors[this.color]
@@ -893,7 +890,7 @@ class MinitelMosaic {
         }
 
         this.drawPoints()
-        
+
         this.stopUndo()
     }
 
@@ -912,12 +909,12 @@ class MinitelMosaic {
         const realX = Math.floor((event.clientX - rect.left) / this.zoom)
         const realY = Math.floor((event.clientY - rect.top) / this.zoom)
 
-        return({
+        return {
             "x": col,
             "y": row,
             "realX": realX,
             "realY": realY
-        })
+        }
     }
 
     /**
@@ -1025,8 +1022,8 @@ class MinitelMosaic {
     drawPoints() {
         this.memory.getChangedPoints().forEach(point => {
             this.pointsToCheck.add(
-                ((point.x / this.pixelsPerWidth) & 0x3ff) +
-                ((point.y / this.pixelsPerHeight) << 10)
+                point.x / this.pixelsPerWidth & 0x3ff +
+                (point.y / this.pixelsPerHeight << 10)
             )
             this.drawPoint(point)
         })
@@ -1172,7 +1169,7 @@ class MinitelMosaic {
                 filled ? 1 : this.pointSize
             )
         })
-        
+
         this.drawPoints()
     }
 
@@ -1215,7 +1212,7 @@ class MinitelMosaic {
                 this.blink
             )
         })
-        
+
         this.drawPoints()
     }
 
@@ -1235,7 +1232,7 @@ class MinitelMosaic {
             const x = (value & 0x3ff) * this.pixelsPerWidth
             const y = (value >> 10) * this.pixelsPerHeight
 
-            const valid = MinitelMosaic.validCombination(
+            const valid = MiEdit.MiMosaic.validCombination(
                 this.memory.getColor(x, y),
                 this.memory.getColor(x + 1, y),
                 this.memory.getColor(x, y + 1),
@@ -1304,7 +1301,7 @@ class MinitelMosaic {
 /**
  * A few prime numbers used for detecting invalid combinations
  */
-MinitelMosaic.primes = [3, 5, 7, 11, 13, 17, 19, 23, 29]
+MiEdit.MiMosaic.primes = [3, 5, 7, 11, 13, 17, 19, 23, 29]
 
 /**
  * List of all valid combinations.
@@ -1320,10 +1317,7 @@ MinitelMosaic.primes = [3, 5, 7, 11, 13, 17, 19, 23, 29]
  * numbers caused by permutation of colors (for example, blue on red will
  * generate the same value than red on blue).
  */
-MinitelMosaic.validCombinations = (function () {
-    // 8 colors + transparency
-    const colors = [-1, 0, 1, 2, 3, 4, 5, 6, 7]
-
+MiEdit.MiMosaic.validCombinations = (function () {
     const valids = new Set()
 
     // Generate every possible colors couple (81 couples)
@@ -1332,12 +1326,12 @@ MinitelMosaic.validCombinations = (function () {
         // 0 color1 + 6 color2, 1 color1 + 5 color2, etc.
         range(6).forEach(i => {
             valids.add(
-                Math.pow(MinitelMosaic.primes[color1 + 1], i) *
-                Math.pow(MinitelMosaic.primes[color2 + 1], 6 - i)
+                Math.pow(MiEdit.MiMosaic.primes[color1 + 1], i) *
+                Math.pow(MiEdit.MiMosaic.primes[color2 + 1], 6 - i)
             )
         })
     })
-    
+
     return valids
 })()
 
@@ -1345,14 +1339,13 @@ MinitelMosaic.validCombinations = (function () {
  * Tells if a combination of colors is valid for a mosaic character
  * @return {boolean} true if the combination is valid, false otherwise
  */
-MinitelMosaic.validCombination = function(a, b, c, d, e, f) {
-    return MinitelMosaic.validCombinations.has(
-        MinitelMosaic.primes[a + 1] *
-        MinitelMosaic.primes[b + 1] *
-        MinitelMosaic.primes[c + 1] *
-        MinitelMosaic.primes[d + 1] *
-        MinitelMosaic.primes[e + 1] *
-        MinitelMosaic.primes[f + 1]
+MiEdit.MiMosaic.validCombination = function(a, b, c, d, e, f) {
+    return MiEdit.MiMosaic.validCombinations.has(
+        MiEdit.MiMosaic.primes[a + 1] *
+        MiEdit.MiMosaic.primes[b + 1] *
+        MiEdit.MiMosaic.primes[c + 1] *
+        MiEdit.MiMosaic.primes[d + 1] *
+        MiEdit.MiMosaic.primes[e + 1] *
+        MiEdit.MiMosaic.primes[f + 1]
     )
 }
-

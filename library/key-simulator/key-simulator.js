@@ -3,7 +3,7 @@
  * @file key-simulator
  * @author Frédéric BISSON <zigazou@free.fr>
  * @version 1.0
- * 
+ *
  * This class aims to simulate keyboard click sounds.
  *
  */

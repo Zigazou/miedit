@@ -6,8 +6,9 @@ const inputNumberButton = {
     /**
      * Adds plus and minus buttons to an input element of type number.
      * @param {Element} element An input element of type number
+     * @private
      */
-    _patch: function(element) {
+    patchElement: function(element) {
         // Create the plus button
         const bPlus = document.createElement("button")
         bPlus.className = "fa fa-plus btn btn-info"
@@ -15,7 +16,7 @@ const inputNumberButton = {
 
         // Create the minus button
         const bMinus = document.createElement("button")
-        bMinus.className = "fa fa-minus btn btn-info" 
+        bMinus.className = "fa fa-minus btn btn-info"
         bMinus.innerHTML = '<span class="btn-hidden">-</span>'
 
         // Add the buttons
@@ -45,6 +46,6 @@ const inputNumberButton = {
             document.querySelectorAll("input[type=number]")
         )
 
-        inputTags.map(inputNumberButton._patch)
-    },
+        inputTags.map(inputNumberButton.patchElement)
+    }
 }

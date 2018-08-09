@@ -419,12 +419,51 @@
   <h3>Run</h3>
   <div id="run-tab">
     <div>
+      <h4>Speed settings</h4>
+      <button class="large" data-call="onSetSpeed" data-param="1200">
+        <img src="icon/miicons.svg#run-1200" /><br/>1200<br/>bps
+      </button>
+      <button class="large" data-call="onSetSpeed" data-param="4800">
+        <img src="icon/miicons.svg#run-4800" /><br/>4800<br/>bps
+      </button>
+      <button class="large" data-call="onSetSpeed" data-param="9600">
+        <img src="icon/miicons.svg#run-9600" /><br/>9600<br/>bps
+      </button>
+    </div>
+
+    <hr/>
+
+    <div>
+      <h4>Color</h4>
+      <button class="large" data-call="onSetColor" data-param="true">
+        <img src="icon/miicons.svg#run-color" /><br/>Minitel<br/>colors
+      </button>
+      <button class="large" data-call="onSetColor" data-param="false">
+        <img src="icon/miicons.svg#run-gray" /><br/>Minitel<br/>grays
+      </button>
+    </div>
+
+    <hr/>
+
+    <div>
+      <h4>Position</h4>
+      <button class="large" data-call="onShowPosition" data-param="true">
+        <img src="icon/miicons.svg#run-position-show" /><br/>Show<br/>position
+      </button>
+      <button class="large" data-call="onShowPosition" data-param="false">
+        <img src="icon/miicons.svg#run-position-hide" /><br/>Hide<br/>position
+      </button>
+    </div>
+  
+    <hr/>
+  
+    <div>
       <h4>Run</h4>
       <button class="large" data-call="onRunSlow">
-        <img src="icon/miicons.svg#run-slow" /><br/>Run<br/>slow
+        <img src="icon/miicons.svg#run-slow" /><br/>Minitel<br/>speed
       </button>
       <button class="large" data-call="onRunFast">
-        <img src="icon/miicons.svg#run-fast" /><br/>Run<br/>fast
+        <img src="icon/miicons.svg#run-fast" /><br/>Full<br/>speed
       </button>
     </div>
   </div>

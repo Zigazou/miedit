@@ -4,24 +4,23 @@ body {
     background-color: #202020;
 }
 
-.migrid { text-align: center; }
-
 canvas {
+    /* Disables any smoothing algorithm when image is resized */
     image-rendering: crisp-edges;
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
+
     position: fixed;
     top: 0;
     bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: auto;
     margin: auto;
     overflow: auto;
 }
 
-canvas.scale-height {
-    width: auto;
-    height: 100%;
+@media (min-aspect-ratio: 320/250) {
+    canvas { width: auto; height: 100%; }
+}
+
+@media (max-aspect-ratio: 320/250) {
+    canvas { width: 100%; height: auto; }
 }

@@ -7,7 +7,7 @@
 
 /**
  * @namespace Minitel
- */ 
+ */
 var Minitel = Minitel || {}
 
 /**
@@ -16,7 +16,7 @@ var Minitel = Minitel || {}
  * a width key. Values contained in the dictionary are strings, they need to
  * be converted to number of anything else before using them.
  *
- * @callback actionCallback 
+ * @callback actionCallback
  * @param {Stream} stream The Minitel Stream to which add the Videotex codes
  * @param {Object} data Data object
  * @param {?number} offsetX X offset
@@ -56,7 +56,7 @@ Minitel.actionsToStream = function(actions, offsetX, offsetY) {
 
         // Parse the relative offsets
         const [ relOffsetX, relOffsetY ] = [
-            action.data.offsetX, action.data.offsetY 
+            action.data.offsetX, action.data.offsetY
         ].map(v => parseInt(v, 10)
         ).map(v => isNaN(v) ? 0 : v)
 
@@ -83,8 +83,10 @@ Minitel.actions = {}
  * sent in the stream.
  * @function
  */
-Minitel.actions["content-string"] = function(stream, data, offsetX, offsetY) {
-    if(data.value === undefined) { return }
+Minitel.actions["content-string"] = function(stream, data, offsetX) {
+    if(data.value === undefined) {
+        return
+    }
 
     const unoptimized = new Minitel.Stream()
     unoptimized.push(data.value)
@@ -115,9 +117,11 @@ Minitel.actions["content-block"] = function(stream, data, offsetX, offsetY) {
         data.x, data.y, data.width, data.height
     ].map(v => parseInt(v, 10))
 
-    if([ relX, relY, width, height ].some(isNaN)) { return }
+    if([relX, relY, width, height].some(isNaN)) {
+        return
+    }
 
-    const [ x, y ] = [ offsetX + relX + 1, offsetY + relY ]
+    const [x, y] = [offsetX + relX + 1, offsetY + relY]
 
     // Clean the value. HTML forms work with \r\n convention while we work with
     // \n Unix convention. We also need to replace multiple spaces with one.
@@ -151,10 +155,15 @@ Minitel.actions["content-box"] = function(stream, data, offsetX, offsetY) {
         data.x, data.y, data.width, data.height, data.bgcolor
     ].map(v => parseInt(v, 10))
 
-    if([relX, relY, width, height, bgcolor].some(isNaN)) { return }
-    if(bgcolor < 0 || bgcolor > 7) { return }
+    if([relX, relY, width, height, bgcolor].some(isNaN)) {
+        return
+    }
 
-    const [ x, y ] = [ offsetX + relX + 1, offsetY + relY ]
+    if(bgcolor < 0 || bgcolor > 7) {
+        return
+    }
+
+    const [x, y] = [offsetX + relX + 1, offsetY + relY]
     range(y, y + height).forEach(row => {
         stream.push([
             0x1f, 0x40 + row, 0x40 + x,
@@ -172,8 +181,10 @@ Minitel.actions["content-graphics"] = function(stream, data, offsetX, offsetY) {
     if(data.value === undefined) return
 
     // Parse the coordinates
-    const [ x, y ] = [ data.x, data.y ].map(v => parseInt(v, 10))
-    if([ x, y ].some(isNaN)) { return }
+    const [x, y] = [data.x, data.y].map(v => parseInt(v, 10))
+    if([x, y].some(isNaN)) {
+        return
+    }
 
     // The value contains an encoded string which is converted to a Minitel
     // stream by a more complex function
@@ -185,7 +196,9 @@ Minitel.actions["content-graphics"] = function(stream, data, offsetX, offsetY) {
  * @function
  */
 Minitel.actions["content-ceefax"] = function(stream, data) {
-    if(data.value === undefined) { return }
+    if(data.value === undefined) {
+        return
+    }
 
     // Ceefax drawings are full screen, they cannot be placed elsewhere.
     stream.push([0x1f, 0x41, 0x41])
@@ -214,8 +227,10 @@ Minitel.actions["move-home"] = function(stream, data, offsetX, offsetY) {
  */
 Minitel.actions["move-locate"] = function(stream, data, offsetX, offsetY) {
     // Parse the coordinates
-    const [ x, y ] = [ data.x, data.y ].map(v => parseInt(v, 10))
-    if([ x, y ].some(isNaN)) { return }
+    const [x, y] = [data.x, data.y].map(v => parseInt(v, 10))
+    if([x, y].some(isNaN)) {
+        return
+    }
 
     stream.push([0x1f, 0x40 + y + offsetY, 0x40 + x + offsetX + 1])
 }
@@ -248,7 +263,7 @@ Minitel.actions["drcs-create"] = function(stream, data) {
 
     // Pixels are contained in checkboxes, we need to extract them.
     const bits = []
-    range2([ 10, 8 ]).forEach((y, x) => {
+    range2([10, 8]).forEach((y, x) => {
         bits.push(data["px-" + x + "-" + y] ? 1 : 0)
     })
 
@@ -257,7 +272,7 @@ Minitel.actions["drcs-create"] = function(stream, data) {
     let bitCount = 0
     let sextet = 0
     bits.forEach(bit => {
-        sextet = (sextet << 1) | bit
+        sextet = sextet << 1 | bit
         bitCount++
         if(bitCount === 6) {
             sextets.push(0x40 + sextet)
@@ -268,7 +283,7 @@ Minitel.actions["drcs-create"] = function(stream, data) {
     sextets.push(0x40 + (sextet << 4))
 
     // Remove unnecessary values at the end of the sequence
-    while(sextets.length > 0 && sextets[sextets.length - 1] == 0x40) {
+    while(sextets.length > 0 && sextets[sextets.length - 1] === 0x40) {
         sextets.pop()
     }
 
@@ -318,7 +333,7 @@ Minitel.actions["drcs-advanced-char"] = function(stream, data) {
 Minitel.actions["drcs-advanced-def"] = function(stream, data) {
     // Pixels are contained in checkboxes, we need to extract them.
     const bits = []
-    range2([ 10, 8 ]).forEach((y, x) => {
+    range2([10, 8]).forEach((y, x) => {
         bits.push(data["apx-" + x + "-" + y] ? 1 : 0)
     })
 
@@ -327,7 +342,7 @@ Minitel.actions["drcs-advanced-def"] = function(stream, data) {
     let bitCount = 0
     let sextet = 0
     bits.forEach(bit => {
-        sextet = (sextet << 1) | bit
+        sextet = sextet << 1 | bit
         bitCount++
         if(bitCount === 6) {
             sextets.push(0x40 + sextet)
@@ -338,7 +353,7 @@ Minitel.actions["drcs-advanced-def"] = function(stream, data) {
     sextets.push(0x40 + (sextet << 4))
 
     // Remove unnecessary values at the end of the sequence
-    while(sextets.length > 0 && sextets[sextets.length - 1] == 0x40) {
+    while(sextets.length > 0 && sextets[sextets.length - 1] === 0x40) {
         sextets.pop()
     }
 
@@ -351,7 +366,7 @@ Minitel.actions["drcs-advanced-def"] = function(stream, data) {
  * Handles "drcs-advanced-end" actions. Ends character redefinition.
  * @function
  */
-Minitel.actions["drcs-advanced-end"] = function(stream, data) {
+Minitel.actions["drcs-advanced-end"] = function(stream) {
     stream.push([0x1f, 0x41, 0x41])
 }
 
@@ -362,11 +377,11 @@ Minitel.actions["drcs-advanced-end"] = function(stream, data) {
  */
 Minitel.actions["drcs-black-white"] = function(stream, data, offsetX, offsetY) {
     // Parse the coordinates
-    const [ x, y ] = [ data.x, data.y ].map(v => parseInt(v, 10))
-    if([ x, y ].some(isNaN)) { return }
+    const [x, y] = [data.x, data.y].map(v => parseInt(v, 10))
+    if([x, y].some(isNaN)) return
     if(data.image === undefined) return
 
-    let drcsImage = undefined
+    let drcsImage
 
     // The image should have already been parsed and analyzed
     try {
@@ -386,7 +401,7 @@ Minitel.actions["drcs-black-white"] = function(stream, data, offsetX, offsetY) {
 
         // Each character design is pushed 6 bits by 6 bits in the stream
         bits.split("").forEach(bit => {
-            sextet = (sextet << 1) | bit
+            sextet = sextet << 1 | bit
             bitCount++
             if(bitCount === 6) {
                 sextets.push(0x40 + sextet)
@@ -397,14 +412,14 @@ Minitel.actions["drcs-black-white"] = function(stream, data, offsetX, offsetY) {
         sextets.push(0x40 + (sextet << 4))
 
         // Remove unnecessary values at the end of the sequence
-        while(sextets.length > 0 && sextets[sextets.length - 1] == 0x40) {
+        while(sextets.length > 0 && sextets[sextets.length - 1] === 0x40) {
             sextets.pop()
         }
 
         stream.push(sextets)
         stream.push(0x30)
     })
-        
+
     // Send image
     drcsImage.chars.forEach((row, offset) => {
         stream.push([0x1f, 0x40 + y + offset + offsetY, 0x40 + x + offsetX + 1])
@@ -453,7 +468,7 @@ Minitel.rawKeywords = {
     CSI: [0x1B, 0x5B],
     PRO1: [0x1B, 0x39],
     PRO2: [0x1B, 0x3A],
-    PRO3: [0x1B, 0x3B],
+    PRO3: [0x1B, 0x3B]
 }
 
 /**
@@ -476,7 +491,10 @@ Minitel.actions["content-raw"] = function(stream, data) {
             stream.push(keyword[1])
         } else if(keyword.length === 2) {
             const number = parseInt(keyword, 16)
-            if(isNaN(number)) { return }
+            if(isNaN(number)) {
+                return
+            }
+
             stream.push(number)
         }
     })
