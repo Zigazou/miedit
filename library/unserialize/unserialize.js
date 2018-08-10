@@ -4,8 +4,6 @@
  *
  *     key=value&key=value&key=value...
  *
- * 
- *
  * @param {string} serialized The serialized values
  */
 Element.prototype.unserialize = function(serialized) {
