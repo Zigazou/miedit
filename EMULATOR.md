@@ -147,6 +147,24 @@ The Minitel emulator is run by instanciating the `Minitel.Emulator` class.
 
 The emulator comes with a `startEmulators` helper function.
 
+Running every emulator present on a page is as simple as:
+
+    const emulators = Minitel.startEmulators()
+
+This works well when settings are defined as `x-minitel` attributes.
+
+If you want to specify settings other way, you will have to directly use the
+`Minitel.Emulator` class, which is not that difficult to do.
+
+### Specifying settings
+
+Settings can be specified multiple ways. The priority order is the following:
+
+- query parameters,
+- function argument,
+- `data-*` attribute,
+- default value.
+
 Classes
 -------
 
