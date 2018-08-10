@@ -11,12 +11,11 @@ body {
     height: 100%;
 }
 
-#minitel-container {
+x-minitel {
     display: table-cell;
     width: 100%;
     height: 100%;
     background-image: url(../image/minitel-background.jpg);
-    background-size: 100% auto;
     background-position: center center;
     background-repeat: no-repeat;
     vertical-align: middle;
@@ -30,17 +29,12 @@ body {
     width: 100%;
     height: 100%;
     background-image: url(../image/minitel-glass.png);
-    background-size: 100% auto;
     background-position: center center;
     background-repeat: no-repeat;
 }
 
-#minitel-screen {
+x-minitel canvas {
     position: relative;
-    margin-top: -24%;
-    left: -0.3%;
-    width: 45%;
-    height: auto;
     overflow: auto;
 
     transform: rotate(0.8deg)
@@ -51,12 +45,28 @@ body {
                rotateZ(0.6deg);
 }
 
-#minitel-viewer.scale-height #minitel-container { background-size: auto 100%; }
-#minitel-viewer.scale-height #minitel-glass { background-size: auto 100%; }
+@media (min-aspect-ratio: 2065/2160) {
+    x-minitel { background-size: auto 100%; }
 
-#minitel-viewer.scale-height #minitel-screen {
-    width: auto;
-    height: 34%;
-    top: -11%;
-    margin-top: 0;
+    #minitel-glass { background-size: auto 100%; }
+    
+    x-minitel canvas {
+        margin-top: 0;
+        width: auto;
+        height: 34%;
+        top: -11%;
+    }
+}
+
+@media (max-aspect-ratio: 2065/2160) {
+    x-minitel { background-size: 100% auto; }
+
+    #minitel-glass { background-size: 100% auto; }
+
+    x-minitel canvas {
+        margin-top: -24%;
+        left: -0.3%;
+        width: 45%;
+        height: auto;
+    }
 }

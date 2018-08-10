@@ -1,32 +1,25 @@
 "use strict"
 /**
- * @file page-memory
+ * @file vdu
  * @author Frédéric BISSON <zigazou@free.fr>
  * @version 1.0
- * 
- * PageMemory simulates a Minitel page memory connected to a screen using a 
- * canvas.
+ *
+ * VDU simulates a Minitel video display unit connected to a screen (a canvas)
+ * and video memory (VRAM).
  */
 
 /**
- * @typedef {Object} Grid
- * @property {number} cols Number of characters per width.
- * @property {number} rows Number of characters per height.
+ * @namespace Minitel
  */
+var Minitel = Minitel || {}
 
 /**
- * @typedef {Object} Char
- * @property {number} width Width in pixels of a character.
- * @property {number} height Height in pixels of a character.
+ * Video display unit is a rendering of a video memory in a canvas
  */
-
-/**
- * PageMemory is a rendering of a page memory in a canvas
- */
-class PageMemory {
+Minitel.VDU = class {
     /**
-     * @param {Object} grid How the page is organized.
-     * @param {Object} char Character characteristics.
+     * @param {Minitel.TextGrid} grid How the page is organized.
+     * @param {Minitel.CharSize} char Character characteristics.
      * @param {HTMLCanvasElement} canvas The canvas which will be used as the
      *                                   screen.
      * @param {boolean} color true for color, false for black and white
@@ -37,13 +30,13 @@ class PageMemory {
         const frameRate = 50 // Frame per second
 
         /**
-         * @member {Grid}
+         * @member {TextGrid}
          * @private
          */
         this.grid = grid
 
         /**
-         * @member {Char}
+         * @member {CharSize}
          * @private
          */
         this.char = char
@@ -61,17 +54,17 @@ class PageMemory {
         this.context = this.createContext()
 
         /**
-         * @member {boolean}
-         * @private
-         */
-        this.globalMask = true
-
-        /**
          * The status character shown in the upper right corner of the screen
          * @member {int}
          * @private
          */
         this.statusCharacter = 0x46
+
+        /**
+         * @member {boolean}
+         * @private
+         */
+        this.globalMask = true
 
         // Helper array
         const rows = []
@@ -79,35 +72,16 @@ class PageMemory {
 
         /**
          * Cursor position and visibility
-         * @member {Object}
-         * @property {integer} x X position
-         * @property {integer} y Y position
-         * @property {boolean} visible Is the cursor visible or not?
-         * @property {HTMLCanvasElement} canvas Canvas on which to draw cursor
-         * @private
+         * @member {Minitel.VDUCursor}
          */
-        this.cursor = {
-            x: 0,
-            y: 1,
-            visible: false,
-            canvas: cancur
-        }
+        this.cursor = new Minitel.VDUCursor(grid, char, cancur)
 
         /**
-         * A two dimension array of Cells
-         * @member {Cell[][]}
+         * The video memory
+         * @member {Minitel.VRAM}
          * @private
          */
-        this.memory = []
-
-        // Initializes the page memory with default mosaic cells
-        range(0, this.grid.rows).forEach(j => {
-            let row = []
-            range(0, this.grid.cols).forEach(i => {
-                row[i] = new MosaicCell()
-            })
-            this.memory[j] = row
-        })
+        this.vram = new Minitel.VRAM(grid)
 
         /**
          * Keeps the last blink state
@@ -127,25 +101,24 @@ class PageMemory {
         /**
          * List indicating which row has been changed.
          * @member {boolean[]}
-         * @private
          */
         this.changed = rows.map(() => true)
 
         /**
          * G0 is the alphanumeric character set, G1 is the mosaic character set
-         * G'0 and G'1 are the DRCS counterpart
+         * G0d and G1d are the DRCS counterpart
          * @member {Object}
          * @property {FontSprite} G0 Standard font sprites
          * @property {FontSprite} G1 Mosaic font sprites
-         * @property {FontSprite} G'0 DRCS standard font sprites
-         * @property {FontSprite} G'1 DRCS mosaic font sprites
+         * @property {FontSprite} G0d DRCS standard font sprites
+         * @property {FontSprite} G1d DRCS mosaic font sprites
          * @private
          */
         this.font = {
             "G0": this.loadFont("font/ef9345-g0.png"),
             "G1": this.loadFont("font/ef9345-g1.png"),
-            "G'0": this.loadFont("font/blank.png"),
-            "G'1": this.loadFont("font/blank.png"),
+            "G0d": this.loadFont("font/blank.png"),
+            "G1d": this.loadFont("font/blank.png")
         }
 
         this.changeColors(color)
@@ -158,10 +131,32 @@ class PageMemory {
         this.refresh = window.setInterval(
             () => {
                 this.render()
-                this.drawCursor()
+                const cell = this.vram.get(this.cursor.x, this.cursor.y)
+                this.cursor.setColor(this.colors[cell.fgColor])
             },
             1000 / frameRate
         )
+    }
+
+    /**
+     * Force redraw of the entire page.
+     * @param {int?} row Index of row to redraw
+     */
+    redraw(row) {
+        if(row === undefined) {
+            this.changed = this.changed.map(() => true)
+        } else {
+            this.changed[row] = true
+        }
+    }
+
+    /**
+     * Defines the status character shown in the upper right corner of the
+     * Minitel screen.
+     * @param {int} code the Minitel code to display.
+     */
+    setStatusCharacter(code) {
+        this.statusCharacter = code;
     }
 
     /**
@@ -172,28 +167,26 @@ class PageMemory {
      * @param {Cell} cell The cell
      */
     set(x, y, cell) {
-        this.memory[y][x] = cell
+        this.vram.set(x, y, cell)
         this.changed[y] = true
-    }
-
-    /**
-     * Force redraw of the entire page.
-     */
-    forceRedraw() {
-        this.changed = this.changed.map(() => true)
     }
 
     /**
      * Clear the page
      */
     clear() {
-        range(1, this.grid.rows).forEach(y => {
-            range(0, this.grid.cols).forEach(x => {
-                this.memory[y][x] = new MosaicCell()
-            })
-        })
+        this.vram.clear()
+        this.redraw()
+    }
 
-        this.forceRedraw()
+    /**
+     * Scroll the video memory in a direction. It takes the page mode into
+     * account.
+     * @param {string} direction "up" or "down"
+     */
+    scroll(direction) {
+        this.vram.scroll(direction)
+        this.redraw()
     }
 
     /**
@@ -202,16 +195,7 @@ class PageMemory {
      */
     getBlink() {
         const msecs = (new Date()).getTime()
-        return (msecs % 1500) >= 750
-    }
-
-    /**
-     * Get cursor blink state.
-     * @return {boolean}
-     */
-    getCursorBlink() {
-        const msecs = (new Date()).getTime()
-        return (msecs % 900) >= 450
+        return msecs % 1500 >= 750
     }
 
     /**
@@ -239,8 +223,8 @@ class PageMemory {
      * @param {string[]} colors List of colors to use in #RRGGBB format
      * @return {FontSprite}
      */
-    loadFont(url, colors) {
-        return new FontSprite(
+    loadFont(url) {
+        return new Minitel.FontSprite(
             url,
             { cols: 8, rows: 16 },
             this.char
@@ -253,8 +237,8 @@ class PageMemory {
      * @param {number[]} design An array of 10 bytes defining the character
      */
     defineCharG0(ord, design) {
-        this.font["G'0"].defineChar(ord, design)
-        this.forceRedraw()
+        this.font.G0d.defineChar(ord, design)
+        this.redraw()
     }
 
     /**
@@ -263,38 +247,8 @@ class PageMemory {
      * @param {number[]} design An array of 10 bytes defining the character
      */
     defineCharG1(ord, design) {
-        this.font["G'1"].defineChar(ord, design)
-        this.forceRedraw()
-    }
-
-    /**
-     * Scroll the page memory in a direction. It takes the page mode into
-     * account.
-     * @param {string} direction "up" or "down"
-     */
-    scroll(direction) {
-        const newRow = new Array(this.grid.cols)
-        range(0, this.grid.cols).forEach(col => {
-            newRow[col] = new MosaicCell()
-        })
-
-        if(direction === "up") {
-            range(1, this.grid.rows).forEach(row => {
-                this.memory[row] = this.memory[row + 1]
-                this.changed[row] = true
-            })
-
-            this.memory[this.grid.rows - 1] = newRow
-            this.changed[this.grid.rows - 1] = true
-        } else if(direction === "down") {
-            range(this.grid.rows - 1, 1).forEach(row => {
-                this.memory[row] = this.memory[row - 1]
-                this.changed[row] = true
-            })
-
-            this.memory[1] = newRow
-            this.changed[1] = true
-        }
+        this.font.G1d.defineChar(ord, design)
+        this.redraw()
     }
 
     /**
@@ -304,7 +258,7 @@ class PageMemory {
      */
     setGlobalMask(enabled) {
         this.globalMask = enabled
-        this.forceRedraw()
+        this.redraw()
     }
 
     /**
@@ -313,8 +267,14 @@ class PageMemory {
      */
     changeColors(color) {
         this.colors = color ? Minitel.colors : Minitel.grays
-        for(let index in this.font) this.font[index].color = color
-        this.forceRedraw()
+
+        for(let index in this.font) {
+            if(this.font.hasOwnProperty(index)) {
+                this.font[index].color = color
+            }
+        }
+
+        this.redraw()
     }
 
     /**
@@ -339,30 +299,23 @@ class PageMemory {
     }
 
     /**
-     * Defines the status character shown in the upper right corner of the
-     * Minitel screen.
-     * @param {int} code the Minitel code to display.
-     */
-    setStatusCharacter(code) {
-        this.statusCharacter = code;
-    }
-
-    /**
      * Render the screen.
      * @private
      */
     render() {
         // Do not render if the fonts are not ready
-        if(!this.font["G0"].isReady) return
-        if(!this.font["G1"].isReady) return
-        if(!this.font["G'0"].isReady) return
-        if(!this.font["G'1"].isReady) return
+        if(!this.font.G0.isReady
+           || !this.font.G1.isReady
+           || !this.font.G0d.isReady
+           || !this.font.G1d.isReady) {
+            return
+        }
 
         // Add the inverted F on the status line
-        const fCell = new CharCell()
+        const fCell = new Minitel.CharCell()
         fCell.value = this.statusCharacter
         fCell.invert = true
-        this.memory[0][38] = fCell
+        this.vram.set(38, 0, fCell)
 
         const blink = this.getBlink()
 
@@ -370,13 +323,14 @@ class PageMemory {
         range(0, this.grid.rows).forEach(row => {
             // Draw the row only if needed
             if(!this.changed[row]) {
-                if(!this.blinking[row]) return
-                if(this.lastBlink === blink) return
+                if(!this.blinking[row] || this.lastBlink === blink) {
+                    return
+                }
             }
 
             this.changed[row] = false
 
-            let blinkRow = this.drawRow(this.memory[row], row, blink)
+            let blinkRow = this.drawRow(this.vram.get(row), row, blink)
 
             this.blinking[row] = blinkRow
         })
@@ -405,29 +359,30 @@ class PageMemory {
             const cell = memoryRow[col]
             const x = col * this.char.width
 
-            if(!(cell instanceof CharCell)) {
+            if(!(cell instanceof Minitel.CharCell)) {
                 bgColor = cell.bgColor
                 underline = false
             }
 
-            if(!(cell instanceof DelimiterCell) && cell.blink === true) {
+            if(!(cell instanceof Minitel.DelimiterCell)
+               && cell.blink === true) {
                 blinkRow = true
             }
 
             let front = 7
             let back = 0
-            if(!(cell instanceof MosaicCell) && cell.invert === true) {
-                [ front, back ] = [ bgColor, cell.fgColor ]
+            if(!(cell instanceof Minitel.MosaicCell) && cell.invert === true) {
+                [front, back] = [bgColor, cell.fgColor]
             } else {
-                [ front, back ] = [ cell.fgColor, bgColor ]
+                [front, back] = [cell.fgColor, bgColor]
             }
 
             this.drawCharacter(
                 x, y, cell, front, back, mask, blink, underline
             )
 
-            if(cell instanceof DelimiterCell) {
-                if(cell.mask !== undefined ) {
+            if(cell instanceof Minitel.DelimiterCell) {
+                if(cell.mask !== undefined) {
                     mask = this.globalMask && cell.mask
                 }
 
@@ -455,64 +410,41 @@ class PageMemory {
     drawCharacter(x, y, cell, front, back, mask, blink, underline) {
         const ctx = this.context
 
-        // Draw background    
+        // Draw background
         ctx.fillStyle = this.colors[back]
         ctx.fillRect(x, y, this.char.width, this.char.height)
 
-        if(mask) return
-        if(   !(cell instanceof DelimiterCell)
+        if(mask) {
+            return
+        }
+
+        if(!(cell instanceof Minitel.DelimiterCell)
            && cell.blink
-           && blink === (cell instanceof MosaicCell || !cell.invert)
-        ) return
+           && blink === (cell instanceof Minitel.MosaicCell || !cell.invert)
+        ) {
+            return
+        }
 
         // Draw character
-        let page = undefined
+        let page
         let part = { x: 0, y: 0 }
         let mult = { width: 1, height: 1 }
         let unde = false
 
-        if(cell instanceof CharCell) {
-            page = cell.drcs ? this.font["G'0"] : this.font["G0"]
+        if(cell instanceof Minitel.CharCell) {
+            page = cell.drcs ? this.font.G0d : this.font.G0
             part = cell.part
             mult = cell.mult
             unde = underline
-        } else if(cell instanceof DelimiterCell) {
-            page = cell.drcs ? this.font["G'0"] : this.font["G0"]
+        } else if(cell instanceof Minitel.DelimiterCell) {
+            page = cell.drcs ? this.font.G0d : this.font.G0
             mult = cell.mult
             unde = underline
         } else {
-            page = cell.drcs ? this.font["G'1"] : this.font["G1"]
+            page = cell.drcs ? this.font.G1d : this.font.G1
         }
 
         page.writeChar(ctx, cell.value, x, y, part, mult, front, unde)
-    }
-
-    /**
-     * Draw the cursor
-     * @private
-     */
-    drawCursor() {
-        // Do nothing if there is no cursor canvas
-        if(this.cursor.canvas === undefined) return
-
-        // Clear the cursor canvas
-        const ctx = this.cursor.canvas.getContext('2d')
-        ctx.clearRect(0, 0, this.cursor.canvas.width, this.cursor.canvas.height)
-
-        // Do nothing if cursor should not be visible
-        if(this.cursor.y === 0) return
-        if(!this.cursor.visible) return
-        if(this.getCursorBlink()) return
-
-        // Draw the cursor
-        const cell = this.memory[this.cursor.y][this.cursor.x]
-        ctx.fillStyle = this.colors[cell.fgColor]
-        ctx.fillRect(
-            this.cursor.x * this.char.width,
-            this.cursor.y * this.char.height,
-            this.char.width,
-            this.char.height
-        )
     }
 
     /**
@@ -521,41 +453,10 @@ class PageMemory {
      * @param {int} y Y position of a pixel on the canvas
      */
     getWordAt(x, y) {
-        // Ensures coordinates are valid
-        if(x < 0 || x >= this.canvas.offsetWidth) return ""
-        if(y < 0 || y >= this.canvas.offsetHeight) return ""
-
         // Computes row and column
         const col = Math.floor(x * this.grid.cols / this.canvas.offsetWidth)
         const row = Math.floor(y * this.grid.rows / this.canvas.offsetHeight)
 
-        // A word cannot be retrieved from anything else than a CharCell
-        const origin = this.memory[row][col]
-        if(!(origin instanceof CharCell)) return ""
-        if(!origin.isAlphanumerical()) return ""
-
-        // Find the first readable character on the left
-        let first = col - 1
-        while(   first >= 0
-              && this.memory[row][first] instanceof CharCell
-              && this.memory[row][first].hasSameAttributes(origin)
-              && this.memory[row][first].isAlphanumerical()
-        ) first--
-
-        // Find the last readable character on the right
-        let last = col + 1
-        while(   last < this.grid.cols
-            && this.memory[row][last] instanceof CharCell
-            && this.memory[row][last].hasSameAttributes(origin)
-            && this.memory[row][last].isAlphanumerical()
-        ) last++
-
-        // Concat each character from first to last
-        let string = ""
-        this.memory[row].slice(first + 1, last).forEach(cell => {
-            string += String.fromCharCode(cell.value)
-        })
-
-        return string
+        return this.vram.getWordAt(col, row)
     }
 }

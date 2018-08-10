@@ -14,6 +14,14 @@ Something that the French designed :-)
 
 More information → https://en.wikipedia.org/wiki/Minitel
 
+Using the emulator without the editor
+-------------------------------------
+
+You can use the Minitel emulator without the Minitel page editor for your own
+project.
+
+See [EMULATOR.md](EMULATOR.md) page.
+
 Requirements
 ------------
 

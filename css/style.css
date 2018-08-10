@@ -116,17 +116,32 @@ a>.jstree-icon {
     font-size: 75%;
 }
 
-.migrid {
-    padding: 9em;
-    background-color: #202020;
+.emulator-container { background-color: #202020; }
+
+x-minitel {
+    display: block;
+    position:relative;
+    width: 40em;
+    max-width: 100%;
+    height: auto;
     text-align: center;
+    margin: auto;
 }
 
-.migrid canvas {
+x-minitel canvas {
     image-rendering: crisp-edges;
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
-    transform: scale(2, 2);
+    width: 40em;
+    max-width: 100%;
+    height: auto;
+}
+
+.minitel-cursor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none
 }
 
 select { height: 2.6em; }

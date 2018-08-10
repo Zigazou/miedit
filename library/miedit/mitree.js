@@ -3,9 +3,14 @@
  * @file mitree.js
  * @author Frédéric BISSON <zigazou@free.fr>
  * @version 1.0
- * 
+ *
  * Represents a Minitel page with a tree that the user can interact with.
  */
+
+/**
+ * @namespace MiEdit
+ */
+var MiEdit = MiEdit || {}
 
 /**
  * @typedef {Object} Action
@@ -19,7 +24,7 @@
  * MiTree is a jstree based tree for manipulating tidget (textual gadget) for
  * the Minitel.
  */
-class MiTree {
+MiEdit.MiTree = class {
     /**
      * @param {jQuery} container
      * @param {SimpleRibbon} ribbon
@@ -60,8 +65,8 @@ class MiTree {
             "#": {
                 "max_children": 100,
                 "max_depth": 5,
-                "valid_children": Object.keys(this.children),
-            },
+                "valid_children": Object.keys(this.children)
+            }
         }
 
         Object.keys(this.children).forEach(child => {
@@ -73,7 +78,7 @@ class MiTree {
         this.loadTree(nodes)
 
         // Disable default behaviour of forms
-        container.find("form").submit(e => { e.preventDefault() })
+        container.find("form").submit(e => e.preventDefault())
 
         container.get()[0].autocallback(this)
 
@@ -100,7 +105,7 @@ class MiTree {
                 "show_at_node": false,
                 "items": this.contextualMenu()
             },
-            "plugins": [ "dnd" , "types", "contextmenu" ],
+            "plugins": ["dnd", "types", "contextmenu"]
         })
         this.tree = $.jstree.reference(this.treeWidget)
         this.treeWidget.on("select_node.jstree", this, this.onSelect)
@@ -215,7 +220,7 @@ class MiTree {
                         obj,
                         obj,
                         "after",
-                        (node, newparent, pos) => {
+                        node => {
                             node.data = {}
                             node.data["miedit-value"] = obj.data["miedit-value"]
                             this.treeWidget.trigger("value_changed.mitree")
@@ -225,7 +230,6 @@ class MiTree {
             },
             "remove" : {
                 "separator_before": false,
-                "icon": false,
                 "separator_after": false,
                 "_disabled": false,
                 "label": "Delete",
@@ -300,7 +304,7 @@ class MiTree {
         const newNode = {
             "text": this.children[param],
             "type": param,
-            "data": {},
+            "data": {}
         }
         const currents = this.tree.get_selected(true)
         const parent = currents.length > 0 ? currents[0] : "#"
@@ -317,7 +321,7 @@ class MiTree {
      * @param event not used.
      * @param param not used.
      */
-    onDelete(event, param) {
+    onDelete() {
         const currents = this.tree.get_selected(true)
         currents.map(node => this.tree.delete_node(node))
         this.hideForms()
@@ -342,7 +346,7 @@ class MiTree {
      * @param event
      * @param param not used.
      */
-    onChange(event, param) {
+    onChange(event) {
         // Save node values
         const currents = this.tree.get_selected(true)
         currents[0].data["miedit-value"] = $(event.target).serialize()
@@ -357,7 +361,7 @@ class MiTree {
  * @param {Object[]} objs Objects as returned by MiTree.serialize()
  * @return {Action[]}
  */
-function mieditActions(objs) {
+MiEdit.mieditActions = function(objs) {
     /**
      * Converts URI query parameters to an object. We need it because jstree
      * stores custom values in URI query parameters.
@@ -393,7 +397,7 @@ function mieditActions(objs) {
         }
 
         if(obj.children.length !== 0) {
-            action.children = mieditActions(obj.children)
+            action.children = MiEdit.mieditActions(obj.children)
         }
 
         stream.push(action)
@@ -401,4 +405,3 @@ function mieditActions(objs) {
 
     return stream
 }
-

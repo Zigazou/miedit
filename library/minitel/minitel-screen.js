@@ -6,9 +6,14 @@
  */
 
 /**
+ * @namespace Minitel
+ */
+var Minitel = Minitel || {}
+
+/**
  * @class MinitelScreen
  */
-class MinitelScreen {
+Minitel.MinitelScreen = class {
     /**
      * @param {HTMLCanvasElement} canvas
      * @param {} color
@@ -29,11 +34,11 @@ class MinitelScreen {
         this.color = color ? true : false
 
         /**
-         * The page memory
-         * @member {PageMemory}
+         * The Visual Display Unit
+         * @member {Minitel.VDU}
          * @private
          */
-        this.pageMemory = new PageMemory(
+        this.vdu = new Minitel.VDU(
             grid,
             char,
             canvas,
@@ -45,7 +50,7 @@ class MinitelScreen {
          * @member {MinitelDecoder}
          * @private
          */
-        this.decoder = new MinitelDecoder(this.pageMemory, null, null, bip)
+        this.decoder = new Minitel.Decoder(this.vdu, null, null, bip)
 
         /**
          * The queue
@@ -87,8 +92,8 @@ class MinitelScreen {
 
         // Minitel uses 9 bits for each code (7 bit of data, 1 parity bit and
         // 1 stop bit)
-        this.chunkSize = (bandwidth / 9) / (1000 / rate)
-        this.timer = window.setInterval(() => { this.sendChunk() }, rate)
+        this.chunkSize = bandwidth / 9 / (1000 / rate)
+        this.timer = window.setInterval(() => this.sendChunk(), rate)
     }
 
     /**
@@ -114,7 +119,7 @@ class MinitelScreen {
      * @param {number} height Height of the thumbnail
      */
     generateThumbnail(width, height) {
-        return this.pageMemory.generateThumbnail(width, height)
+        return this.vdu.generateThumbnail(width, height)
     }
 
     /**

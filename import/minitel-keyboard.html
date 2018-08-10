@@ -1,11 +1,9 @@
-<div class="keyboard-grid">
+<div class="minitel-keyboard" data-minitel="keyboard">
   <!-- Click sound to imitate the Minitel -->
-  <div class="keyboard-sound">
-    <audio class="minitel-standardkey">
-      <source src="sound/minitel-key.mp3" type="audio/mpeg"/>
-      Too bad, your browser does not support HTML5 audio or mp3 format.
-    </audio>
-  </div>
+  <audio data-minitel="keysound">
+    <source src="sound/minitel-key.mp3" type="audio/mpeg"/>
+    Too bad, your browser does not support HTML5 audio or mp3 format.
+  </audio>
 
   <!-- The Minitel virtual keyboard is drawn with standard buttons -->
   <div class="keyboard-functions">
@@ -55,7 +53,7 @@
     </div>
   </div>
 
-  <div class="keyboard-page page-non-alpha hidden">
+  <div class="keyboard-page page-non-alpha hidden" data-minitel="keynonalpha">
     <div class="row-numbers">
       <div class="standard">
         <button data-call="onclick" data-param="1">1</button>
@@ -180,7 +178,7 @@
     </div>
   </div>
 
-  <div class="keyboard-page page-alpha">
+  <div class="keyboard-page page-alpha" data-minitel="keyalpha">
     <div class="row-alphabet-1">
       <div class="standard">
         <button data-call="onclick" data-param="a">A</button>
@@ -293,7 +291,7 @@
     </div>
   </div>
 
-  <div class="keyboard-page page-config hidden">
+  <div class="keyboard-page page-config hidden" data-minitel="keyconfig">
     <form class="form-config" data-change="onSettingChanged">
       <div class="config-speed">
         <label for="config-speed">Vitesse</label>

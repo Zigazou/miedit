@@ -1,18 +1,23 @@
 "use strict"
 /**
- * @file miedit-manage.js
+ * @file mimanager.js
  * @author Frédéric BISSON <zigazou@free.fr>
  * @version 1.0
- * 
- * MiEditManage allows the user to manage pages stored in the local storage.
+ *
+ * Manager allows the user to manage pages stored in the local storage.
  */
+
+/**
+ * @namespace MiEdit
+ */
+var MiEdit = MiEdit || {}
 
 /**
  * GUI for managing pages kept in the local storage.
  */
-class MiEditManage {
+MiEdit.MiManager = class {
     /**
-     * @param {jQuery} container 
+     * @param {jQuery} container
      */
     constructor(container) {
         /**
@@ -28,7 +33,7 @@ class MiEditManage {
          * @member {MiStorage}
          * @private
          */
-        this.mistorage = new MiStorage("page")
+        this.mistorage = new MiEdit.MiStorage("page")
 
         this.refreshList()
     }
@@ -59,12 +64,10 @@ class MiEditManage {
      * @private
      */
     onDelete(event, param) {
-        if(!confirm("Are you sure you want to delete " + param)) {
-            return
+        if(window.confirm("Are you sure you want to delete " + param)) {
+            this.mistorage.delete(param)
+            this.refreshList()
         }
-
-        this.mistorage.delete(param)
-        this.refreshList()
     }
 
     /**
@@ -91,5 +94,4 @@ class MiEditManage {
     }
 }
 
-new MiEditManage($('#miedit'))
-
+new MiEdit.MiManager($('#miedit'))

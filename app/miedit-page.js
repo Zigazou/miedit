@@ -3,17 +3,22 @@
  * @file miedit-page.js
  * @author Frédéric BISSON <zigazou@free.fr>
  * @version 1.0
- * 
+ *
  * MiEditPage is a GUI allowing the user to create Videotex pages meant for the
  * Minitel.
  *
  */
 
 /**
+ * @namespace MiEdit
+ */
+var MiEdit = MiEdit || {}
+
+/**
  * A Minitel Page Editor composed of a view (Videotex emulation), a ribbon and
  * a tree holding the page structure.
  */
-class MiEditPage {
+MiEdit.MiEditPage = class {
     /**
      * @param {jQuery} container the element containing all our widgets
      * @param {string} pageName name of the page currently edited
@@ -39,7 +44,7 @@ class MiEditPage {
          * @member {MiStorage}
          * @private
          */
-        this.mistorage = new MiStorage("page")
+        this.mistorage = new MiEdit.MiStorage("page")
 
         /**
          * The HTML input field holding a text value representing a mosaic
@@ -61,10 +66,10 @@ class MiEditPage {
         /**
          * A Mosaic editor widget which will be hidden/revealed when the user
          * needs it.
-         * @member {MinitelMosaic}
+         * @member {MiEdit.MiMosaic}
          * @private
          */
-        this.graphics = new MinitelMosaic(mosaicRoot, 4)
+        this.graphics = new MiEdit.MiMosaic(mosaicRoot, 4)
 
         const page = this.mistorage.load(pageName)
 
@@ -73,7 +78,7 @@ class MiEditPage {
          * @member {MiTree}
          * @private
          */
-        this.mitree = new MiTree(
+        this.mitree = new MiEdit.MiTree(
             container.find(".mitree-container"),
             this.ribbon,
             page !== null && page.tree ? page.tree : page
@@ -86,16 +91,13 @@ class MiEditPage {
         container.find(".drcs-actions").map((i, o) => o.autocallback(this))
         container.find(".mosaic-exit").map((i, o) => o.autocallback(this))
 
-        const canvas = container.find("#minitel-screen")[0]
-
         /**
-         * A MinitelScreen widget handling the emulation part and stream sent
+         * A Minitel.Emulator widget handling the emulation part and stream sent
          * to it.
-         * @member {MinitelScreen}
+         * @member {Minitel.Emulator}
          * @private
          */
-        const bip = document.getElementById("minitel-bip")
-        this.miscreen = new MinitelScreen(canvas, true, bip)
+        this.miscreen = Minitel.startEmulators()[0]
 
         const events = [
             "value_changed.mitree",
@@ -118,13 +120,13 @@ class MiEditPage {
      * @param {mixed} param Parameters of the event
      * @private
      */
-    onSave(event, param) {
+    onSave() {
         // Ask for a page name if it has not been already defined
         if(this.pageName === undefined) {
             const value = window.prompt("Type in the name of this new page", "")
             if(value === null) return
             if(value.trim() === "") {
-                alert("No page name, saving ignored")
+                window.alert("No page name, saving ignored")
                 return
             }
 
@@ -154,7 +156,7 @@ class MiEditPage {
      * @param {mixed} param Parameters of the event
      * @private
      */
-    onImport(event, param) {
+    onImport() {
         const value = window.prompt("Paste the code in the field", "")
         const obj = JSON.parse(value)
         if(obj !== null) this.mitree.loadTree(obj.tree)
@@ -166,7 +168,7 @@ class MiEditPage {
      * @param {mixed} param Parameters of the event
      * @private
      */
-    onExport(event, param) {
+    onExport() {
         const objSave = {
             "thumbnail": this.miscreen.generateThumbnail(320, 250),
             "tree": this.mitree.serialize()
@@ -181,14 +183,14 @@ class MiEditPage {
      * @param {mixed} param Parameters of the event
      * @private
      */
-    onCompile(event, param) {
+    onCompile() {
         // Retrieves the DOM elements of the links we will change
         const dlLink = document.getElementById("link-download-vdt")
         const vwLink = document.getElementById("link-view-vdt")
         const rlLink = document.getElementById("link-real-vdt")
 
         // Converts the tree structure of our page to a Videotex stream
-        const actions = mieditActions(this.mitree.serialize())
+        const actions = MiEdit.mieditActions(this.mitree.serialize())
         const bytes = Minitel.actionsToStream(actions, 0, 0).toArray()
         const vdt = String.fromCharCode.apply(null, bytes)
 
@@ -223,14 +225,44 @@ class MiEditPage {
     }
 
     /**
+     * When the user clicks on a set speed button.
+     * @param {HTMLEvent} event Event that generated the call
+     * @param {mixed} param The user selected speed
+     * @private
+     */
+    onSetSpeed(event, param) {
+        this.miscreen.setRefresh(parseInt(param))
+    }
+
+    /**
+     * When the user clicks on a set color button.
+     * @param {HTMLEvent} event Event that generated the call
+     * @param {mixed} param "true" for color, "false" for grayscale.
+     * @private
+     */
+    onSetColor(event, param) {
+        this.miscreen.setColor(param === "true")
+    }
+
+    /**
+     * When the user clicks on a show position button.
+     * @param {HTMLEvent} event Event that generated the call
+     * @param {mixed} param "true" for showing, "false" for hiding.
+     * @private
+     */
+    onShowPosition(event, param) {
+        this.miscreen.vdu.cursor.setIndicator(param === "true")
+    }
+
+    /**
      * When the user clicks on the run slow button (run at the standard speed of
      * the Minitel which is 1200 bps).
      * @param {HTMLEvent} event Event that generated the call
      * @param {mixed} param Parameters of the event
      * @private
      */
-    onRunSlow(event, param) {
-        const actions = mieditActions(this.mitree.serialize())
+    onRunSlow() {
+        const actions = MiEdit.mieditActions(this.mitree.serialize())
         this.miscreen.send(Minitel.actionsToStream(actions, 0, 0).toArray())
     }
 
@@ -240,8 +272,8 @@ class MiEditPage {
      * @param {HTMLEvent} event Event that generated the call
      * @private
      */
-    onRunFast(event) {
-        const actions = mieditActions(this.mitree.serialize())
+    onRunFast() {
+        const actions = MiEdit.mieditActions(this.mitree.serialize())
         this.miscreen.directSend(
             Minitel.actionsToStream(actions, 0, 0).toArray()
         )
@@ -275,7 +307,7 @@ class MiEditPage {
      * @private
      */
     onImportBWImage(event, param) {
-        const [ fileID, imageID ] = param.split('|')
+        const [fileID, imageID] = param.split('|')
         const fileElement = document.getElementById(fileID)
         const imageElement = document.getElementById(imageID)
         const image = new Image()
@@ -303,7 +335,7 @@ class MiEditPage {
 
                 // Inserts the encoded value in the BW input field
                 imageElement.value = JSON.stringify(Drawing.bwdrcs(image))
-                imageElement.dispatchEvent(new Event("input"))            
+                imageElement.dispatchEvent(new Event("input"))
             }
 
             if(image.complete) image.onload()
@@ -319,7 +351,7 @@ class MiEditPage {
      * @param {mixed} param Parameters of the event
      * @private
      */
-    onSaveGraphics(event, param) {
+    onSaveGraphics() {
         // Converts the mosaic drawing to an encoded string placed in the
         // input field of the mosaic editor form
         this.inputGraphics.value = this.graphics.toString()
@@ -337,7 +369,7 @@ class MiEditPage {
      * @param {mixed} param Parameters of the event
      * @private
      */
-    onExitGraphics(event, param) {
+    onExitGraphics() {
         // Forgets every change and hides the mosaic editor
         this.graphics.root.classList.add("hidden")
     }
@@ -349,7 +381,7 @@ class MiEditPage {
      * @private
      */
     onDRCSAction(event, param) {
-        MiEditPage[param]("px")
+        MiEdit.MiEditPage[param]("px")
 
         // Fire an Event for signalling that something has changed
         const evt = new Event("input", {"bubbles": true, "cancelable": false});
@@ -363,7 +395,7 @@ class MiEditPage {
      * @private
      */
     onDRCSAdvAction(event, param) {
-        MiEditPage[param]("apx")
+        MiEdit.MiEditPage[param]("apx")
 
         // Fire an Event for signalling that something has changed
         const evt = new Event("input", {"bubbles": true, "cancelable": false});
@@ -371,13 +403,17 @@ class MiEditPage {
     }
 }
 
-MiEditPage.pixID = (base, x, y) => base + "-" + x + "-" + y
+MiEdit.MiEditPage.pixID = (base, x, y) => base + "-" + x + "-" + y
 
-MiEditPage.drcsSwap = (base, start, end, fnSwap) => {
+MiEdit.MiEditPage.drcsSwap = (base, start, end, fnSwap) => {
     range2(start, end).forEach((x, y) => {
         const [ x2, y2 ] = fnSwap(x, y)
-        const chb1 = document.getElementById(MiEditPage.pixID(base, x, y))
-        const chb2 = document.getElementById(MiEditPage.pixID(base, x2, y2))
+        const chb1 = document.getElementById(
+            MiEdit.MiEditPage.pixID(base, x, y)
+        )
+        const chb2 = document.getElementById(
+            MiEdit.MiEditPage.pixID(base, x2, y2)
+        )
 
         const swap = chb1.checked
         chb1.checked = chb2.checked
@@ -385,68 +421,83 @@ MiEditPage.drcsSwap = (base, start, end, fnSwap) => {
     })
 }
 
-MiEditPage["drcs-vertical-symmetry"] = function(base) {
-    MiEditPage.drcsSwap(base, [ 0, 0 ] , [ 8, 5 ], (x, y) => [ x, 9 - y ])
+MiEdit.MiEditPage["drcs-vertical-symmetry"] = function(base) {
+    MiEdit.MiEditPage.drcsSwap(
+        base, [0, 0], [8, 5], (x, y) => [x, 9 - y]
+    )
 }
 
-MiEditPage["drcs-horizontal-symmetry"] = function(base) {
-    MiEditPage.drcsSwap(base, [ 0, 0 ] , [ 4, 10 ], (x, y) => [ 7 - x, y ])
+MiEdit.MiEditPage["drcs-horizontal-symmetry"] = function(base) {
+    MiEdit.MiEditPage.drcsSwap(
+        base, [0, 0], [4, 10], (x, y) => [7 - x, y]
+    )
 }
 
-MiEditPage.drcsShift = function(base, start, end, fnSrc, fnDst, clear, fnClear) {
+MiEdit.MiEditPage.drcsShift = function(base, start, end, fnSrc, fnDst,
+                                       clear, fnClear
+) {
     range2(start, end).forEach((x, y) => {
         const [ xSrc, ySrc ] = fnSrc(x, y)
         const [ xDst, yDst ] = fnDst(x, y)
-        const src = document.getElementById(MiEditPage.pixID(base, xSrc, ySrc))
-        const dst = document.getElementById(MiEditPage.pixID(base, xDst, yDst))
+        const src = document.getElementById(
+            MiEdit.MiEditPage.pixID(base, xSrc, ySrc)
+        )
+
+        const dst = document.getElementById(
+            MiEdit.MiEditPage.pixID(base, xDst, yDst)
+        )
 
         dst.checked = src.checked
     })
 
     range(clear).forEach(x => {
         const [ xDst, yDst ] = fnClear(x)
-        const dst = document.getElementById(MiEditPage.pixID(base, xDst, yDst))
+        const dst = document.getElementById(
+            MiEdit.MiEditPage.pixID(base, xDst, yDst)
+        )
         dst.checked = false
     })
 }
 
-MiEditPage["drcs-shift-up"] = function(base) {
-    MiEditPage.drcsShift(
+MiEdit.MiEditPage["drcs-shift-up"] = function(base) {
+    MiEdit.MiEditPage.drcsShift(
         base,
-        [ 0, 1 ], [ 8, 10 ],
-        (x, y) => [ x, y ], (x, y) => [ x, y - 1 ],
-        8, x => [ x, 9 ]
+        [0, 1], [8, 10],
+        (x, y) => [x, y], (x, y) => [x, y - 1],
+        8, x => [x, 9]
     )
 }
 
-MiEditPage["drcs-shift-down"] = function(base) {
-    MiEditPage.drcsShift(
+MiEdit.MiEditPage["drcs-shift-down"] = function(base) {
+    MiEdit.MiEditPage.drcsShift(
         base,
-        [ 0, 9 ], [ 8, 0 ],
-        (x, y) => [ x, y - 1 ], (x, y) => [ x, y ],
-        8, x => [ x, 0 ]
+        [0, 9], [8, 0],
+        (x, y) => [x, y - 1], (x, y) => [x, y],
+        8, x => [x, 0]
     )
 }
 
-MiEditPage["drcs-shift-left"] = function(base) {
-    MiEditPage.drcsShift(
+MiEdit.MiEditPage["drcs-shift-left"] = function(base) {
+    MiEdit.MiEditPage.drcsShift(
         base,
-        [ 0, 0 ], [ 7, 10 ],
-        (x, y) => [ x + 1, y ], (x, y) => [ x, y ],
-        10, x => [ 7, x ]
+        [0, 0], [7, 10],
+        (x, y) => [x + 1, y], (x, y) => [x, y],
+        10, x => [7, x]
     )
 }
 
-MiEditPage["drcs-shift-right"] = function(base) {
-    MiEditPage.drcsShift(
+MiEdit.MiEditPage["drcs-shift-right"] = function(base) {
+    MiEdit.MiEditPage.drcsShift(
         base,
-        [ 7, 0 ], [ 0, 10 ],
-        (x, y) => [ x - 1, y ], (x, y) => [ x, y ],
-        10, x => [ 0, x ]
+        [7, 0], [0, 10],
+        (x, y) => [x - 1, y], (x, y) => [x, y],
+        10, x => [0, x]
     )
 }
 
 importHTML.install()
           .then(inputNumberButton.install)
-          .then(() => { new MiEditPage($("#miedit"), queryParameters("page")) })
-
+          .then(() =>
+                new MiEdit.MiEditPage($("#miedit"), queryParameters("page"))
+          )
+          .catch(reason => console.error(reason))

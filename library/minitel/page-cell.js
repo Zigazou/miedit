@@ -1,11 +1,16 @@
 "use strict"
 
 /**
+ * @namespace Minitel
+ */
+var Minitel = Minitel || {}
+
+/**
  * A Cell contains one character and its visual attributes.
  *
  * @abstract
  */
-class Cell {
+Minitel.Cell = class {
     /**
      * Create a Cell.
      *
@@ -34,7 +39,7 @@ class Cell {
      * @abstract
      */
     copy() {
-    
+        return new Minitel.Cell(this.value, this.fgColor)
     }
 }
 
@@ -44,12 +49,12 @@ class Cell {
  * attributes.
  * @extends Cell
  */
-class CharCell extends Cell {
+Minitel.CharCell = class extends Minitel.Cell {
     /**
      * Create a CharCell.
      *
      * The CharCell is initialized with the following values:
-     * 
+     *
      * - character code set to 0x20 (a space)
      * - foreground color set to 7 (white)
      * - no blinking
@@ -82,7 +87,7 @@ class CharCell extends Cell {
         this.mult = { width: 1, height: 1 }
 
         /**
-         * Character part to be displayed. 
+         * Character part to be displayed.
          * @member {object}
          * @property {number} x X part to display (0 for left, 1 for right)
          * @property {number} y Y part to display (0 for bottom, 1 top)
@@ -103,15 +108,15 @@ class CharCell extends Cell {
      * @return {boolean}
      */
     isAlphanumerical() {
-        return (this.value >= 0x41 && this.value <= 0x5A) // A-Z
-            || (this.value >= 0x61 && this.value <= 0x7A) // a-z
-            || (this.value >= 0x30 && this.value <= 0x39) // 0-9
+        return this.value >= 0x41 && this.value <= 0x5A // A-Z
+            || this.value >= 0x61 && this.value <= 0x7A // a-z
+            || this.value >= 0x30 && this.value <= 0x39 // 0-9
     }
 
     /**
      * Verify that two cells have the same attributes values (true) or not
      * (false).
-     * @param {CharCell} cell 
+     * @param {CharCell} cell
      * @return {boolean}
      */
     hasSameAttributes(cell) {
@@ -130,7 +135,7 @@ class CharCell extends Cell {
      * @return {CharCell} a copy of the CharCell
      */
     copy() {
-        const cell = new CharCell()
+        const cell = new Minitel.CharCell()
 
         cell.value = this.value
 
@@ -151,7 +156,7 @@ class CharCell extends Cell {
  * attributes.
  * @extends Cell
  */
-class MosaicCell extends Cell {
+Minitel.MosaicCell = class extends Minitel.Cell {
     /**
      * Create a MosaicCell with the following attributes:
      *
@@ -197,7 +202,7 @@ class MosaicCell extends Cell {
      * @return {MosaicCell} a copy of the MosaicCell
      */
     copy() {
-        const cell = new MosaicCell()
+        const cell = new Minitel.MosaicCell()
 
         cell.value = this.value
 
@@ -222,7 +227,7 @@ class MosaicCell extends Cell {
  * contain such as background color, masking or underlining.
  * @extends Cell
  */
-class DelimiterCell extends Cell {
+Minitel.DelimiterCell = class extends Minitel.Cell {
     /**
      * Create a DelimiterCell with the following attributes:
      *
@@ -278,7 +283,7 @@ class DelimiterCell extends Cell {
      * @return {DelimiterCell} a copy of the DelimiterCell
      */
     copy() {
-        const cell = new DelimiterCell()
+        const cell = new Minitel.DelimiterCell()
 
         cell.value = this.value
 

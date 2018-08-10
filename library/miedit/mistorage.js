@@ -6,11 +6,16 @@
  */
 
 /**
+ * @namespace MiEdit
+ */
+var MiEdit = MiEdit || {}
+
+/**
  * MiStorage is an interface to the web storage of a browser. It adds the notion
  * of context, allowing to simulate a simple hierarchy. It also handles storage
  * of objects and not just strings.
  */
-class MiStorage {
+MiEdit.MiStorage = class {
     /**
      * @param {string} context A string prepended before every key name so that
      *                         multiple applications can use the same storage
@@ -32,15 +37,17 @@ class MiStorage {
     keys() {
         const context = this.context
         return Object.keys(localStorage)
-                     .filter(key => { return key.startsWith(context) })
-                     .map(key => { return key.substr(context.length) })
+                     .filter(key => key.startsWith(context))
+                     .map(key => key.substr(context.length))
     }
 
     /**
      * Deletes all elements attached to the context
      */
     reset() {
-        this.keys().forEach(function(key) { this.delete(key) })
+        this.keys().forEach(function(key) {
+            this.delete(key)
+        })
     }
 
     /**

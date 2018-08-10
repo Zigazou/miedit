@@ -7,10 +7,10 @@
 
 /**
  * @namespace Minitel
- */ 
+ */
 var Minitel = Minitel || {}
 
-/** 
+/**
  * Convert a mosaic image in an encoded string to a Minitel Stream
  * @param {string} string Encoded string of the image
  * @param {number} col Starting column
@@ -18,7 +18,7 @@ var Minitel = Minitel || {}
  * @return {Stream} The Minitel Stream
  */
 Minitel.graphicsToStream = function(string, col, row) {
-    /** 
+    /**
      * Find the most frequent pixel kind occuring by comparing them with a hash
      * function.
      * @param {Pixel[]} pixels An array of Pixel where to look at
@@ -27,7 +27,7 @@ Minitel.graphicsToStream = function(string, col, row) {
      */
     function mostFrequent(pixels, hashFunc) {
         const counts = []
-        let bestPixel = undefined
+        let bestPixel
         let bestCount = 0
 
         for(let pixel of pixels) {
@@ -46,7 +46,7 @@ Minitel.graphicsToStream = function(string, col, row) {
             }
 
             if(bestCount >= pixels.length / 2) break
-        }        
+        }
 
         return bestPixel
     }
@@ -61,18 +61,18 @@ Minitel.graphicsToStream = function(string, col, row) {
         // Find pixels which are disjoint and for which foreground color is
         // different from the background color
         const separated = pixels.find(pixel => {
-            return pixel.separated && (pixel.color !== pixel.back)
+            return pixel.separated && pixel.color !== pixel.back
         })
 
         // Find pixels which are blinking
-        const blink = pixels.find(pixel => { return pixel.blink })
+        const blink = pixels.find(pixel => pixel.blink)
 
-        let [ foreground, background ] = [ 7, 0 ]
+        let [foreground, background] = [7, 0]
 
         if(separated) {
             // Find foreground color of the most frequent separated pixels
             foreground = mostFrequent(pixels, pixel => {
-                return pixel.separated && (pixel.color !== pixel.back)
+                return pixel.separated && pixel.color !== pixel.back
                      ? pixel.color : undefined
             }).color
 
@@ -80,7 +80,7 @@ Minitel.graphicsToStream = function(string, col, row) {
             background = mostFrequent(pixels, pixel => {
                 return pixel.separated ? pixel.back : pixel.color
             })
-            
+
             if(background.separated) {
                 background = background.back
             } else {
@@ -118,9 +118,9 @@ Minitel.graphicsToStream = function(string, col, row) {
             } else {
                 foreground = foreground.color
             }
-        }        
+        }
 
-        return [ foreground, background, separated, blink ]
+        return [foreground, background, separated, blink]
     }
 
     /**
@@ -130,10 +130,10 @@ Minitel.graphicsToStream = function(string, col, row) {
      */
     function sextetToChar(sextet) {
         // If all pixels are transparent, returns the Videotex code for right
-        if(sextet.every(pixel => { return pixel.transparent })) return [0x09]
+        if(sextet.every(pixel => pixel.transparent)) return [0x09]
 
         // Find the best colors and attributes
-        const [ foreground, background, separated, blink ] = attributes(sextet)
+        const [foreground, background, separated, blink] = attributes(sextet)
 
         // The character code is based on a 6 bits value representing set or
         // unset pixels.
@@ -145,7 +145,7 @@ Minitel.graphicsToStream = function(string, col, row) {
 
             if(pixel.color !== background) {
                 // Set the pixel
-                return code | (1 << position)
+                return code | 1 << position
             }
 
             return code
@@ -176,7 +176,7 @@ Minitel.graphicsToStream = function(string, col, row) {
         range(0, string.length, 2).forEach(i => {
             // Merge two characters into a 9 bits value
             const value = codeChars.indexOf(string[i])
-                        | (codeChars.indexOf(string[i + 1]) << 5)
+                        | codeChars.indexOf(string[i + 1]) << 5
 
             // Extract colors and attributes from the 9 bits value
             row.push({
@@ -209,7 +209,7 @@ Minitel.graphicsToStream = function(string, col, row) {
                 row.push([
                     pixels[y][x], pixels[y][x + 1],
                     pixels[y + 1][x], pixels[y + 1][x + 1],
-                    pixels[y + 2][x], pixels[y + 2][x + 1],
+                    pixels[y + 2][x], pixels[y + 2][x + 1]
                 ])
             })
             rows.push(row)
@@ -223,7 +223,9 @@ Minitel.graphicsToStream = function(string, col, row) {
     if(string === undefined) return stream
 
     // Old format uses one characters per pixel
-    if(string.length === 80 * 72) string = MosaicMemory.oldToNewFormat(string)
+    if(string.length === 80 * 72) {
+        string = Minitel.MosaicMemory.oldToNewFormat(string)
+    }
 
     // New format uses two characters per pixel
     if(string.length !== 80 * 72 * 2) return stream
@@ -259,4 +261,3 @@ Minitel.graphicsToStream = function(string, col, row) {
 
     return stream
 }
-

@@ -9,7 +9,7 @@
 
 /**
  * @namespace Minitel
- */ 
+ */
 var Minitel = Minitel || {}
 
 /**
@@ -69,10 +69,10 @@ Minitel.grays = [
     "#7F7F7F", // 50%
     "#B2B2B2", // 70%
     "#E5E5E5", // 90%
-    "#666666", // 40% 
+    "#666666", // 40%
     "#999999", // 60%
     "#CCCCCC", // 80%
-    "#FFFFFF", // 100%
+    "#FFFFFF"  // 100%
 ]
 
 /**
@@ -88,7 +88,7 @@ Minitel.colors = [
     "#0000FF", // blue
     "#FF00FF", // magenta
     "#00FFFF", // cyan
-    "#FFFFFF", // white
+    "#FFFFFF"  // white
 ]
 
 /**
@@ -97,7 +97,7 @@ Minitel.colors = [
  * key=Minitel color (0 to 7), value=Minitel opposite color (0 to 7)
  * @member {number[]}
  */
-Minitel.contrasts = [ 7, 7, 0, 0, 7, 7, 0, 0 ]
+Minitel.contrasts = [7, 7, 0, 0, 7, 7, 0, 0]
 
 /**
  * Direct correspondance between an identifier and its matching stream. Used
@@ -155,7 +155,7 @@ Minitel.directStream = {
     "mask-zone-on": [0x1b, 0x58],
     "mask-zone-off": [0x1b,0x5f],
     "mask-global-on": [0x1b, 0x23, 0x20, 0x58],
-    "mask-global-off": [0x1b, 0x23, 0x20, 0x5f],
+    "mask-global-off": [0x1b, 0x23, 0x20, 0x5f]
 }
 
 /**
@@ -217,7 +217,7 @@ Minitel.pcToMinitelKeys = {
     "Home": "Sommaire",
     "Escape": "Annulation",
     "F1": "Guide",
-    "F2": "Repetition",
+    "F2": "Repetition"
 }
 
 /**
@@ -324,27 +324,27 @@ Minitel.keys = {
         "~": [0x7E],
         "DEL": [0x7F],
 
-        "Envoi": [ 0x13, 0x41 ],
-        "Retour": [ 0x13, 0x42 ],
-        "Repetition": [ 0x13, 0x43 ],
-        "Guide": [ 0x13, 0x44 ],
-        "Annulation": [ 0x13, 0x45 ],
-        "Sommaire": [ 0x13, 0x46 ],
-        "Correction": [ 0x13, 0x47 ],
-        "Suite": [ 0x13, 0x48 ],
+        "Envoi": [0x13, 0x41],
+        "Retour": [0x13, 0x42],
+        "Repetition": [0x13, 0x43],
+        "Guide": [0x13, 0x44],
+        "Annulation": [0x13, 0x45],
+        "Sommaire": [0x13, 0x46],
+        "Correction": [0x13, 0x47],
+        "Suite": [0x13, 0x48],
 
-        "Haut": [ 0x1B, 0x5B, 0x41 ],
-        "MajHaut": [ 0x1B, 0x5B, 0x4D ],
-        "Bas": [ 0x1B, 0x5B, 0x42 ],
-        "MajBas": [ 0x1B, 0x5B, 0x4C ],
-        "Droite": [ 0x1B, 0x5B, 0x42 ],
-        "MajDroite": [ 0x1B, 0x5B, 0x34, 0x68 ], // [ 0x1B, 0x5B, 0x34, 0x6C ]
-        "Gauche": [ 0x1B, 0x5B, 0x44 ],
-        "MajGauche": [ 0x1B, 0x5B, 0x50 ],
-        "CtrlGauche": [ 0x7F ],
-        "Entree": [ 0x0D ],
-        "MajEntree": [ 0x1B, 0x5B, 0x48 ],
-        "CtrlEntree": [ 0x1B, 0x5B, 0x32, 0x4A ],
+        "Haut": [0x1B, 0x5B, 0x41],
+        "MajHaut": [0x1B, 0x5B, 0x4D],
+        "Bas": [0x1B, 0x5B, 0x42],
+        "MajBas": [0x1B, 0x5B, 0x4C],
+        "Droite": [0x1B, 0x5B, 0x42],
+        "MajDroite": [0x1B, 0x5B, 0x34, 0x68], // [0x1B, 0x5B, 0x34, 0x6C]
+        "Gauche": [0x1B, 0x5B, 0x44],
+        "MajGauche": [0x1B, 0x5B, 0x50],
+        "CtrlGauche": [0x7F],
+        "Entree": [0x0D],
+        "MajEntree": [0x1B, 0x5B, 0x48],
+        "CtrlEntree": [0x1B, 0x5B, 0x32, 0x4A],
 
         "£": [0x19, 0x23],
         "°": [0x19, 0x30],
@@ -381,7 +381,7 @@ Minitel.keys = {
         "Œ": [0x19, 0x6A],
         "œ": [0x19, 0x7A],
         "ß": [0x19, 0x7B],
-        "β": [0x19, 0x7B],
+        "β": [0x19, 0x7B]
     }
     // Mode C0
     // Haut [ 0x0B ]
@@ -413,7 +413,7 @@ Minitel.keys = {
     // F7 [ 0x1B, 0x4F, 0x77 ]
     // F8 [ 0x1B, 0x4F, 0x78 ]
     // F9 [ 0x1B, 0x4F, 0x79 ]
-    
+
     // Haut [ 0x1B, 0x5B, 0x41 ]
     // MajHaut [ 0x1B, 0x5B, 0x4D ]
     // Bas [ 0x1B, 0x5B, 0x42 ]
@@ -605,7 +605,7 @@ Minitel.states =  {
         0x5B: { goto: "csi" },
         0x5C: { func: "setInvert", arg: false },
         0x5D: { func: "setInvert", arg: true },
-        0x5F: { func: "setMask", arg: false },
+        0x5F: { func: "setMask", arg: false }
     },
 
     "us": {
@@ -655,7 +655,7 @@ Minitel.states =  {
     "drcs-g1-unuse": { 0x43: { func: "drcsUseG1", arg: true } },
 
     "mask-global": {
-        0x20: { goto: "mask-global-set" },
+        0x20: { goto: "mask-global-set" }
     },
 
     "mask-global-set": {
@@ -671,36 +671,36 @@ Minitel.states =  {
         0x42: { func: "moveCursorN", arg:"", csi: },
         "*": { goto: "csi" }*/
         "*": { notImplemented: "csiSequence" }
-     },
+    },
 
     "clearStart": {
         0x4a: { func: "clear", arg: "startofscreen" },
-        0x4b: { func: "clear", arg: "startofline" },
+        0x4b: { func: "clear", arg: "startofline" }
     },
 
     "clearAll": {
         0x4a: { func: "clear", arg: "completescreen" },
-        0x4b: { func: "clear", arg: "completeline" },
+        0x4b: { func: "clear", arg: "completeline" }
     },
 
     "pro1": { "*": { notImplemented: "pro1Sequence" } },
     "pro2": {
         0x69: { goto: "startFunction" },
-        0x6A: { goto: "stopFunction" },
+        0x6A: { goto: "stopFunction" }
     },
 
     "startFunction": {
         0x43: { func: "setPageMode", arg: false },
         0x45: { func: "setUppercaseMode", arg: false },
         0x46: { notImplemented: "startUpZoom" },
-        0x47: { notImplemented: "startDownZoom" },
+        0x47: { notImplemented: "startDownZoom" }
     },
 
     "stopFunction": {
         0x43: { func: "setPageMode", arg: true },
         0x45: { func: "setUppercaseMode", arg: true },
         0x46: { notImplemented: "stopUpZoom" },
-        0x47: { notImplemented: "stopDownZoom" },
+        0x47: { notImplemented: "stopDownZoom" }
     },
 
     "pro3": {
@@ -717,20 +717,20 @@ Minitel.states =  {
         0x58: { goto: "switchOnToScreen" },
         "*": { goto: "pro3-3" }
     },
-    
+
     "pro3SwitchOff": {
         0x58: { goto: "switchOffToScreen" },
         "*": { goto: "pro3-3" }
     },
 
     "switchOnToScreen": {
-        0x51: { func: "setSwitch", arg: [ true, "screen", "keyboard" ] },
-        "*": { notImplementend: "switchOn" },
+        0x51: { func: "setSwitch", arg: [true, "screen", "keyboard"] },
+        "*": { notImplementend: "switchOn" }
     },
 
     "switchOffToScreen": {
-        0x51: { func: "setSwitch", arg: [ false, "screen", "keyboard" ] },
-        "*": { notImplementend: "switchOff" },
+        0x51: { func: "setSwitch", arg: [false, "screen", "keyboard"] },
+        "*": { notImplementend: "switchOff" }
     },
 
     "pro3Start": {
@@ -751,6 +751,5 @@ Minitel.states =  {
     "stopKeyboardFunction": {
         0x41: { func: "setExtendedKeyboard", arg: false },
         0x43: { func: "setCursorKeyboard", arg: false }
-    },
+    }
 }
-

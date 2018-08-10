@@ -3,20 +3,20 @@
  * @file SimpleRibbon
  * @author Frédéric BISSON <zigazou@free.fr>
  * @version 1.0
- * 
+ *
  * Simple Ribbon is a basic implementation of the Microsoft ribbon which does
  * not require any external library like jQuery.
  *
  * To create a simple ribbon:
  *
  *     const ribbon = new SimpleRibbon(document.getElementById(...))
- * 
+ *
  * This library waits for structures like the following pattern:
  *
- *       <!-- The element containing all the tags of our simple ribbon --> 
+ *       <!-- The element containing all the tags of our simple ribbon -->
  *       <div class="simple-ribbon">
  *         <h2>Ribbon title</h2>
- *       
+ *
  *         <!-- Section -->
  *         <h3 class="file">Special tab</h3>
  *         <div>
@@ -24,7 +24,7 @@
  *               <!-- The content of this block -->
  *           </div>
  *         </div>
- *       
+ *
  *         <!-- Section -->
  *         <h3 class="first">Block opened automatically</h3>
  *         <div>
@@ -35,10 +35,10 @@
  *               <img src="image.svg" /><br/>1st line<br/>2nd line
  *             </button>
  *           </div>
- *       
+ *
  *           <!-- Separator -->
  *           <hr/>
- *       
+ *
  *           <!-- Another sub section -->
  *           <div>
  *             <h4>Sub section title</h4>
@@ -67,7 +67,7 @@ class SimpleRibbon {
         const tabs = this.root.getElementsByTagName("h3")
         for(let i = 0; i < tabs.length; i++) {
             tabs[i].nextElementSibling.classList.add("hidden")
-            tabs[i].addEventListener("click", (e) => { this.onClick(e) })
+            tabs[i].addEventListener("click", e => this.onClick(e))
         }
 
         this.openTab(this.root.getElementsByClassName("first")[0])

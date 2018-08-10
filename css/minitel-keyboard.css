@@ -4,15 +4,15 @@ body {
     background-color: #202020;
 }
 
-#miedit {
+x-minitel {
+    display: block;
+    position:relative;
     width: 40em;
     max-width: 100%;
     height: auto;
     text-align: center;
     margin: auto;
 }
-
-.minitel-container { position:relative; }
 
 canvas {
     image-rendering: crisp-edges;
@@ -23,7 +23,7 @@ canvas {
     height: auto;
 }
 
-#minitel-cursor {
+.minitel-cursor {
     position: absolute;
     top: 0;
     left: 0;
@@ -37,8 +37,7 @@ object {
 }
 
 /* Keyboard */
-
-.keyboard-grid button {
+.minitel-keyboard button {
     padding: 0;
     height: 3.2em;
     margin: 0;
@@ -64,13 +63,13 @@ object {
     background-color: blue;
 }
 
-.keyboard-grid>div>div {
+.minitel-keyboard>div>div {
     display: flex;
     flex-wrap: wrap;
 }
 
-.keyboard-grid>div>div>div { flex-grow: 1; }
-.keyboard-grid>div>div>div.switch { flex-grow: 0; }
+.minitel-keyboard>div>div>div { flex-grow: 1; }
+.minitel-keyboard>div>div>div.switch { flex-grow: 0; }
 
 .form-config {
     color: #ddd;
