@@ -25,7 +25,13 @@ a>.jstree-icon {
     background-size: 100% 100% !important;
 }
 
-.miedit-treeactions { float: left; width: 49%; }
+.miedit-treeactions {
+    float: left; width: 49%;
+    overflow-y: auto;
+    position: fixed;
+    height: calc(100% - 42em)
+}
+
 .miedit-forms { float: right; width: 49%; }
 
 .miedit-forms {

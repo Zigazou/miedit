@@ -401,6 +401,32 @@ MiEdit.MiEditPage = class {
         const evt = new Event("input", {"bubbles": true, "cancelable": false});
         document.getElementById("apx-0-0").dispatchEvent(evt)
     }
+
+    /**
+     * @param {HTMLEvent} event Event that generated the call
+     * @param {mixed} param Parameters of the event
+     * @private
+     */
+    onImportVideotex(event, param) {
+        const files = document.getElementById(param).files
+
+        if(files.length !== 1) return
+
+        const vdtFile = files[0]
+        const reader = new FileReader()
+
+        reader.onload = (event) => {
+            const bytes = new Int8Array(event.target.result)
+
+            const decompiler = new MiEdit.MiDecompiler()
+            decompiler.decodeList(bytes)
+
+            this.mitree.loadTree(decompiler.export().tree)
+        }
+
+        // Read the Videotex as an array buffer.
+        reader.readAsArrayBuffer(vdtFile)
+    }
 }
 
 MiEdit.MiEditPage.pixID = (base, x, y) => base + "-" + x + "-" + y
