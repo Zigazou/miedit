@@ -109,6 +109,17 @@ MiEdit.MiTree = class {
         })
         this.tree = $.jstree.reference(this.treeWidget)
         this.treeWidget.on("select_node.jstree", this, this.onSelect)
+
+        /**
+         * At the time of this writing, I have not found a way to trigger an
+         * event after the tree is completely and really loaded. The workaround
+         * consists of waiting 200 milliseconds before firing the event, hoping
+         * for it to be completely loaded and ready for display.
+         *
+         * @todo have an event triggered when the tree is completely and really
+         *       loaded.
+         */
+        setTimeout(() => this.treeWidget.trigger("load_tree.mitree"), 200)
     }
 
     /**
