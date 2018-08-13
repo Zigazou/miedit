@@ -537,7 +537,21 @@ MiEdit.MiDecompiler = class extends Minitel.Protocol {
      * @private
      */
     print(charCode) {
-        this.content += String.fromCharCode(charCode)
+        const g2toChar = {
+            0x03: "£", 0x24: "$", 0x23: "#", 0x0C: "←", 0x5E: "↑", 0x0E: "→",
+            0x0F: "↓", 0x10: "°", 0x11: "±", 0x18: "÷", 0x1C: "¼", 0x1D: "½",
+            0x1E: "¾", 0x0A: "Œ", 0x1A: "œ", 0x07: "À", 0x17: "à", 0x09: "È",
+            0x19: "è", 0x08: "ù", 0x02: "É", 0x12: "é", 0x01: "Â", 0x04: "â",
+            0x0B: "Ê", 0x1B: "ê", 0x16: "û", 0x0D: "î", 0x1F: "ô", 0x06: "Ë",
+            0x13: "ë", 0x14: "ï", 0x05: "Ç", 0x15: "ç"
+        }
+
+        if(charCode in g2toChar) {
+            this.content += g2toChar[charCode]
+        } else {
+            this.content += String.fromCharCode(charCode)
+        }
+
         this.charCode = charCode
     }
 
