@@ -342,7 +342,7 @@ Minitel.drawCeefaxRow = function(row) {
         if(hold && c & 0x20) held = c
     }
 
-    return destination.optimizeRow().trimRow()
+    return destination
 }
 
 

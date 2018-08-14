@@ -537,17 +537,8 @@ MiEdit.MiDecompiler = class extends Minitel.Protocol {
      * @private
      */
     print(charCode) {
-        const g2toChar = {
-            0x03: "£", 0x24: "$", 0x23: "#", 0x0C: "←", 0x5E: "↑", 0x0E: "→",
-            0x0F: "↓", 0x10: "°", 0x11: "±", 0x18: "÷", 0x1C: "¼", 0x1D: "½",
-            0x1E: "¾", 0x0A: "Œ", 0x1A: "œ", 0x07: "À", 0x17: "à", 0x09: "È",
-            0x19: "è", 0x08: "ù", 0x02: "É", 0x12: "é", 0x01: "Â", 0x04: "â",
-            0x0B: "Ê", 0x1B: "ê", 0x16: "û", 0x0D: "î", 0x1F: "ô", 0x06: "Ë",
-            0x13: "ë", 0x14: "ï", 0x05: "Ç", 0x15: "ç"
-        }
-
-        if(charCode in g2toChar) {
-            this.content += g2toChar[charCode]
+        if(charCode in MiEdit.MiDecompiler.g2toChar) {
+            this.content += MiEdit.MiDecompiler.g2toChar[charCode]
         } else {
             this.content += String.fromCharCode(charCode)
         }
@@ -584,6 +575,12 @@ MiEdit.MiDecompiler = class extends Minitel.Protocol {
      * @private
      */
     drcsSetStartChar(startChar) {
+        if(startChar in MiEdit.MiDecompiler.g2toChar) {
+            startChar = MiEdit.MiDecompiler.g2toChar[startChar]
+        } else {
+            startChar = String.fromCharCode(startChar)
+        }
+
         this.addElement(
             "Select DRCS start character",
             "drcs-advanced-char",
@@ -641,7 +638,7 @@ MiEdit.MiDecompiler = class extends Minitel.Protocol {
         // Extract pixels that are set
         const pixels = {}
         range2([10, 8]).forEach((y, x) => {
-            if(bytes[y] & 1 >> x !== 0) {
+            if(bytes[y] & Math.pow(2, x) !== 0) {
                 pixels["apx-" + y + "-" + x] = "on"
             }
         })
@@ -711,4 +708,13 @@ MiEdit.MiDecompiler = class extends Minitel.Protocol {
             source
         )
     }
+}
+
+MiEdit.MiDecompiler.g2toChar = {
+    0x03: "£", 0x24: "$", 0x23: "#", 0x0C: "←", 0x5E: "↑", 0x0E: "→",
+    0x0F: "↓", 0x10: "°", 0x11: "±", 0x18: "÷", 0x1C: "¼", 0x1D: "½",
+    0x1E: "¾", 0x0A: "Œ", 0x1A: "œ", 0x07: "À", 0x17: "à", 0x09: "È",
+    0x19: "è", 0x08: "ù", 0x02: "É", 0x12: "é", 0x01: "Â", 0x04: "â",
+    0x0B: "Ê", 0x1B: "ê", 0x16: "û", 0x0D: "î", 0x1F: "ô", 0x06: "Ë",
+    0x13: "ë", 0x14: "ï", 0x05: "Ç", 0x15: "ç"
 }
