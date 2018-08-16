@@ -1,13 +1,35 @@
+:root {
+    --emulator-width: 960px;
+    --emulator-height: 750px;
+    --properties-height: 20em;
+    --color-1: #db7f67;
+    --color-2: #dbbea1;
+    --color-3: #a37b73;
+    --color-3-light: #dda89d;
+    --color-4: #3f292b;
+    --color-5: #d34f73;
+}
+
 body {
-    margin: 0.5em;
-    padding: 0;
+    margin: 0;
+    padding: 0 0 1em 0;
     font-family: sans-serif;
-    background-color: #202020;
-    color: #fff;
+    background-color: var(--color-2);
     text-align: center;
 }
 
-a { color: #fff; }
+h1 {
+    margin: 0;
+    padding: 1em 0;
+    font-size: 100%;
+    background-color: var(--color-5);
+    color: white;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: bold;
+}
+
+a { color: var(--color-4); }
 
 a.image { display: inline-block; }
 a.image:first-child { margin-right: 2em; }
@@ -17,4 +39,17 @@ p {
     margin: 2em auto;
 }
 
+.invert {
+    background-color: var(--color-4);
+    color: var(--color-2);
+    padding: 2em;
+    border-radius: 2em;
+}
 
+.invert a { color: var(--color-2); }
+
+ul.invert {
+    max-width: 25em;
+    margin: 0 auto;
+}
+li { text-align: left; }
