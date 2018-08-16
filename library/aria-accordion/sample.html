@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Nicolas Hoffmann, Frédéric Bisson" />    
+    <title>Accordion example</title>
+    <style>
+      .aria-accordion {
+        margin: 1em 2em;
+        background-color: #DDDDDD;
+      }
+
+      .aria-accordion-header { margin: 0; }
+      .aria-accordion-panel { margin: 1em 1em 1em 2.3em; }
+      .aria-accordion-panel[aria-hidden=true] { display: none; }
+      
+      button.aria-accordion-header {
+        display: block !important;
+        width: 100%;
+        background-color: #005000;
+        color: white;
+        text-align: left;
+        font-size: 130%;
+        margin-bottom: 0.1em;
+        padding: 0.3em 0.6em;
+        border: none;
+      }
+
+      .aria-accordion-header[aria-expanded="true"]:before { content: "⊟ "; }
+      .aria-accordion-header[aria-expanded="false"]:before { content: "⊞ "; }
+
+      .aria-accordion-header[aria-selected="true"]:after {
+        content: " → selected";
+      }
+      .aria-accordion-header[aria-selected="false"]:after {
+        content: " → not selected";
+        color: #7F7F7F;
+      }
+
+      #page {
+        margin: 1em auto;
+        max-width: 80em;
+      }
+    </style>
+  </head>
+
+  <body role="document">
+    <div id="page">
+      <h1>Accordion example</h1>
+
+      <h2>Accordion with default options</h2>
+
+      <div class="aria-accordion">
+        <div class="aria-accordion-panel">
+          <h3 class="aria-accordion-header">First tab</h3>
+          here the content of 1st tab<br><br>
+          <a href="#">pweet</a><br><br>
+          plop
+        </div>
+        <div class="aria-accordion-panel">
+          <h3 class="aria-accordion-header">Second tab</h3>
+          here the content of 2nd tab<br><br>
+          <a href="#">pweet</a><br><br>
+          plop
+        </div>
+        <div class="aria-accordion-panel">
+          <h3 class="aria-accordion-header">Third tab</h3>
+          here the content of 3rd tab<br><br>
+          plop
+        </div>
+        <div class="aria-accordion-panel">
+          <h3 class="aria-accordion-header">Fourth tab</h3>
+          here the content of 4th tab<br><br>
+          <a href="#">pweet</a><br><br>
+          plop
+        </div>
+      </div>
+
+      <h2>Accordion with one open panel right from the start</h2>
+
+      <div class="aria-accordion">
+        <div class="aria-accordion-panel">
+          <h3 class="aria-accordion-header">First tab</h3>
+          here the content of 1st tab<br><br>
+          <a href="#">pweet</a><br><br>
+          plop
+        </div>
+        <div class="aria-accordion-panel" data-accordion-open="true">
+          <h3 class="aria-accordion-header">Second tab</h3>
+          here the content of 2nd tab<br><br>
+          <a href="#">pweet</a><br><br>
+          plop
+        </div>
+        <div class="aria-accordion-panel">
+          <h3 class="aria-accordion-header">Third tab</h3>
+          here the content of 3rd tab<br><br>
+          plop
+        </div>
+        <div class="aria-accordion-panel">
+          <h3 class="aria-accordion-header">Fourth tab</h3>
+          here the content of 4th tab<br><br>
+          <a href="#">pweet</a><br><br>
+          plop
+        </div>
+      </div>
+
+      <h2>Accordion with multiselectable option disabled</h2>
+
+      <div class="aria-accordion" data-accordion-multiselectable="false">
+        <div class="aria-accordion-panel">
+          <h3 class="aria-accordion-header">First tab</h3>
+          here the content of 1st tab<br><br>
+          <a href="#">pweet</a><br><br>
+          plop
+        </div>
+        <div class="aria-accordion-panel" data-accordion-open="true">
+          <h3 class="aria-accordion-header">Second tab</h3>
+          here the content of 2nd tab<br><br>
+          <a href="#">pweet</a><br><br>
+          plop
+        </div>
+        <div class="aria-accordion-panel">
+          <h3 class="aria-accordion-header">Third tab</h3>
+          here the content of 3rd tab<br><br>
+          plop
+        </div>
+        <div class="aria-accordion-panel">
+          <h3 class="aria-accordion-header">Fourth tab</h3>
+          here the content of 4th tab<br><br>
+          <a href="#">pweet</a><br><br>
+          plop
+        </div>
+      </div>
+
+      <h2>Origin</h2>
+      <a href="http://a11y.nicolas-hoffmann.net/accordion/">
+        Original jQuery Accessible tab panel system, using ARIA,
+        by Nicolas Hoffmann.
+      </a>
+    </div>
+
+    <script src="aria-accordion.js"></script>
+    <script>AriaAccordion.init('.aria-accordion')</script>
+  </body>
+</html>
