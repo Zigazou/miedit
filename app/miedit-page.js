@@ -15,8 +15,8 @@
 var MiEdit = MiEdit || {}
 
 /**
- * A Minitel Page Editor composed of a view (Videotex emulation), a ribbon and
- * a tree holding the page structure.
+ * A Minitel Page Editor composed of a view (Videotex emulation), an accordion
+ * and a tree holding the page structure.
  */
 MiEdit.MiEditPage = class {
     /**
@@ -55,11 +55,19 @@ MiEdit.MiEditPage = class {
         this.inputGraphics = undefined
 
         /**
-         * The ribbon menu
-         * @member {SimpleRibbon}
+         * The tidgets accordion.
+         * @member {AriaAccordion}
          * @private
          */
-        this.ribbon = new SimpleRibbon(document.getElementById("ribbon"))
+        this.tidgets = new AriaAccordion(
+            document.getElementById("tidgets"),
+            {
+                headersSelector: 'h3',
+                panelsSelector: ':scope > div',
+                multiselectable: true,
+                prefixClass: 'tidgets'
+            }
+        )
 
         const mosaicRoot = document.getElementsByClassName("mosaic-root")[0]
 
@@ -69,7 +77,7 @@ MiEdit.MiEditPage = class {
          * @member {MiEdit.MiMosaic}
          * @private
          */
-        this.graphics = new MiEdit.MiMosaic(mosaicRoot, 4)
+        this.graphics = new MiEdit.MiMosaic(mosaicRoot, 3)
 
         const page = this.mistorage.load(pageName)
 
@@ -80,12 +88,13 @@ MiEdit.MiEditPage = class {
          */
         this.mitree = new MiEdit.MiTree(
             container.find(".mitree-container"),
-            this.ribbon,
+            this.tidgets,
             page !== null && page.tree ? page.tree : page
         )
 
         // Automatically attach events to handlers of this class
-        this.ribbon.root.autocallback(this)
+        this.tidgets.root.autocallback(this)
+        container.find(".miedit-control").map((i, o) => o.autocallback(this))
         container.find(".content-graphics").map((i, o) => o.autocallback(this))
         container.find(".drcs-black-white").map((i, o) => o.autocallback(this))
         container.find(".drcs-actions").map((i, o) => o.autocallback(this))

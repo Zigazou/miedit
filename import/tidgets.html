@@ -1,0 +1,318 @@
+<!-- Tidgets accordion -->
+<div class="tidgets" id="tidgets">
+  <h2>Tidgets</h2>
+
+  <!-- Content tab -->
+  <div id="content-tab">
+    <h3>Content</h3>
+    <div>
+      <h4>Stream</h4>
+      <button class="large" data-call="onCreateTidget" data-param="content-string">
+        <img src="icon/miicons.svg#content-string" /><br/>String
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="content-block">
+        <img src="icon/miicons.svg#content-block" /><br/>Block
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="content-graphics">
+        <img src="icon/miicons.svg#content-graphics" /><br/>Graphics
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="content-ceefax">
+        <img src="icon/miicons.svg#content-ceefax" /><br/>Ceefax
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="content-box">
+        <img src="icon/miicons.svg#content-box" /><br/>Box
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="content-group">
+        <img src="icon/miicons.svg#content-group" /><br/>Group
+      </button>
+    </div>
+
+    <div>
+      <h4>Character</h4>
+      <button class="large" data-call="onCreateTidget" data-param="content-g0">
+        <img src="icon/miicons.svg#content-g0" /><br/>Standard
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="content-g1">
+        <img src="icon/miicons.svg#content-g1" /><br/>Mosaic
+      </button>
+    </div>
+
+    <div>
+      <h4>Other</h4>
+      <button class="large" data-call="onCreateTidget" data-param="content-delay">
+        <img src="icon/miicons.svg#content-delay" /><br/>Delay
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="content-raw">
+        <img src="icon/miicons.svg#content-raw" /><br/>Raw<br/>stream
+      </button>
+    </div>
+  </div>
+
+  <!-- Move tab -->
+  <div id="move-tab">
+    <h3>Move</h3>
+    <div>
+      <h4>Absolute</h4>
+      <button class="large" data-call="onCreateTidget" data-param="move-locate">
+        <img src="icon/miicons.svg#move-locate" /><br/>Locate
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="move-home">
+        <img src="icon/miicons.svg#move-home" /><br/>Home
+      </button>
+    </div>
+
+    <div>
+      <h4>Relative</h4>
+      <button class="large" data-call="onCreateTidget" data-param="move-left">
+        <img src="icon/miicons.svg#move-left" /><br/>Left
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="move-up">
+        <img src="icon/miicons.svg#move-up" /><br/>Up
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="move-down">
+        <img src="icon/miicons.svg#move-down" /><br/>Down
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="move-right">
+        <img src="icon/miicons.svg#move-right" /><br/>Right
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="move-sol">
+        <img src="icon/miicons.svg#move-sol" /><br/>Start<br/>of line
+      </button>
+    </div>
+  </div>
+
+  <!-- Clear tab -->
+  <div id="clear-tab">
+    <h3>Clear</h3>
+    <div>
+      <h4>Standard clear</h4>
+      <button class="large" data-call="onCreateTidget" data-param="clear-screen">
+        <img src="icon/miicons.svg#clear-screen" /><br/>Clear<br/>screen
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="clear-status">
+        <img src="icon/miicons.svg#clear-status" /><br/>Clear<br/>status
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="clear-eol">
+        <img src="icon/miicons.svg#clear-eol" /><br/>Clear<br/>EOL
+      </button>
+    </div>
+
+    <div>
+      <h4>Extended clear</h4>
+      <button class="large" data-call="onCreateTidget" data-param="clear-start-of-screen">
+        <img src="icon/miicons.svg#clear-start-of-screen" /><br/>Screen<br/>start
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="clear-end-of-screen">
+        <img src="icon/miicons.svg#clear-end-of-screen" /><br/>Screen<br/>end
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="clear-complete-screen">
+        <img src="icon/miicons.svg#clear-complete-screen" /><br/>Complete<br/>screen
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="clear-complete-line">
+        <img src="icon/miicons.svg#clear-complete-line" /><br/>Complete<br/>line
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="clear-start-of-line">
+        <img src="icon/miicons.svg#clear-start-of-line" /><br/>Line<br/>start
+      </button>
+    </div>
+  </div>
+
+  <!-- Effect tab -->
+  <div id="effect-tab">
+    <h3>Effect</h3>
+    <div>
+      <h4>Size</h4>
+      <button class="large" data-call="onCreateTidget" data-param="effect-normal-size">
+        <img src="icon/miicons.svg#effect-normal-size" /><br/>Normal<br/>size
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="effect-double-width">
+        <img src="icon/miicons.svg#effect-double-width" /><br/>Double<br/>width
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="effect-double-height">
+        <img src="icon/miicons.svg#effect-double-height" /><br/>Double<br/>height
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="effect-double-size">
+        <img src="icon/miicons.svg#effect-double-size" /><br/>Double<br/>size
+      </button>
+    </div>
+
+    <div>
+      <h4>Blink</h4>
+      <button class="large" data-call="onCreateTidget" data-param="effect-blink-on">
+        <img src="icon/miicons.svg#effect-blink-on" /><br/>Blink<br/>on
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="effect-blink-off">
+        <img src="icon/miicons.svg#effect-blink-off" /><br/>Blink<br/>off
+      </button>
+    </div>
+
+    <div>
+      <h4>Invert</h4>
+      <button class="large" data-call="onCreateTidget" data-param="effect-invert-on">
+        <img src="icon/miicons.svg#effect-invert-on" /><br/>Invert<br/>on
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="effect-invert-off">
+        <img src="icon/miicons.svg#effect-invert-off" /><br/>Invert<br/>off
+      </button>
+    </div>
+
+    <div>
+      <h4>Underline / Separated</h4>
+      <button class="large" data-call="onCreateTidget" data-param="effect-underline-on">
+        <img src="icon/miicons.svg#effect-underline-on" /><br/>Underline<br/>on
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="effect-underline-off">
+        <img src="icon/miicons.svg#effect-underline-off" /><br/>Underline<br/>off
+      </button>
+    </div>
+
+    <div>
+      <h4>Cursor</h4>
+      <button class="large" data-call="onCreateTidget" data-param="cursor-on">
+        <img src="icon/miicons.svg#cursor-on" /><br/>Cursor<br/>on
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="cursor-off">
+        <img src="icon/miicons.svg#cursor-off" /><br/>Cursor<br/>off
+      </button>
+    </div>
+  </div>
+
+  <!-- Color tab -->
+  <div id="color-tab">
+    <h3>Color</h3>
+    <div>
+      <h4>Foreground</h4>
+      <button class="large" data-call="onCreateTidget" data-param="color-fg-0">
+        <img src="icon/miicons.svg#color-fg-0" /><br/>Black<br/>0%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-fg-4">
+        <img src="icon/miicons.svg#color-fg-4" /><br/>Blue<br/>40%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-fg-1">
+        <img src="icon/miicons.svg#color-fg-1" /><br/>Red<br/>50%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-fg-5">
+        <img src="icon/miicons.svg#color-fg-5" /><br/>Magenta<br/>60%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-fg-2">
+        <img src="icon/miicons.svg#color-fg-2" /><br/>Green<br/>70%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-fg-6">
+        <img src="icon/miicons.svg#color-fg-6" /><br/>Cyan<br/>80%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-fg-3">
+        <img src="icon/miicons.svg#color-fg-3" /><br/>Yellow<br/>90%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-fg-7">
+        <img src="icon/miicons.svg#color-fg-7" /><br/>White<br/>100%
+      </button>
+    </div>
+
+    <div>
+      <h4>Background</h4>
+      <button class="large" data-call="onCreateTidget" data-param="color-bg-0">
+        <img src="icon/miicons.svg#color-bg-0" /><br/>Black<br/>0%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-bg-4">
+        <img src="icon/miicons.svg#color-bg-4" /><br/>Blue<br/>40%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-bg-1">
+        <img src="icon/miicons.svg#color-bg-1" /><br/>Red<br/>50%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-bg-5">
+        <img src="icon/miicons.svg#color-bg-5" /><br/>Magenta<br/>60%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-bg-2">
+        <img src="icon/miicons.svg#color-bg-2" /><br/>Green<br/>70%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-bg-6">
+        <img src="icon/miicons.svg#color-bg-6" /><br/>Cyan<br/>80%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-bg-3">
+        <img src="icon/miicons.svg#color-bg-3" /><br/>Yellow<br/>90%
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="color-bg-7">
+        <img src="icon/miicons.svg#color-bg-7" /><br/>White<br/>100%
+      </button>
+    </div>
+  </div>
+
+  <!-- Mask tab -->
+  <div id="mask-tab">
+    <h3>Mask</h3>
+    <div>
+      <h4>Zone</h4>
+      <button class="large" data-call="onCreateTidget" data-param="mask-zone-on">
+        <img src="icon/miicons.svg#mask-zone-on" /><br/>Mask<br/>zone
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="mask-zone-off">
+        <img src="icon/miicons.svg#mask-zone-off" /><br/>Unmask<br/>zone
+      </button>
+    </div>
+
+    <div>
+      <h4>Global</h4>
+      <button class="large" data-call="onCreateTidget" data-param="mask-global-on">
+        <img src="icon/miicons.svg#mask-global-on" /><br/>Enable<br/>masking
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="mask-global-off">
+        <img src="icon/miicons.svg#mask-global-off" /><br/>Disable<br/>masking
+      </button>
+    </div>
+  </div>
+  
+  <!-- DRCS tab -->
+  <div id="run-tab">
+    <h3>DRCS</h3>
+    <div>
+      <h4>Simple</h4>
+      <button class="large" data-call="onCreateTidget" data-param="drcs-create">
+        <img src="icon/miicons.svg#drcs-create" /><br/>Create<br/>character
+      </button>
+    </div>
+
+    <div>
+      <h4>Advanced creation</h4>
+      <button class="large" data-call="onCreateTidget" data-param="drcs-advanced-start">
+        <img src="icon/miicons.svg#drcs-advanced-start" /><br/>Start<br/>creation
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="drcs-advanced-char">
+        <img src="icon/miicons.svg#drcs-advanced-char" /><br/>Character<br/>select
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="drcs-advanced-def">
+        <img src="icon/miicons.svg#drcs-advanced-def" /><br/>Add<br/>definition
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="drcs-advanced-end">
+        <img src="icon/miicons.svg#drcs-advanced-end" /><br/>End<br/>creation
+      </button>
+    </div>
+
+    <div>
+      <h4>Alphanum. Charset</h4>
+      <button class="large" data-call="onCreateTidget" data-param="drcs-std-g0">
+        <img src="icon/miicons.svg#drcs-std-g0" /><br/>Standard<br/>G0
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="drcs-drcs-g0">
+        <img src="icon/miicons.svg#drcs-drcs-g0" /><br/>DRCS<br/>G0
+      </button>
+    </div>
+
+    <div>
+      <h4>Mosaic charset</h4>
+      <button class="large" data-call="onCreateTidget" data-param="drcs-std-g1">
+        <img src="icon/miicons.svg#drcs-std-g1" /><br/>Standard<br/>G1
+      </button>
+      <button class="large" data-call="onCreateTidget" data-param="drcs-drcs-g1">
+        <img src="icon/miicons.svg#drcs-drcs-g1" /><br/>DRCS<br/>G1
+      </button>
+    </div>
+
+    <!-- DRCS conversion -->
+    <div>
+      <h4>Conversion</h4>
+      <button class="large" data-call="onCreateTidget" data-param="drcs-black-white">
+        <img src="icon/miicons.svg#drcs-black-white" /><br/>B&amp;W<br/>image
+      </button>
+    </div>
+  </div>
+</div>

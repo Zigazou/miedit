@@ -1,3 +1,15 @@
+:root {
+    --emulator-width: 960px;
+    --emulator-height: 750px;
+    --properties-height: 20em;
+    --color-1: #db7f67;
+    --color-2: #dbbea1;
+    --color-3: #a37b73;
+    --color-3-light: #dda89d;
+    --color-4: #3f292b;
+    --color-5: #d34f73;
+}
+
 @font-face {
     font-family: Minitel;
     src: url(../font/Minitel.ttf);
@@ -10,6 +22,25 @@ body {
 }
 
 p { margin: 0.5em 0 0 0; }
+a { color: var(--color-4); }
+
+hr {
+    border: none;
+    border-top: 0.1em solid var(--color-4);
+    margin: 1em 0;
+    position: relative;
+}
+
+.miedit-control {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: var(--emulator-width);
+    height: calc(100% - var(--emulator-height));
+    background-color: var(--color-3-light);
+    overflow-y: scroll;
+    text-align: center;
+}
 
 div.jstree::before {
     display: block;
@@ -26,36 +57,48 @@ a>.jstree-icon {
 }
 
 .miedit-treeactions {
-    float: left; width: 49%;
-    overflow-y: auto;
     position: fixed;
-    height: calc(100% - 42em)
+    bottom: 0;
+    left: var(--emulator-width);
+    width: calc(calc(100% - var(--emulator-width)) / 2);
+    height: calc(100% - var(--properties-height));
+    overflow-y: scroll;
+    background-color: var(--color-2);
 }
 
-.miedit-forms { float: right; width: 49%; }
-
 .miedit-forms {
-    background: linear-gradient(#ffffff, #eaedf1);
-    border-bottom: 0.1em solid #8b9097;
-    box-shadow: #8b9097 0 0.1em 0.3em;
+    position: fixed;
+    top: 0;
+    left: var(--emulator-width);
+    width: calc(calc(100% - var(--emulator-width)) / 2);
+    height: var(--properties-height);
+    overflow-y: scroll;
+    background-color: var(--color-2);
 }
 
 .miedit-forms>* {
     display: none;
-    padding: 1.5em;
+    padding: 0.7em;
+}
+
+.miedit-forms>h1 { display: inherit !important; }
+
+.miedit-control>h1, .miedit-forms>h1, .miedit-treeactions>h1, .tidgets h2 {
+    margin: 0;
+    padding: 1em 0;
+    font-size: 100%;
+    background-color: var(--color-5);
+    color: white;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: bold;
 }
 
 .miedit-forms h2 {
+    padding: 0;
     margin-top: 0;
-    border-bottom: 0.1em solid white;
-    font-size: 115%;
-}
-
-.miedit-forms h2::after {
-    content: "";
-    display: block;
-    padding-top: 0.7em;
-    border-bottom: 0.1em solid #CCC;
+    border-bottom: 0.1em solid var(--color-4);
+    font-size: 1rem;
 }
 
 .miedit-forms h2 input {
@@ -109,12 +152,9 @@ a>.jstree-icon {
     margin-top: 0.7em;
 }
 
-.miedit-info { border-top: 0.1em solid white; }
-.miedit-info::before {
-    content: "";
-    display: block;
+.miedit-info {
+    border-top: 0.1em solid var(--color-4);
     margin-top: 1em;
-    border-top: 0.1em solid #CCC;
 }
 
 .miedit-forms input[type="text"], .miedit-forms textarea {
@@ -122,25 +162,25 @@ a>.jstree-icon {
     font-size: 75%;
 }
 
-.emulator-container { background-color: #202020; }
+.emulator-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--emulator-width);
+    height: var(--emulator-height);
+}
 
 x-minitel {
     display: block;
     position:relative;
-    width: 40em;
-    max-width: 100%;
-    height: auto;
-    text-align: center;
-    margin: auto;
 }
 
 x-minitel canvas {
     image-rendering: crisp-edges;
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
-    width: 40em;
-    max-width: 100%;
-    height: auto;
+    width: var(--emulator-width);
+    height: var(--emulator-height);
 }
 
 .minitel-cursor {
@@ -169,6 +209,9 @@ select { height: 2.6em; }
     background-image: url(../icon/32px.svg);
     background-repeat: no-repeat;
 }
+
+.jstree-default .jstree-hovered { background-color: var(--color-5); }
+.jstree-default .jstree-clicked { background-color: white; }
 
 /* Mini DRCS editor */
 .drcs-checkbox-pixel {
@@ -202,4 +245,85 @@ select { height: 2.6em; }
     position: absolute;
     right: 0;
     text-align: right;
+}
+
+/* Tidgets */
+
+.tidgets {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: calc(calc(100% - var(--emulator-width)) / 2);    
+    background-color: var(--color-2);
+    overflow-y: scroll;
+}
+
+.tidgets h3 { margin: 0; }
+.tidgets h4 {
+    font-size: 1rem;
+    border-bottom: 0.1em solid var(--color-4);
+}
+.tidgets>div { margin: 1em 0 1em 1.8em; }
+.tidgets>div>div {
+    display: inline-block;
+    margin-right: 2em;
+    margin-bottom: 1em;
+}
+.tidgets [aria-hidden=true] { display: none; }
+
+.tidgets button.aria-accordion-header {
+    display: block !important;
+    width: 100%;
+    background-color: var(--color-4);
+    color: white;
+    text-align: left;
+    margin-bottom: 0.1em;
+    padding: 0.3em 0.6em 0.3em 0;
+    border: none;
+    font-size: 110%;
+}
+
+.aria-accordion-header::before {
+    display: inline-block;
+    width: 1.5em;
+    text-align: center;
+}
+
+.aria-accordion-header[aria-expanded="true"]::before { content: "▼ "; }
+.aria-accordion-header[aria-expanded="false"]::before { content: "▶ "; }
+
+.tidgets>div button {
+    border: none;
+    background-color: transparent;
+    vertical-align: top;
+}
+
+.tidgets>div button:hover {
+    border-radius: 0.6em;
+    background-color: white;
+}
+
+/* Controls */
+.miedit-control h2 {
+    font-size: 1rem;
+    border-bottom: 0.1em solid var(--color-4);
+    text-align: left;
+}
+
+.miedit-control>div {
+    display: inline-block;
+    margin-right: 2em;
+    vertical-align: top;
+}
+
+.miedit-control div>button {
+    border: none;
+    background-color: transparent;
+    vertical-align: top;
+}
+
+.miedit-control div>button:hover {
+    border-radius: 0.6em;
+    background-color: white;
 }
