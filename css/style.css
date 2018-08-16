@@ -23,6 +23,7 @@ body {
 
 p { margin: 0.5em 0 0 0; }
 a { color: var(--color-4); }
+button { cursor: pointer; }
 
 hr {
     border: none;
@@ -245,6 +246,18 @@ select { height: 2.6em; }
     position: absolute;
     right: 0;
     text-align: right;
+}
+
+.drcs-actions button {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.drcs-actions button:hover {
+    background-color: white;
+    border-radius: 0.5em;
 }
 
 /* Tidgets */
