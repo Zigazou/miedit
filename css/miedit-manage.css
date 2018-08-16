@@ -29,7 +29,15 @@ h1 {
     font-weight: bold;
 }
 
-a { color: var(--color-4); }
+a.emphasize {
+    display: inline-block;
+    border-radius: 0.5em;
+    background-color: var(--color-4);
+    color: var(--color-2);
+    padding: 1em 2em;
+    margin-top: 1em;
+    font-weight: bold;
+}
 
 .page-list-item {
     display: inline-block;
