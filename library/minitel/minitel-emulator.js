@@ -210,6 +210,12 @@ Minitel.Emulator = class {
                        ? 2048
                        : bandwidth / 9 / (1000 / rate)
 
+        // Change rate if chunksize is below 1
+        if(this.chunkSize < 1) {
+            this.chunkSize = 1
+            rate = 9 * 1000 / bandwidth
+        }
+
         this.timer = window.setInterval(() => this.sendChunk(), rate)
     }
 
@@ -277,7 +283,7 @@ Minitel.Emulator = class {
     setRefresh(bandwidth, rate) {
         if(this.bandwidth !== bandwidth) {
             // Refresh rate, 25 Hz by default
-            if(rate === undefined) rate = 25
+            if(rate === undefined) rate = 40
 
             this.bandwidth = bandwidth
             this.initRefresh(bandwidth, rate)

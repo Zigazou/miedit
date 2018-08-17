@@ -238,6 +238,22 @@ select { height: 2.6em; }
     background-repeat: no-repeat;
 }
 
+.jstree-default .jstree-anchor {
+    line-height: 32px;
+    height: 32px;
+}
+
+.jstree-default .jstree-themeicon:empty {
+    line-height: 32px;
+    vertical-align: middle;
+}
+
+.jstree-default .jstree-ocl:empty {
+    height: 32px;
+    line-height: 32px;
+    background-position: -68px 0;
+}
+
 .jstree-default .jstree-hovered { background-color: var(--color-5); }
 .jstree-default .jstree-clicked { background-color: white; }
 
@@ -366,4 +382,10 @@ select { height: 2.6em; }
 .miedit-control div>button:hover {
     border-radius: 0.6em;
     background-color: white;
+}
+
+.miedit-control form { text-align: left; }
+.miedit-control label[for=speed-setting] {
+    display: inline-block;
+    width: 6em;
 }

@@ -240,8 +240,17 @@ MiEdit.MiEditPage = class {
      * @param {mixed} param The user selected speed
      * @private
      */
-    onSetSpeed(event, param) {
-        this.miscreen.setRefresh(parseInt(param))
+    onSetSpeed(event) {
+        const speeds = [50, 400, 1200, 2400, 4800, 9600, 19200, 0]
+
+        const label = event.target.querySelector("label")
+        const input = event.target.querySelector("input")
+
+        label.innerHTML = speeds[input.value] === 0
+                        ? "MAX"
+                        : speeds[input.value] + " bps"
+
+        this.miscreen.setRefresh(speeds[input.value])
     }
 
     /**
@@ -250,8 +259,8 @@ MiEdit.MiEditPage = class {
      * @param {mixed} param "true" for color, "false" for grayscale.
      * @private
      */
-    onSetColor(event, param) {
-        this.miscreen.setColor(param === "true")
+    onSetColor(event) {
+        this.miscreen.setColor(event.target.querySelector("input").checked)
     }
 
     /**
@@ -260,8 +269,10 @@ MiEdit.MiEditPage = class {
      * @param {mixed} param "true" for showing, "false" for hiding.
      * @private
      */
-    onShowPosition(event, param) {
-        this.miscreen.vdu.cursor.setIndicator(param === "true")
+    onShowPosition(event) {
+        this.miscreen.vdu.cursor.setIndicator(
+            event.target.querySelector("input").checked
+        )
     }
 
     /**
