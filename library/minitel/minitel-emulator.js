@@ -50,8 +50,26 @@ Minitel.Emulator = class {
         }
 
         /**
+         * Should we consume new incoming bytes?
+         * @member {boolean}
+         */
+        this.pause = false
+
+        /**
+         * A handler which will be called to record frames.
+         * @member {function}
+         */
+        this.recordHandler = undefined
+
+        /**
+         * A handler which will be called each time the buffer is empty.
+         * @member {function}
+         */
+        this.emptyHandler = undefined
+
+        /**
          * Should we show colors or grayscale?
-         * @param {boolean}
+         * @member {boolean}
          */
         this.color = color
 
@@ -216,7 +234,17 @@ Minitel.Emulator = class {
             rate = 9 * 1000 / bandwidth
         }
 
-        this.timer = window.setInterval(() => this.sendChunk(), rate)
+        this.timer = window.setInterval(
+            () => {
+                if(this.pause) return
+
+                this.pause = true
+                this.sendChunk()
+                if(this.recordHandler) this.recordHandler(this.vdu.canvas, rate)
+                this.pause = false
+            },
+            rate
+        )
     }
 
     /**
@@ -257,6 +285,8 @@ Minitel.Emulator = class {
         const chunk = this.queue.slice(0, this.chunkSize)
         this.queue = this.queue.slice(this.chunkSize)
         this.decoder.decodeList(chunk)
+
+        if(this.emptyHandler && this.queue.length === 0) this.emptyHandler()
     }
 
     /**

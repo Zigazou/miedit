@@ -1,0 +1,23 @@
+<!-- Minitel Page Editor recorder -->
+<div class="miedit-recorder modal hidden">
+  <div class="content">
+      <h1>Recorder</h1>
+      <form class="recorder-generation">
+        Frame generation
+        <progress max="100" value="0">0%</progress>
+      </form>
+      <form class="recorder-encoding">
+        GIF encoding
+        <progress max="100" value="0">0%</progress>
+      </form>
+      <div class="recorder-result"></div>
+
+      <p>
+        Once the GIF is generated, you can save it to your disk. The
+        generated GIF can be large (several megabytes). You can optimize them
+        with Gimp.
+      </p>
+
+      <button class="modal-close" data-call="onRecorderClose">Close</button>
+  </div>
+</div>

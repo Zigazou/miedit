@@ -95,6 +95,7 @@ MiEdit.MiEditPage = class {
         // Automatically attach events to handlers of this class
         this.tidgets.root.autocallback(this)
         container.find(".miedit-control").map((i, o) => o.autocallback(this))
+        container.find(".miedit-recorder").map((i, o) => o.autocallback(this))
         container.find(".content-graphics").map((i, o) => o.autocallback(this))
         container.find(".drcs-black-white").map((i, o) => o.autocallback(this))
         container.find(".drcs-actions").map((i, o) => o.autocallback(this))
@@ -285,6 +286,81 @@ MiEdit.MiEditPage = class {
     onRunSlow() {
         const actions = MiEdit.mieditActions(this.mitree.serialize())
         this.miscreen.send(Minitel.actionsToStream(actions, 0, 0).toArray())
+    }
+
+    /**
+     * When the user clicks on the record animationbutton.
+     * @param {HTMLEvent} event Event that generated the call
+     * @param {mixed} param Parameters of the event
+     * @private
+     */
+    onRecordAnimation() {
+        const actions = MiEdit.mieditActions(this.mitree.serialize())
+        const modal = document.querySelector(".miedit-recorder")
+        const prgGen = modal.querySelector(".recorder-generation progress")
+        const prgEnc = modal.querySelector(".recorder-encoding progress")
+        const result = modal.querySelector(".recorder-result")
+
+        // Initializes the modal window.
+        prgGen.value = 0
+        prgEnc.value = 0
+        result.innerHTML = ""
+
+        // Create a GIF encoder
+        const gif = new GIF({
+            workers: 3,
+            quality: 10,
+            width: Minitel.columns * Minitel.charWidth,
+            height: Minitel.rows * Minitel.charHeight,
+            workerScript: 'library/gif-js/gif.worker.js'
+        })
+
+        // When GIF rendering is finished, export the result as a new page.
+        gif.on('start', () => prgEnc.max = 1)
+        gif.on('progress', index => prgEnc.value = index)
+        gif.on('finished', (blob) => {
+            const image = document.createElement("img")
+            image.src = URL.createObjectURL(blob)
+            result.appendChild(image)
+        })
+
+        // Each time a frame is generated, records it.
+        this.miscreen.recordHandler = (canvas, rate) => {
+            gif.addFrame(canvas, {copy: true, delay: rate})
+            prgGen.value = prgGen.max - this.miscreen.queue.length
+        }
+
+        // When stream is empty, stop the recording.
+        this.miscreen.emptyHandler = () => {
+            this.miscreen.recordHandler = undefined
+            this.miscreen.emptyHandler = undefined
+
+            gif.render()
+        }
+
+        const stream = Minitel.actionsToStream(actions, 0, 0).toArray()
+        if(stream.length === 0) {
+            return
+        }
+
+        // Adds ten seconds of NUL bytes.
+        range(10 * 120).forEach(() => stream.push(0))
+
+        modal.classList.remove("hidden")
+        prgGen.max = stream.length - 1
+        this.miscreen.send(stream)
+    }
+
+    /**
+     * When the user clicks on the close button of the recorder modal window.
+     */
+    onRecorderClose() {
+        const modal = document.querySelector(".miedit-recorder")
+        this.miscreen.recordHandler = undefined
+        this.miscreen.emptyHandler = undefined
+
+        modal.classList.add("hidden")
+        modal.querySelector(".recorder-result").innerHTML = ""
     }
 
     /**
