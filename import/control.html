@@ -1,87 +1,80 @@
 <!-- Minitel Page Editor controls -->
 <div class="miedit-control">
   <h1>Minitel Page Editor</h1>
-  <div>
-    <h2>Settings</h2>
-    <form data-change="onSetSpeed">
-      <input type="range" min="0" max="7" value="2" id="speed-setting" />
-      <label for="speed-setting">1200 bps</label>
-    </form>
-    <form data-change="onSetColor">
-      <input type="checkbox" id="color-setting" checked="checked" />
-      <label for="color-setting">use color</label>
-    </form>
-    <form data-change="onShowPosition">
-      <input type="checkbox" id="cursor-setting"/>
-      <label for="cursor-setting">show cursor position</label>
-    </form>
-  </div>
-
-  <div>
-    <h2>Run</h2>
-    <button class="large" data-call="onRunSlow">
-      <img src="icon/miicons.svg#run-slow" /><br/>Minitel<br/>speed
-    </button>
-    <button class="large" data-call="onRecordAnimation">
-      <img src="icon/miicons.svg#run-fast" /><br/>Record<br/>animation
-    </button>
-    <button class="large" data-call="onCompile">
-      <img src="icon/miicons.svg#file-generate-links" /><br/>Generate<br/>links
-    </button>
-  </div>
-
-  <div>
-    <h2>Edit</h2>
-    <button class="large" data-call="onDelete">
-      <img src="icon/miicons.svg#edit-delete" /><br/>Delete<br/>item
-    </button>
-  </div>
- 
-  <hr/>
-
-  <div>
-    <h2>Load/Save</h2>
-    <button class="large" data-call="onSave">
-      <img src="icon/miicons.svg#file-save" /><br/>Local<br/>Save
-    </button>
-
-    <button class="large" data-call="onImport">
-      <img src="icon/miicons.svg#file-import" /><br/>Import
-    </button>
-
-    <button class="large" data-call="onExport">
-      <img src="icon/miicons.svg#file-export" /><br/>Export
-    </button>
-  </div>
-
-  <div>
-    <h2>Generated links</h2>
-    <p>
-      <a href="#" id="link-download-vdt">
-        Please generate links before clicking
-      </a>
-    </p>
-    <p>
-      <a href="#" id="link-view-vdt" target="_blank">
-        Please generate links before clicking
-      </a>
-    </p>
-    <p>
-      <a href="#" id="link-real-vdt" target="_blank">
-        Please generate links before clicking
-      </a>
-    </p>
-  </div>
-
-  <div>
-    <h2>Videotex</h2>
-    <form>
-      <label for="vdt-load-file">Videotex file</label>
-      <input id="vdt-load-file" type="file"/>
-      <button value="edit"
-        data-call="onImportVideotex"
-        data-param="vdt-load-file"
-      >Import Videotex</button>
+  <div class="miedit-control-items">
+    <div class="large">
+      <h2>Settings</h2>
+      <form data-change="onSetSpeed">
+        <input type="range" min="0" max="7" value="2" id="speed-setting" />
+        <label for="speed-setting">1200 bps</label>
       </form>
+      <form data-change="onSetColor">
+        <input type="checkbox" id="color-setting" checked="checked" />
+        <label for="color-setting">use color</label>
+      </form>
+      <form data-change="onShowPosition">
+        <input type="checkbox" id="cursor-setting"/>
+        <label for="cursor-setting">show cursor position</label>
+      </form>
+    </div>
+
+    <div>
+      <h2>Run</h2>
+      <button class="large" data-call="onRunSlow">
+        <img src="icon/miicons.svg#run-slow" /><br/>Minitel<br/>speed
+      </button>
+      <button class="large" data-call="onRecordAnimation">
+        <img src="icon/miicons.svg#run-fast" /><br/>Record<br/>animation
+      </button>
+      <button class="large" data-call="onCompile">
+        <img src="icon/miicons.svg#file-generate-links" /><br/>Generate<br/>links
+      </button>
+    </div>
+
+    <div>
+      <h2>Load/Save</h2>
+      <button class="large" data-call="onSave">
+        <img src="icon/miicons.svg#file-save" /><br/>Local<br/>Save
+      </button>
+
+      <button class="large" data-call="onImport">
+        <img src="icon/miicons.svg#file-import" /><br/>Import
+      </button>
+
+      <button class="large" data-call="onExport">
+        <img src="icon/miicons.svg#file-export" /><br/>Export
+      </button>
+    </div>
+
+    <div>
+      <h2>Generated links</h2>
+      <p>
+        <a href="#" id="link-download-vdt">
+          Please generate links before clicking
+        </a>
+      </p>
+      <p>
+        <a href="#" id="link-view-vdt" target="_blank">
+          Please generate links before clicking
+        </a>
+      </p>
+      <p>
+        <a href="#" id="link-real-vdt" target="_blank">
+          Please generate links before clicking
+        </a>
+      </p>
+    </div>
+
+    <div>
+      <h2>Videotex</h2>
+      <form>
+        <label for="vdt-load-file">Videotex file</label>
+        <input id="vdt-load-file" type="file"/>
+        <button value="edit"
+          data-call="onImportVideotex"
+          data-param="vdt-load-file"
+        >Import Videotex</button>
+        </form>
+    </div>
   </div>
 </div>

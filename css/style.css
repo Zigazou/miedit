@@ -46,6 +46,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
+    background-color: var(--color-2);
 }
 
 p { margin: 0.5em 0 0 0; }
@@ -67,9 +68,7 @@ hr {
     left: 0;
     width: var(--emulator-width);
     height: calc(100% - var(--emulator-height));
-    background-color: var(--color-3-light);
     overflow-y: scroll;
-    text-align: center;
 }
 
 div.jstree::before {
@@ -103,7 +102,6 @@ a>.jstree-icon {
     width: calc(calc(100% - var(--emulator-width)) / 2);
     height: var(--properties-height);
     overflow-y: scroll;
-    background-color: var(--color-2);
 }
 
 .miedit-forms>* {
@@ -313,7 +311,6 @@ select { height: 2.6em; }
     right: 0;
     height: 100%;
     width: calc(calc(100% - var(--emulator-width)) / 2);    
-    background-color: var(--color-2);
     overflow-y: scroll;
 }
 
@@ -363,27 +360,46 @@ select { height: 2.6em; }
 }
 
 /* Controls */
-.miedit-control h2 {
-    font-size: 1rem;
-    border-bottom: 0.1em solid var(--color-4);
-    text-align: left;
+.miedit-control-items {
+    margin: 1rem 0 0 1rem;
+    display: flex;
+    flex-flow: row wrap;
 }
 
-.miedit-control>div {
-    display: inline-block;
-    margin-right: 2em;
-    vertical-align: top;
+.miedit-control-items>div {
+    position: relative;
+    padding: 3rem 1rem 1rem 1rem;
+    margin: 0 1rem 1rem 0;
+    background-color: var(--color-3);
+}
+
+.miedit-control-items>div, .miedit-control-items a { color: white; }
+
+.miedit-control-items>div.large { flex: 2; }
+
+.miedit-control-items h2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    font-size: 1rem;
+    text-align: center;
+    font-weight: normal;
+    padding: 0.5rem 0;
+    margin: 0;
+    background-color: var(--color-4);
 }
 
 .miedit-control div>button {
     border: none;
     background-color: transparent;
+    color: white;
     vertical-align: top;
 }
 
 .miedit-control div>button:hover {
     border-radius: 0.6em;
-    background-color: white;
+    background-color: var(--color-4);
 }
 
 .miedit-control form { text-align: left; }
@@ -391,6 +407,8 @@ select { height: 2.6em; }
     display: inline-block;
     width: 6em;
 }
+
+.miedit-control-items img { filter: invert(100%); }
 
 /* Recorder */
 .modal {
