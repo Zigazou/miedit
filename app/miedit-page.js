@@ -298,35 +298,23 @@ MiEdit.MiEditPage = class {
         const actions = MiEdit.mieditActions(this.mitree.serialize())
         const modal = document.querySelector(".miedit-recorder")
         const prgGen = modal.querySelector(".recorder-generation progress")
-        const prgEnc = modal.querySelector(".recorder-encoding progress")
         const result = modal.querySelector(".recorder-result")
 
         // Initializes the modal window.
         prgGen.value = 0
-        prgEnc.value = 0
         result.innerHTML = ""
 
         // Create a GIF encoder
-        const gif = new GIF({
-            workers: 3,
-            quality: 10,
-            width: Minitel.columns * Minitel.charWidth,
-            height: Minitel.rows * Minitel.charHeight,
-            workerScript: 'library/gif-js/gif.worker.js'
-        })
-
-        // When GIF rendering is finished, export the result as a new page.
-        gif.on('start', () => prgEnc.max = 1)
-        gif.on('progress', index => prgEnc.value = index)
-        gif.on('finished', (blob) => {
-            const image = document.createElement("img")
-            image.src = URL.createObjectURL(blob)
-            result.appendChild(image)
-        })
+        const gif = new GifMinitel(
+            Minitel.columns * Minitel.charWidth,
+            Minitel.rows * Minitel.charHeight,
+            40
+        )
 
         // Each time a frame is generated, records it.
-        this.miscreen.recordHandler = (canvas, rate) => {
-            gif.addFrame(canvas, {copy: true, delay: rate})
+        this.miscreen.recordHandler = canvas => {
+            const context = canvas.getContext("2d")
+            gif.add(context.getImageData(0, 0, 320, 250))
             prgGen.value = prgGen.max - this.miscreen.queue.length
         }
 
@@ -335,7 +323,13 @@ MiEdit.MiEditPage = class {
             this.miscreen.recordHandler = undefined
             this.miscreen.emptyHandler = undefined
 
-            gif.render()
+            const data = gif.save()
+            const image = document.createElement("img")
+            image.src = URL.createObjectURL(
+                new Blob([data], {type: "image/gif"}),
+                {type: "image/gif"}
+            )
+            result.appendChild(image)
         }
 
         const stream = Minitel.actionsToStream(actions, 0, 0).toArray()
