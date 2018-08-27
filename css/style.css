@@ -53,6 +53,24 @@ p { margin: 0.5em 0 0 0; }
 a { color: var(--color-4); }
 button { cursor: pointer; }
 
+kbd {
+    padding:0.1em 0.6em;
+    font-size: 80%;
+    font-family: sans-serif;
+    background-color: #f7f7f7;
+    color: #333;
+    border: 0.2em solid #ccc;
+    box-shadow: 0 0.2em 0 rgba(0, 0, 0, 0.2),0 0 0 0.3em #ffffff inset;
+    border-radius: 0.4em;
+    text-shadow: 0 0.2em 0 #fff;
+    display: inline-block;
+    margin: 0 0.1em;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+:focus { outline: 0.3em dashed var(--color-3); }
+
 hr {
     border: none;
     border-top: 0.1em solid var(--color-4);

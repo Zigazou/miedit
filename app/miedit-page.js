@@ -55,6 +55,14 @@ MiEdit.MiEditPage = class {
         this.inputGraphics = undefined
 
         /**
+         * The HTML input field holding a text value representing an old style
+         * drawing.
+         * @member {HTMLElement=}
+         * @private
+         */
+        this.inputOldStyle = undefined
+
+        /**
          * The tidgets accordion.
          * @member {AriaAccordion}
          * @private
@@ -411,15 +419,12 @@ MiEdit.MiEditPage = class {
      * @param {mixed} param Parameters of the event
      * @private
      */
-    onEditOldStyle() {
+    onEditOldStyle(event, param) {
         // Retrieve the encoded value of the mosaic drawing
-        //const inputOldStyle = document.getElementById(param)
+        this.inputOldStyle = document.getElementById(param)
 
-        // Sends it to the mosaic editor
-        //this.oldstyle.reset(inputOldStyle.value)
-
-        // Show the old style editor
-        this.oldstyle.enable()
+        // Sends it to the old style editor
+        this.oldstyle.enable(this.inputOldStyle.value)
     }
 
     /**
@@ -486,6 +491,24 @@ MiEdit.MiEditPage = class {
     }
 
     /**
+     * When the user clicks on the save button of the old style editor form.
+     * @param {HTMLEvent} event Event that generated the call
+     * @param {mixed} param Parameters of the event
+     * @private
+     */
+    onSaveOldStyle() {
+        // Converts the old style drawing to an encoded string placed in the
+        // input field of the mosaic editor form
+        this.inputOldStyle.value = this.oldstyle.toString()
+
+        // Signals that the input field has been modified
+        this.inputOldStyle.dispatchEvent(new Event("input"))
+
+        // Hides the old style editor
+        this.oldstyle.disable()
+    }
+
+    /**
      * When the user clicks on the exit button of the mosaic editor form.
      * @param {HTMLEvent} event Event that generated the call
      * @param {mixed} param Parameters of the event
@@ -494,6 +517,17 @@ MiEdit.MiEditPage = class {
     onExitGraphics() {
         // Forgets every change and hides the mosaic editor
         this.graphics.root.classList.add("hidden")
+    }
+
+    /**
+     * When the user clicks on the exit button of the old style editor form.
+     * @param {HTMLEvent} event Event that generated the call
+     * @param {mixed} param Parameters of the event
+     * @private
+     */
+    onExitOldStyle() {
+        // Forgets every change and hides the old style editor
+        this.oldstyle.disable()
     }
 
     /**

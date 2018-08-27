@@ -145,4 +145,19 @@ Minitel.VRAM = class {
 
         return string
     }
+
+    load(screen) {
+        if(screen) {
+            try {
+                console.log(screen)
+                this.memory = JSON.parse(screen)
+            } catch (e) {
+                console.error("Parsing error:", e); 
+            }
+        }
+    }
+
+    save() {
+        return JSON.stringify(this.memory)
+    }
 }
