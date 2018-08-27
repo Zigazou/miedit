@@ -172,6 +172,16 @@ Minitel.VDU = class {
     }
 
     /**
+     * Get the Cell at (X, Y) position in page memory
+     *
+     * @param {number} x X position of the cell
+     * @param {number} y Y position of the cell
+     */
+    get(x, y) {
+        return this.vram.get(x, y)
+    }
+
+    /**
      * Clear the page
      */
     clear() {

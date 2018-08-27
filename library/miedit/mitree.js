@@ -182,6 +182,7 @@ MiEdit.MiTree = class {
             "content-ceefax": "Ceefax",
             "content-block": "Block",
             "content-graphics": "Graphics",
+            "content-oldstyle": "Old style editor",
             "content-box": "Box",
             "content-raw": "Raw stream",
             "drcs-create": "Create DRCS character",

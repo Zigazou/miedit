@@ -3,13 +3,13 @@
  * @file vram
  * @author Frédéric BISSON <zigazou@free.fr>
  * @version 1.0
- * 
+ *
  * VRAM simulates video memory for the VDU class.
  */
 
 /**
  * @namespace Minitel
- */ 
+ */
 var Minitel = Minitel || {}
 
 /**

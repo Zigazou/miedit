@@ -97,6 +97,7 @@ MiEdit.MiEditPage = class {
         container.find(".miedit-control").map((i, o) => o.autocallback(this))
         container.find(".miedit-recorder").map((i, o) => o.autocallback(this))
         container.find(".content-graphics").map((i, o) => o.autocallback(this))
+        container.find(".content-oldstyle").map((i, o) => o.autocallback(this))
         container.find(".drcs-black-white").map((i, o) => o.autocallback(this))
         container.find(".drcs-actions").map((i, o) => o.autocallback(this))
         container.find(".mosaic-exit").map((i, o) => o.autocallback(this))
@@ -107,7 +108,9 @@ MiEdit.MiEditPage = class {
          * @member {Minitel.Emulator}
          * @private
          */
-        this.miscreen = Minitel.startEmulators()[0]
+        this.miscreen = new Minitel.Emulator(
+            container[0].querySelector(".emulator-container x-minitel")
+        )
 
         const events = [
             "value_changed.mitree",
@@ -123,6 +126,16 @@ MiEdit.MiEditPage = class {
         this.mitree.treeWidget.on(events.join(" "), event => {
             this.onRunFast(event)
         })
+
+        const oldstyleRoot = document.getElementsByClassName("oldstyle-root")[0]
+
+        /**
+         * An old style editor which will be hidden/revealed when the user needs
+         * it.
+         * @member {MiEdit.MiOldStyle}
+         * @private
+         */
+        this.oldstyle = new MiEdit.MiOldStyle(oldstyleRoot)
     }
 
     /**
@@ -389,6 +402,24 @@ MiEdit.MiEditPage = class {
 
         // Show the mosaic editor
         this.graphics.root.classList.remove("hidden")
+    }
+
+    /**
+     * When the user clicks on the edit button of a currently selected old style
+     * editor. This then shows the old style editor.
+     * @param {HTMLEvent} event Event that generated the call
+     * @param {mixed} param Parameters of the event
+     * @private
+     */
+    onEditOldStyle() {
+        // Retrieve the encoded value of the mosaic drawing
+        //const inputOldStyle = document.getElementById(param)
+
+        // Sends it to the mosaic editor
+        //this.oldstyle.reset(inputOldStyle.value)
+
+        // Show the old style editor
+        this.oldstyle.enable()
     }
 
     /**

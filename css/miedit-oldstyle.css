@@ -1,0 +1,58 @@
+.oldstyle-root {
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background-color: var(--color-2);
+    overflow-y: scroll;
+
+    display: flex;
+}
+
+.oldstyle-attributes h2 {
+    background-color: var(--color-1);
+    font-size: 90%;
+    padding: 0.5em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 4em;
+}
+
+.oldstyle-attributes .cell-value h2 { margin-top: inherit; }
+
+.hidden { display: none; }
+
+.oldstyle-attributes { flex: 2; }
+
+.cell-type {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cell-type>div {
+    flex-grow: 2;
+    text-align: center;
+    background-color: var(--color-4);
+    color: white;
+    padding: 1em 1em;
+}
+
+.cell-value, .cell-attributes { margin: 1em; }
+
+.cell-value>input { width: 3em; }
+
+.attr-foreground, .attr-background {
+    display: flex;
+    justify-content: space-between;
+}
+.attr-foreground label, .attr-foreground input,
+.attr-background label, .attr-background input {
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+}
+
+input:disabled, input:disabled+label { filter: opacity(0.3); }
