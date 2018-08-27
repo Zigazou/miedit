@@ -41,6 +41,24 @@ Minitel.Cell = class {
     copy() {
         return new Minitel.Cell(this.value, this.fgColor)
     }
+
+    /**
+     * Returns a string version of the Cell.
+     * This method must be implemented by the children of this class
+     * @return {string} the string version.
+     * @abstract
+     */
+    toString() {
+        return ""
+    }
+
+    /**
+     * Import cell's data from a string.
+     * @param {string} image String to parse.
+     * @abstract
+     */
+    fromString(image) {
+    }
 }
 
 /**
@@ -148,6 +166,44 @@ Minitel.CharCell = class extends Minitel.Cell {
 
         return cell
     }
+
+    /**
+     * Returns a string version of the Cell.
+     * This method must be implemented by the children of this class
+     * @return {string} the string version.
+     */
+    toString() {
+        return "C"
+             + this.value.toString(16).padStart("0", 2)
+             + this.fgColor.toString()
+             + (this.blink ? "1" : "0")
+             + (this.invert ? "1" : "0")
+             + this.mult.width.toString()
+             + this.mult.height.toString()
+             + this.part.x.toString()
+             + this.part.y.toString()
+             + (this.drcs ? "1" : "0")
+    }
+
+    /**
+     * Import cell's data from a string.
+     * @param {string} image String to parse.
+     * @abstract
+     */
+    fromString(image) {
+        if(image.substr(0, 1) !== 'C') return false
+        if(image.length !== 11) return false
+
+        this.value = parseInt(image.substr(1, 2), 16)
+        this.fgColor = parseInt(image.substr(3, 1))
+        this.blink = image.substr(4, 1) === "1"
+        this.invert = image.substr(5, 1) === "1"
+        this.mult.width = parseInt(image.substr(6, 1))
+        this.mult.height = parseInt(image.substr(7, 1))
+        this.part.x = parseInt(image.substr(8, 1))
+        this.part.y = parseInt(image.substr(9, 1))
+        this.drcs = image.substr(10, 1) === "1"
+    }
 }
 
 /**
@@ -213,6 +269,38 @@ Minitel.MosaicCell = class extends Minitel.Cell {
         cell.drcs = this.drcs
 
         return cell
+    }
+
+    /**
+     * Returns a string version of the Cell.
+     * This method must be implemented by the children of this class
+     * @return {string} the string version.
+     */
+    toString() {
+        return "M"
+             + this.value.toString(16).padStart("0", 2)
+             + this.fgColor.toString()
+             + this.bgColor.toString()
+             + (this.blink ? "1" : "0")
+             + (this.separated ? "1" : "0")
+             + (this.drcs ? "1" : "0")
+    }
+
+    /**
+     * Import cell's data from a string.
+     * @param {string} image String to parse.
+     * @abstract
+     */
+    fromString(image) {
+        if(image.substr(0, 1) !== 'M') return false
+        if(image.length !== 8) return false
+
+        this.value = parseInt(image.substr(1, 2), 16)
+        this.fgColor = parseInt(image.substr(3, 1))
+        this.bgColor = parseInt(image.substr(4, 1))
+        this.blink = image.substr(5, 1) === "1"
+        this.separated = image.substr(6, 1) === "1"
+        this.drcs = image.substr(7, 1) === "1"
     }
 }
 
@@ -296,4 +384,61 @@ Minitel.DelimiterCell = class extends Minitel.Cell {
 
         return cell
     }
+
+    /**
+     * Returns a string version of the Cell.
+     * This method must be implemented by the children of this class
+     * @return {string} the string version.
+     */
+    toString() {
+        return "D"
+             + this.value.toString(16).padStart("0", 2)
+             + this.fgColor.toString()
+             + this.bgColor.toString()
+             + (this.invert ? "1" : "0")
+             + (this.zoneUnderline ? "1": "0")
+             + (this.mask ? "1" : "0")
+             + this.mult.width.toString()
+             + this.mult.height.toString()
+    }
+
+    /**
+     * Import cell's data from a string.
+     * @param {string} image String to parse.
+     * @abstract
+     */
+    fromString(image) {
+        if(image.substr(0, 1) !== 'D') return false
+        if(image.length !== 10) return false
+
+        this.value = parseInt(image.substr(1, 2), 16)
+        this.fgColor = parseInt(image.substr(3, 1))
+        this.bgColor = parseInt(image.substr(4, 1))
+        this.invert = image.substr(5, 1) === "1"
+        this.zoneUnderline = image.substr(6, 1) === "1"
+        this.mask = image.substr(7, 1) === "1"
+        this.mult.width = parseInt(image.substr(8, 1))
+        this.mult.height = parseInt(image.substr(9, 1))
+    }
+}
+
+/**
+ * Parse a string into a Cell. Automatically determines which class to use.
+ *
+ * @param {string} image String to parse into a Cell.
+ * @returns {Minitel.Cell}
+ */
+Minitel.Cell.fromString = function(image) {
+    let cell
+    if(image.substr(0, 1) === 'C') {
+        cell = new Minitel.CharCell()
+    } else if(image.substr(0, 1) === 'M') {
+        cell = new Minitel.MosaicCell()
+    } else {
+        cell = new Minitel.DelimiterCell()
+    }
+
+    cell.fromString(image)
+
+    return cell
 }

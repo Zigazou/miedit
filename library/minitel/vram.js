@@ -147,17 +147,47 @@ Minitel.VRAM = class {
     }
 
     load(screen) {
-        if(screen) {
-            try {
-                console.log(screen)
-                this.memory = JSON.parse(screen)
-            } catch (e) {
-                console.error("Parsing error:", e); 
-            }
-        }
+        if(screen === null || screen === undefined) return
+
+        let offset = 0
+
+        range(1, this.grid.rows).forEach(y => {
+            range(0, this.grid.cols).forEach(x => {
+                if(screen.substr(offset, 1) === 'C') {
+                    this.set(
+                        x, y,
+                        Minitel.Cell.fromString(screen.substr(offset, 11))
+                    )
+
+                    offset += 11
+                } else if(screen.substr(offset, 1) === 'M') {
+                    this.set(
+                        x, y,
+                        Minitel.Cell.fromString(screen.substr(offset, 8))
+                    )
+
+                    offset += 8
+                } else {
+                    this.set(
+                        x, y,
+                        Minitel.Cell.fromString(screen.substr(offset, 10))
+                    )
+
+                    offset += 10
+                }
+            })
+        })
     }
 
     save() {
-        return JSON.stringify(this.memory)
+        let save = ""
+
+        range(1, this.grid.rows).forEach(y => {
+            range(0, this.grid.cols).forEach(x => {
+                save += this.memory[y][x].toString()
+            })
+        })
+
+        return save
     }
 }

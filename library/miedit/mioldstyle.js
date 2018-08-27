@@ -61,6 +61,10 @@ MiEdit.MiOldStyle = class {
         // Connect every callback.
         this.root.autocallback(this)
 
+        this.root.querySelector("x-minitel").addEventListener(
+            "keydown", event => this.onKeypress(event)
+        )
+
         /**
          * Next keypress will be identified as a character or mosaic (false) or
          * as an attribute (true).
@@ -77,14 +81,6 @@ MiEdit.MiOldStyle = class {
          * @private
          */
         this.cellMode = "character"
-
-        /**
-         * Keypress listener used to allow deregistering of our handler.
-         *
-         * @member {number}
-         * @private
-         */
-        this.keypressListener = undefined
 
         /**
          * Direct access to attributes form elements.
@@ -116,11 +112,6 @@ MiEdit.MiOldStyle = class {
      * @param {string} cvalue An LZ-string of a loadable JSON structure.
      */
     enable(cvalue) {
-        const xminitel = this.root.querySelector("x-minitel")
-        this.keypressListener = xminitel.addEventListener(
-            "keydown", event => this.onKeypress(event)
-        )
-
         // Set default modes.
         this.modeAttribute = false
         this.cellMode = "character"
@@ -132,7 +123,15 @@ MiEdit.MiOldStyle = class {
                   .replace(new RegExp('-', 'g'), '=')
         )
 
+        this.vdu.clear()
         this.vdu.vram.load(value)
+        this.vdu.redraw()
+
+        setTimeout(() => {
+            console.log(this.vdu.changed)
+            this.vdu.redraw()
+            console.log(this.vdu.changed)
+        }, 2000)
 
         // Show the old style editor.
         this.root.classList.remove("hidden")
@@ -143,9 +142,6 @@ MiEdit.MiOldStyle = class {
      */
     disable() {
         this.root.classList.add("hidden")
-        this.root.querySelector("x-minitel").removeEventListener(
-            "keydown", this.keypressListener
-        )
     }
 
     /**

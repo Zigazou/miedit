@@ -109,6 +109,7 @@ MiEdit.MiEditPage = class {
         container.find(".drcs-black-white").map((i, o) => o.autocallback(this))
         container.find(".drcs-actions").map((i, o) => o.autocallback(this))
         container.find(".mosaic-exit").map((i, o) => o.autocallback(this))
+        container.find(".oldstyle-exit").map((i, o) => o.autocallback(this))
 
         /**
          * A Minitel.Emulator widget handling the emulation part and stream sent
