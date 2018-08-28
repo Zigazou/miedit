@@ -149,32 +149,27 @@ Minitel.VRAM = class {
     load(screen) {
         if(screen === null || screen === undefined) return
 
+        const sizes = { C: 11, M: 8, D: 10 }
         let offset = 0
 
         range(1, this.grid.rows).forEach(y => {
             range(0, this.grid.cols).forEach(x => {
-                if(screen.substr(offset, 1) === 'C') {
-                    this.set(
-                        x, y,
-                        Minitel.Cell.fromString(screen.substr(offset, 11))
-                    )
+                const cellType = screen.substr(offset, 1)
 
-                    offset += 11
-                } else if(screen.substr(offset, 1) === 'M') {
-                    this.set(
-                        x, y,
-                        Minitel.Cell.fromString(screen.substr(offset, 8))
+                if(!(cellType in sizes)) {
+                    throw new SyntaxError(
+                        "Unknown cell type " + cellType + " @" + offset
                     )
-
-                    offset += 8
-                } else {
-                    this.set(
-                        x, y,
-                        Minitel.Cell.fromString(screen.substr(offset, 10))
-                    )
-
-                    offset += 10
                 }
+
+                this.set(
+                    x, y,
+                    Minitel.Cell.fromString(
+                        screen.substr(offset, sizes[cellType])
+                    )
+                )
+
+                offset += sizes[cellType]
             })
         })
     }

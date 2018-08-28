@@ -174,7 +174,7 @@ Minitel.CharCell = class extends Minitel.Cell {
      */
     toString() {
         return "C"
-             + this.value.toString(16).padStart("0", 2)
+             + this.value.toString(16).padStart(2, "0")
              + this.fgColor.toString()
              + (this.blink ? "1" : "0")
              + (this.invert ? "1" : "0")
@@ -278,7 +278,7 @@ Minitel.MosaicCell = class extends Minitel.Cell {
      */
     toString() {
         return "M"
-             + this.value.toString(16).padStart("0", 2)
+             + this.value.toString(16).padStart(2, "0")
              + this.fgColor.toString()
              + this.bgColor.toString()
              + (this.blink ? "1" : "0")
@@ -392,11 +392,11 @@ Minitel.DelimiterCell = class extends Minitel.Cell {
      */
     toString() {
         return "D"
-             + this.value.toString(16).padStart("0", 2)
+             + this.value.toString(16).padStart(2, "0")
              + this.fgColor.toString()
              + this.bgColor.toString()
              + (this.invert ? "1" : "0")
-             + (this.zoneUnderline ? "1": "0")
+             + (this.zoneUnderline ? "1" : "0")
              + (this.mask ? "1" : "0")
              + this.mult.width.toString()
              + this.mult.height.toString()

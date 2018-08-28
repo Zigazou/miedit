@@ -65,6 +65,14 @@ MiEdit.MiOldStyle = class {
             "keydown", event => this.onKeypress(event)
         )
 
+        this.root.querySelector("x-minitel .minitel-screen").addEventListener(
+            "mousedown", event => this.onMouseDown(event)
+        )
+
+        this.root.querySelector("x-minitel .minitel-screen").addEventListener(
+            "mousemove", event => this.onMouseMove(event)
+        )
+
         /**
          * Next keypress will be identified as a character or mosaic (false) or
          * as an attribute (true).
@@ -104,6 +112,22 @@ MiEdit.MiOldStyle = class {
             doubleHeight: container.querySelector(".attr-double-height"),
             drcs: container.querySelector(".attr-drcs")
         }
+    }
+
+    /**
+     * Returns a range object used to apply actions on the cursor zone.
+     *
+     * @returns {Object}
+     * @private
+     */
+    rangeZone() {
+        const start = [this.cursor.x, this.cursor.y]
+        const end = [
+            this.cursor.x + this.cursor.indicatorWidth,
+            this.cursor.y + this.cursor.indicatorHeight
+        ]
+
+        return range2(start, end)
     }
 
     /**
@@ -190,6 +214,10 @@ MiEdit.MiOldStyle = class {
         this.attributes.container.querySelectorAll(typeClass + " input")
                                  .forEach(node => node.disabled = false)
 
+
+        // Gradient colors are not the same as raw colors.
+        const colorToInput = [0, 2, 4, 6, 1, 3, 5, 7]
+
         // Select the cell type
         if(cell instanceof Minitel.CharCell) {
             this.attributes.types[0].checked = true
@@ -202,14 +230,16 @@ MiEdit.MiOldStyle = class {
         } else if(cell instanceof Minitel.MosaicCell) {
             this.attributes.types[1].checked = true
             this.attributes.value.value = cell.value
-            this.attributes.backgrounds[cell.bgColor].checked = true
+            this.attributes.backgrounds[colorToInput[cell.bgColor]]
+                           .checked = true
             this.attributes.blink.checked = cell.blink
             this.attributes.separated.checked = cell.separated
             this.attributes.drcs.checked = cell.drcs
         } else {
             this.attributes.types[2].checked = true
             this.attributes.value.value = 0x20
-            this.attributes.backgrounds[cell.bgColor].checked = true
+            this.attributes.backgrounds[colorToInput[cell.bgColor]]
+                           .checked = true
             this.attributes.invert.checked = cell.invert
             this.attributes.underline.checked = cell.zoneUnderline
             this.attributes.mask.checked = cell.mask
@@ -217,7 +247,7 @@ MiEdit.MiOldStyle = class {
             this.attributes.doubleHeight.checked = cell.mult.height === 2
         }
 
-        this.attributes.foregrounds[cell.fgColor].checked = true
+        this.attributes.foregrounds[colorToInput[cell.fgColor]].checked = true
     }
 
     /**
@@ -230,8 +260,8 @@ MiEdit.MiOldStyle = class {
             this.onKeyCellMode()
         } else if(event.key === "²") {
             this.onKeyAttributeMode()
-        } else if(this["onKey" + event.key]) {
-            this["onKey" + event.key](event)
+        } else if(this["onKey" + (event.shiftKey ? "Shift" : "") + event.key]) {
+            this["onKey" + (event.shiftKey ? "Shift" : "") + event.key](event)
         } else if(this.attributeMode) {
             this.onKeyAttribute(event)
         } else if(event.key.length === 1) {
@@ -259,37 +289,42 @@ MiEdit.MiOldStyle = class {
     }
 
     onKeyCharacter(charCode) {
-        // Change the charcode on the current character cell.
-        const currentCell = this.vdu.get(this.cursor.x, this.cursor.y)
+        this.rangeZone().forEach((x, y) => {
+            // Change the charcode on the current character cell.
+            const currentCell = this.vdu.get(x, y)
 
-        const cell = new Minitel.CharCell()
-        cell.value = charCode
-        cell.fgColor = currentCell.fgColor
+            const cell = new Minitel.CharCell()
+            cell.value = charCode
+            cell.fgColor = currentCell.fgColor
 
-        // Merge the current cell with the new one.
-        if(currentCell instanceof Minitel.CharCell) {
-            cell.blink = currentCell.blink
-            cell.invert = currentCell.invert
-            cell.drcs = currentCell.drcs
-        } else if(currentCell instanceof Minitel.MosaicCell) {
-            cell.blink = currentCell.blink
-            cell.drcs = currentCell.drcs
-        } else {
-            cell.invert = currentCell.invert
-        }
-
-        this.vdu.set(this.cursor.x, this.cursor.y, cell)
-
-        // Move the cursor to the next character.
-        if(this.cursor.isOnLastCol()) {
-            if(this.cursor.isOnLastRow()) {
-                this.cursor.home()
+            // Merge the current cell with the new one.
+            if(currentCell instanceof Minitel.CharCell) {
+                cell.blink = currentCell.blink
+                cell.invert = currentCell.invert
+                cell.drcs = currentCell.drcs
+            } else if(currentCell instanceof Minitel.MosaicCell) {
+                cell.blink = currentCell.blink
+                cell.drcs = currentCell.drcs
             } else {
-                this.cursor.firstColumn()
-                this.cursor.down()
+                cell.invert = currentCell.invert
             }
-        } else {
-            this.cursor.right()
+
+            this.vdu.set(x, y, cell)
+        })
+
+        // If zone is only one cell, move the cursor.
+        if(this.cursor.indicatorWidth * this.cursor.indicatorHeight === 1) {
+            // Move the cursor to the next character.
+            if(this.cursor.isOnLastCol()) {
+                if(this.cursor.isOnLastRow()) {
+                    this.cursor.home()
+                } else {
+                    this.cursor.firstColumn()
+                    this.cursor.down()
+                }
+            } else {
+                this.cursor.right()
+            }
         }
     }
 
@@ -298,95 +333,103 @@ MiEdit.MiOldStyle = class {
         const bit = [0x37, 0x38, 0x34, 0x35, 0x31, 0x32].indexOf(charCode)
         if(bit === -1) return
 
-        const currentCell = this.vdu.get(this.cursor.x, this.cursor.y)
-        const cell = new Minitel.MosaicCell()
+        this.rangeZone().forEach((x, y) => {
+            const currentCell = this.vdu.get(x, y)
+            const cell = new Minitel.MosaicCell()
 
-        // Bit 0 is attached to '7', bit 1 to '8', bit 2 to '4'...
-        cell.value = currentCell.value ^ 1 << bit
-        cell.fgColor = currentCell.fgColor
+            // Bit 0 is attached to '7', bit 1 to '8', bit 2 to '4'...
+            cell.value = currentCell.value ^ 1 << bit
+            cell.fgColor = currentCell.fgColor
 
-        // Merge the new cell with the current one.
-        if(currentCell instanceof Minitel.CharCell) {
-            cell.blink = currentCell.blink
-            cell.invert = currentCell.invert
-            cell.drcs = currentCell.drcs
-        } else if(currentCell instanceof Minitel.MosaicCell) {
-            cell.blink = currentCell.blink
-            cell.separated = currentCell.separated
-            cell.drcs = currentCell.drcs
-        } else {
-            cell.invert = currentCell.invert
-        }
+            // Merge the new cell with the current one.
+            if(currentCell instanceof Minitel.CharCell) {
+                cell.value = 0x40 ^ 1 << bit
+                cell.blink = currentCell.blink
+                cell.drcs = currentCell.drcs
+            } else if(currentCell instanceof Minitel.MosaicCell) {
+                cell.blink = currentCell.blink
+                cell.bgColor = currentCell.bgColor
+                cell.separated = currentCell.separated
+                cell.drcs = currentCell.drcs
+            } else {
+                cell.value = 0x40 ^ 1 << bit
+                cell.bgColor = currentCell.bgColor
+            }
 
-        this.vdu.set(this.cursor.x, this.cursor.y, cell)
+            this.vdu.set(x, y, cell)
+        })
     }
 
     onKeyDelimiter() {
-        const currentCell = this.vdu.get(this.cursor.x, this.cursor.y)
+        this.rangeZone().forEach((x, y) => {
+            const currentCell = this.vdu.get(x, y)
 
-        const cell = new Minitel.DelimiterCell()
-        cell.fgColor = currentCell.fgColor
+            const cell = new Minitel.DelimiterCell()
+            cell.fgColor = currentCell.fgColor
 
-        if(currentCell instanceof Minitel.CharCell) {
-            cell.invert = currentCell.invert
-        } else if(currentCell instanceof Minitel.MosaicCell) {
-            cell.bgColor = currentCell.bgColor
-        } else {
-            cell.invert = currentCell.invert
-            cell.zoneUnderline = currentCell.zoneUnderline
-            cell.mask = currentCell.mask
-        }
+            if(currentCell instanceof Minitel.CharCell) {
+                cell.invert = currentCell.invert
+            } else if(currentCell instanceof Minitel.MosaicCell) {
+                cell.bgColor = currentCell.bgColor
+            } else {
+                cell.invert = currentCell.invert
+                cell.zoneUnderline = currentCell.zoneUnderline
+                cell.mask = currentCell.mask
+            }
 
-        this.vdu.set(this.cursor.x, this.cursor.y, cell)
+            this.vdu.set(x, y, cell)
+        })
     }
 
     onKeyAttribute(event) {
-        const cell = this.vdu.get(this.cursor.x, this.cursor.y)
+        this.rangeZone().forEach((x, y) => {
+            const cell = this.vdu.get(x, y)
 
-        // Foreground color.
-        const indexFG = "aetuzryi".indexOf(event.key)
-        if(indexFG >= 0) cell.fgColor = indexFG
+            // Foreground color.
+            const indexFG = "aetuzryi".indexOf(event.key)
+            if(indexFG >= 0) cell.fgColor = indexFG
 
-        // Background color.
-        if(!(cell instanceof Minitel.CharCell)) {
-            const indexBG = "qdgjsfhk".indexOf(event.key)
-            if(indexBG >= 0) cell.bgColor = indexBG
-        }
-
-        // Blinking.
-        if(!(cell instanceof Minitel.MosaicCell)) {
-            if(event.key === "w") cell.blink = !cell.blink
-        }
-
-        // Invert.
-        if(!(cell instanceof Minitel.MosaicCell)) {
-            if(event.key === "x") cell.invert = !cell.invert
-        }
-
-        // Separated.
-        if(cell instanceof Minitel.MosaicCell) {
-            if(event.key === "c") {
-                cell.separated = !cell.separated
-                cell.value = cell.value ^ 0x40
+            // Background color.
+            if(!(cell instanceof Minitel.CharCell)) {
+                const indexBG = "qdgjsfhk".indexOf(event.key)
+                if(indexBG >= 0) cell.bgColor = indexBG
             }
-        }
 
-        // Underline.
-        if(cell instanceof Minitel.DelimiterCell) {
-            if(event.key === "v") cell.zoneUnderline = !cell.zoneUnderline
-        }
+            // Blinking.
+            if(!(cell instanceof Minitel.MosaicCell)) {
+                if(event.key === "w") cell.blink = !cell.blink
+            }
 
-        // Mask.
-        if(cell instanceof Minitel.DelimiterCell) {
-            if(event.key === "b") cell.mask = !cell.mask
-        }
+            // Invert.
+            if(!(cell instanceof Minitel.MosaicCell)) {
+                if(event.key === "x") cell.invert = !cell.invert
+            }
 
-        // Underline.
-        if(cell instanceof Minitel.DelimiterCell) {
-            if(event.key === "n") cell.drcs = !cell.drcs
-        }
+            // Separated.
+            if(cell instanceof Minitel.MosaicCell) {
+                if(event.key === "c") {
+                    cell.separated = !cell.separated
+                    cell.value = cell.value ^ 0x40
+                }
+            }
 
-        this.vdu.set(this.cursor.x, this.cursor.y, cell)
+            // Underline.
+            if(cell instanceof Minitel.DelimiterCell) {
+                if(event.key === "v") cell.zoneUnderline = !cell.zoneUnderline
+            }
+
+            // Mask.
+            if(cell instanceof Minitel.DelimiterCell) {
+                if(event.key === "b") cell.mask = !cell.mask
+            }
+
+            // Underline.
+            if(cell instanceof Minitel.DelimiterCell) {
+                if(event.key === "n") cell.drcs = !cell.drcs
+            }
+
+            this.vdu.set(x, y, cell)
+        })
     }
 
     /**
@@ -412,14 +455,34 @@ MiEdit.MiOldStyle = class {
         this.attributeMode = !this.attributeMode
     }
 
+    onKeyDelete() {
+        this.rangeZone().forEach((x, y) => {
+            const cell = new Minitel.MosaicCell()
+            cell.value = 0x40
+            this.vdu.set(x, y, cell)
+        })
+    }
+
     /**
      * When the user uses the down key of the cursor keys.
      *
      * @private
      */
-    onKeyArrowDown() {
+    onKeyArrowDown(event) {
+        this.cursor.setDimension()
         if(!this.cursor.isOnLastRow()) this.cursor.down()
-        this.updateAttributes()
+    }
+
+    /**
+     * When the user uses the shift down key of the cursor keys.
+     *
+     * @private
+     */
+    onKeyShiftArrowDown(event) {
+        this.cursor.setDimension(
+            this.cursor.indicatorWidth,
+            this.cursor.indicatorHeight + 1
+        )
     }
 
     /**
@@ -428,7 +491,20 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyArrowUp() {
+        this.cursor.setDimension()
         if(!this.cursor.isOnFirstRow()) this.cursor.up()
+    }
+
+    /**
+     * When the user uses the shift up key of the cursor keys.
+     *
+     * @private
+     */
+    onKeyShiftArrowUp() {
+        this.cursor.setDimension(
+            this.cursor.indicatorWidth,
+            this.cursor.indicatorHeight - 1
+        )
     }
 
     /**
@@ -437,7 +513,20 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyArrowRight() {
+        this.cursor.setDimension()
         if(!this.cursor.isOnLastCol()) this.cursor.right()
+    }
+
+    /**
+     * When the user uses the shift right key of the cursor keys.
+     *
+     * @private
+     */
+    onKeyShiftArrowRight() {
+        this.cursor.setDimension(
+            this.cursor.indicatorWidth + 1,
+            this.cursor.indicatorHeight
+        )
     }
 
     /**
@@ -446,7 +535,20 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyArrowLeft() {
+        this.cursor.setDimension()
         if(!this.cursor.isOnFirstCol()) this.cursor.left()
+    }
+
+    /**
+     * When the user uses the shift left key of the cursor keys.
+     *
+     * @private
+     */
+    onKeyShiftArrowLeft() {
+        this.cursor.setDimension(
+            this.cursor.indicatorWidth - 1,
+            this.cursor.indicatorHeight
+        )
     }
 
     /**
@@ -468,6 +570,35 @@ MiEdit.MiOldStyle = class {
         const modes = {c: "character", m: "mosaic", d: "delimiter"}
 
         this.cellMode = input.value in modes ? modes[input.value] : "delimiter"
+    }
+
+    onMouseDown(event) {
+        if(event.buttons !== 1) return
+
+        this.cursor.setDimension()
+        this.cursor.set(
+            Math.floor(
+                this.vdu.grid.cols * event.layerX / event.target.scrollWidth
+            ),
+            Math.floor(
+                this.vdu.grid.rows * event.layerY / event.target.scrollHeight
+            ),
+        )
+    }
+
+    onMouseMove(event) {
+        if(event.buttons !== 1) return
+
+        this.cursor.setDimension(
+            Math.floor(
+                this.vdu.grid.cols * event.layerX / event.target.scrollWidth
+            ) - this.cursor.x + 1,
+            Math.floor(
+                this.vdu.grid.rows * event.layerY / event.target.scrollHeight
+            ) - this.cursor.y + 1,
+        )
+
+        event.preventDefault()
     }
 
     toString() {

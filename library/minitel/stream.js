@@ -180,6 +180,7 @@ Minitel.Stream = class {
             bg: undefined,
             fg: undefined,
             separated: undefined,
+            invert: undefined,
             blink: undefined,
             charset: undefined
         }
@@ -188,6 +189,7 @@ Minitel.Stream = class {
             bg: moveFirst ? 0x50 : undefined,
             fg: moveFirst ? 0x47 : undefined,
             separated: undefined,
+            invert: undefined,
             blink: undefined,
             charset: undefined
         }
@@ -209,6 +211,8 @@ Minitel.Stream = class {
                     next.bg = item
                 } else if(item === 0x59 || item === 0x5a) {
                     next.separated = item
+                } else if(item === 0x5d || item === 0x5c) {
+                    next.invert = item
                 } else if(item === 0x49 || item === 0x48) {
                     next.blink = item
                 }
@@ -240,17 +244,19 @@ Minitel.Stream = class {
                     count = 0
                 }
 
-                ["charset", "bg", "fg", "separated", "blink"].forEach(attr => {
-                    if(next[attr] === undefined) return
-                    if(current[attr] === next[attr]) return
+                ["charset", "bg", "fg", "separated", "invert", "blink"].forEach(
+                    attr => {
+                        if(next[attr] === undefined) return
+                        if(current[attr] === next[attr]) return
 
-                    if(attr !== "charset") optimized.push(0x1b)
-                    optimized.push(next[attr])
+                        if(attr !== "charset") optimized.push(0x1b)
+                        optimized.push(next[attr])
 
-                    current[attr] = next[attr]
+                        current[attr] = next[attr]
 
-                    next[attr] = undefined
-                })
+                        next[attr] = undefined
+                    }
+                )
 
                 if(char !== item) {
                     optimized.push(item)

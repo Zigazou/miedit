@@ -80,7 +80,7 @@ hr {
 
 .hidden { display: none; }
 
-.zone-container h1, .tidgets h2 {
+.zone-container h1, .tidgets h2, .modal h1 {
     margin: 0;
     padding: 1em 0;
     font-size: 100%;
@@ -120,6 +120,14 @@ hr {
     margin: 0;
     background-color: var(--color-4);
 }
+
+.zone-control h3 {
+    font-weight: normal;
+    font-size: 100%;
+    border-bottom: 0.1em solid white;
+}
+
+.zone-control h3:first-child { margin-top: 0; }
 
 .zone-control div>button {
     border: none;

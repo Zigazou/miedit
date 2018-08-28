@@ -19,8 +19,8 @@ Minitel.oldstyleToStream = function(string) {
     function emptyCell(cell) {
         return cell instanceof Minitel.MosaicCell
             && cell.value === 0x40
-            && cell.bgColor === 0
-            && cell.fgColor === 1
+            && cell.bgColor === 0x00
+            && cell.fgColor === 0x07
             && cell.blink === false
             && cell.separated === false
     }
@@ -45,20 +45,7 @@ Minitel.oldstyleToStream = function(string) {
     vram.load(string)
 
     // All the available attributes in one record.
-    const attributes = {
-        fgColor: 0x07,
-        bgColor: 0x00,
-        blink: false,
-        invert: false,
-        separated: false,
-        zoneUnderline: false,
-        mask: false,
-        multWidth: 1,
-        multHeight: 1,
-        drcs: false
-    }
-
-    range(vram.grid.rows).forEach(y => {
+    range(1, vram.grid.rows).forEach(y => {
         const row = vram.get(y)
 
         // Ignore empty rows.
@@ -69,12 +56,71 @@ Minitel.oldstyleToStream = function(string) {
         // Move the cursor to the first cell of the row.
         stream.push([0x1f, 0x40 + y, 0x40 + first + 1])
 
+        const rowStream = new Minitel.Stream()
+        let ignore = 0
         range(first, vram.grid.cols).forEach(x => {
-            if(emptyCell(row[x])) {
-                stream.push(0x09)
+            const cell = row[x]
+            let value = cell.value
+
+            // Ignore empty cells
+            if(emptyCell(cell)) {
+                ignore++
                 return
             }
+
+            // Empty cells have been ignored, we must move the cursor on the
+            // right.
+            if(ignore > 0) {
+                rowStream.push(Array(ignore).fill(0x09))
+                ignore = 0
+            }
+
+            rowStream.push([0x1B, 0x40 + cell.fgColor])
+
+            if(cell instanceof Minitel.CharCell) {
+                if(value < 0x20) {
+                    for(let char in Minitel.rawChars) {
+                        if(Minitel.rawChars[char] === value) {
+                            value = Minitel.keys.Videotex[char]
+                            break
+                        }
+                    }
+                }
+
+                rowStream.push(0x0F)
+                rowStream.push([0x1B, cell.blink ? 0x48 : 0x49])
+                rowStream.push([0x1B, cell.invert ? 0x5D : 0x5C])
+                // TODO: double width
+                // TODO: double height
+                // TODO: drcs
+            } else if(cell instanceof Minitel.MosaicCell) {
+                // Raw values for mosaic are not the same as Videotex values.
+                if(cell.separated) value += 64
+
+                value = value < 96
+                      ? value - 32
+                      : value
+
+                rowStream.push(0x0E)
+                rowStream.push([0x1B, 0x50 + cell.bgColor])
+                rowStream.push([0x1B, cell.blink ? 0x48 : 0x49])
+                rowStream.push([0x1B, cell.separated ? 0x5A : 0x59])
+                // TODO: drcs
+            } else {
+                value = 0x20
+                rowStream.push(0x0F)
+                rowStream.push([0x1B, 0x50 + cell.bgColor])
+                rowStream.push([0x1B, cell.invert ? 0x5D : 0x5C])
+                rowStream.push([0x1B, cell.zoneUnderline ? 0x5A : 0x5B])
+                rowStream.push([0x1B, cell.mask ? 0x58 : 0x5F])
+                // TODO: double width
+                // TODO: double height
+            }
+
+            rowStream.push(value)
         })
+
+        stream.push(rowStream.optimizeRow(true))
     })
 
     return stream
