@@ -125,13 +125,6 @@ MiEdit.MiOldStyle = class {
 
         this.vdu.clear()
         this.vdu.vram.load(value)
-        this.vdu.redraw()
-
-        setTimeout(() => {
-            console.log(this.vdu.changed)
-            this.vdu.redraw()
-            console.log(this.vdu.changed)
-        }, 2000)
 
         // Show the old style editor.
         this.root.classList.remove("hidden")

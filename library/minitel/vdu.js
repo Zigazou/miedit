@@ -68,7 +68,7 @@ Minitel.VDU = class {
 
         // Helper array
         const rows = []
-        rows.length = this.grid.rows
+        range(this.grid.rows).forEach(() => rows.push(false))
 
         /**
          * Cursor position and visibility
