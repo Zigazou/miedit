@@ -83,12 +83,21 @@ MiEdit.MiOldStyle = class {
         this.attributeMode = false
 
         /**
-         * Current cell mode. Values allowed: character, mosaic, delimiter.
+         * Current cell mode. Values allowed: "character", "mosaic",
+         * "delimiter", "diagonal".
          *
          * @member {string}
          * @private
          */
         this.cellMode = "character"
+
+        /**
+         * Direction of diagonal drawing.
+         *
+         * @member {string} "NW", "NE", "SW", "SE" or undefined
+         * @private
+         */
+        this.diagonalDirection = undefined
 
         /**
          * Direct access to attributes form elements.
@@ -178,8 +187,10 @@ MiEdit.MiOldStyle = class {
             this.root.querySelector("#character-mode").checked = true
         } else if(this.cellMode === "mosaic") {
             this.root.querySelector("#mosaic-mode").checked = true
-        } else {
+        } else if(this.cellMode === "delimiter") {
             this.root.querySelector("#delimiter-mode").checked = true
+        } else if(this.cellMode === "diagonal") {
+            this.root.querySelector("#diagonal-mode").checked = true
         }
     }
 
@@ -273,8 +284,10 @@ MiEdit.MiOldStyle = class {
                 this.onKeyCharacter(charCode)
             } else if(this.cellMode === "mosaic") {
                 this.onKeyMosaic(charCode)
-            } else {
+            } else if(this.cellMode === "delimiter") {
                 this.onKeyDelimiter(charCode)
+            } else if(this.cellMode === "diagonal") {
+                this.onKeyDiagonal(charCode)
             }
         } else {
             // The key is not handled by our editor, give it to the browser.
@@ -326,6 +339,65 @@ MiEdit.MiOldStyle = class {
                 this.cursor.right()
             }
         }
+    }
+
+    onKeyDiagonal(charCode) {
+        // 7, 9, 1 and 3 are the only keys that are allowed.
+        const directions = { 0x37: "NW", 0x39: "NE", 0x31: "SW", 0x33: "SE" }
+        if(!(charCode in directions)) return
+        const chars = { NW: 0x5C, NE: 0x2F, SW: 0x2F, SE: 0x5C }
+
+        const fromDirections = {
+            NW: {
+                NW: { dx: -1, dy: -1 },
+                NE: { dx: 0, dy: -1 },
+                SW: { dx: -1, dy: 0 },
+                SE: { dx: 0, dy: 0 }
+            },
+            NE: {
+                NW: { dx: 0, dy: -1 },
+                NE: { dx: 1, dy: -1 },
+                SW: { dx: 0, dy: 0 },
+                SE: { dx: 1, dy: 0 }
+            },
+            SW: {
+                NW: { dx: -1, dy: 0 },
+                NE: { dx: 0, dy: 0 },
+                SW: { dx: -1, dy: 1 },
+                SE: { dx: 0, dy: 1 }
+            },
+            SE: {
+                NW: { dx: 0, dy: 0 },
+                NE: { dx: 1, dy: 0 },
+                SW: { dx: 0, dy: 1 },
+                SE: { dx: 1, dy: 1 }
+            }
+        }
+
+        const fromNowhere = {
+            NW: { dx: 0, dy: 0 },
+            NE: { dx: 0, dy: 0 },
+            SW: { dx: 0, dy: 0 },
+            SE: { dx: 0, dy: 0 }
+        }
+
+        const actions = this.diagonalDirection
+                      ? fromDirections[this.diagonalDirection]
+                      : fromNowhere
+        const action = actions[directions[charCode]]
+
+        const x = this.cursor.x + action.dx
+        const y = this.cursor.y + action.dy
+
+        if(x < 0 || x >= this.vdu.grid.cols) return
+        if(y < 1 || y >= this.vdu.grid.rows) return
+
+        const cell = new Minitel.CharCell()
+        cell.value = chars[directions[charCode]]
+        this.vdu.set(x, y, cell)
+        this.cursor.set(x, y)
+
+        this.diagonalDirection = directions[charCode]
     }
 
     onKeyMosaic(charCode) {
@@ -438,7 +510,7 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyCellMode() {
-        const modes = ["character", "mosaic", "delimiter"]
+        const modes = ["character", "mosaic", "delimiter", "diagonal"]
         const index = modes.indexOf(this.cellMode)
 
         this.cellMode = modes[(index + 1) % modes.length]
@@ -469,6 +541,7 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyArrowDown(event) {
+        this.diagonalDirection = undefined
         this.cursor.setDimension()
         if(!this.cursor.isOnLastRow()) this.cursor.down()
     }
@@ -479,6 +552,7 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyShiftArrowDown(event) {
+        this.diagonalDirection = undefined
         this.cursor.setDimension(
             this.cursor.indicatorWidth,
             this.cursor.indicatorHeight + 1
@@ -491,6 +565,7 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyArrowUp() {
+        this.diagonalDirection = undefined
         this.cursor.setDimension()
         if(!this.cursor.isOnFirstRow()) this.cursor.up()
     }
@@ -501,6 +576,7 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyShiftArrowUp() {
+        this.diagonalDirection = undefined
         this.cursor.setDimension(
             this.cursor.indicatorWidth,
             this.cursor.indicatorHeight - 1
@@ -513,6 +589,7 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyArrowRight() {
+        this.diagonalDirection = undefined
         this.cursor.setDimension()
         if(!this.cursor.isOnLastCol()) this.cursor.right()
     }
@@ -523,6 +600,7 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyShiftArrowRight() {
+        this.diagonalDirection = undefined
         this.cursor.setDimension(
             this.cursor.indicatorWidth + 1,
             this.cursor.indicatorHeight
@@ -535,6 +613,7 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyArrowLeft() {
+        this.diagonalDirection = undefined
         this.cursor.setDimension()
         if(!this.cursor.isOnFirstCol()) this.cursor.left()
     }
@@ -545,6 +624,7 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyShiftArrowLeft() {
+        this.diagonalDirection = undefined
         this.cursor.setDimension(
             this.cursor.indicatorWidth - 1,
             this.cursor.indicatorHeight
@@ -567,7 +647,12 @@ MiEdit.MiOldStyle = class {
 
     onCellMode() {
         const input = this.root.querySelector("input[name=cell-mode]:checked")
-        const modes = {c: "character", m: "mosaic", d: "delimiter"}
+        const modes = {
+            c: "character",
+            m: "mosaic",
+            d: "delimiter",
+            g: "diagonal"
+        }
 
         this.cellMode = input.value in modes ? modes[input.value] : "delimiter"
     }

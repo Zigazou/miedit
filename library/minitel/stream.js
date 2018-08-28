@@ -200,28 +200,40 @@ Minitel.Stream = class {
             const item = this.items[i]
 
             if(item === 0x1b) {
+                // Found an Escape code sequence.
                 esc = true
                 return
             }
 
             if(esc) {
+                // A code sequence has been started, read the action.
                 if(item >= 0x40 && item <= 0x47) {
+                    // Change foreground color.
                     next.fg = item
                 } else if(item >= 0x50 && item <= 0x57) {
+                    // Change background color.
                     next.bg = item
                 } else if(item === 0x59 || item === 0x5a) {
+                    // Enable/disable separated mosaic.
                     next.separated = item
                 } else if(item === 0x5d || item === 0x5c) {
+                    // Enable/disable video inverse.
                     next.invert = item
                 } else if(item === 0x49 || item === 0x48) {
+                    // Enable/disable blinking.
                     next.blink = item
                 }
 
+                // The Escape code sequence ends here.
                 esc = false
             } else if(item < 0x20) {
+                // Found a control code.
                 if(item === 0x0e || item === 0x0f) {
+                    // Select G0 or G1 character set.
                     next.charset = item
+                    if(current.charset !== item) current.separated = undefined
                 } else {
+                    // Flush any repeated character.
                     if(count > 0) {
                         optimized.push(this.generateRepeat(char, count))
                         count = 0
@@ -230,7 +242,10 @@ Minitel.Stream = class {
                     optimized.push(item)
                 }
             } else {
+                // Found a visible character.
                 let attributeChange = false
+
+                // Look for an attribute change.
                 for(let attr in next) {
                     if(next[attr] === undefined
                        || next[attr] === current[attr]) {
@@ -239,11 +254,13 @@ Minitel.Stream = class {
                     attributeChange = true
                 }
 
+                // Flush any repeated character.
                 if(count > 0 && (attributeChange || char !== item)) {
                     optimized.push(this.generateRepeat(char, count))
                     count = 0
                 }
 
+                // Watch every attribute.
                 ["charset", "bg", "fg", "separated", "invert", "blink"].forEach(
                     attr => {
                         if(next[attr] === undefined) return
@@ -259,14 +276,17 @@ Minitel.Stream = class {
                 )
 
                 if(char !== item) {
+                    // Character has changed.
                     optimized.push(item)
                     char = item
                 } else {
+                    // Character is the same.
                     count++
                 }
             }
         })
 
+        // Flush any remaining repeated character.
         if(count > 0) {
             optimized.push(this.generateRepeat(char, count))
         }
