@@ -126,17 +126,28 @@ MiEdit.MiOldStyle = class {
     /**
      * Returns a range object used to apply actions on the cursor zone.
      *
+     * @param {boolean?} reverse Reverse the order.
      * @returns {Object}
      * @private
      */
-    rangeZone() {
-        const start = [this.cursor.x, this.cursor.y]
-        const end = [
-            this.cursor.x + this.cursor.indicatorWidth,
-            this.cursor.y + this.cursor.indicatorHeight
-        ]
+    rangeZone(reverse) {
+        if(reverse) {
+            return range2(
+                [
+                    this.cursor.x + this.cursor.indicatorWidth - 1,
+                    this.cursor.y + this.cursor.indicatorHeight - 1
+                ],
+                [this.cursor.x - 1, this.cursor.y - 1]
+            )
+        }
 
-        return range2(start, end)
+        return range2(
+            [this.cursor.x, this.cursor.y],
+            [
+                this.cursor.x + this.cursor.indicatorWidth,
+                this.cursor.y + this.cursor.indicatorHeight
+            ]
+        )
     }
 
     /**
@@ -267,12 +278,15 @@ MiEdit.MiOldStyle = class {
      * @param {HTMLEvent} event Key event.
      */
     onKeypress(event) {
+        const modifier = (event.shiftKey ? "Shift" : "")
+                       + (event.ctrlKey ? "Ctrl" : "")
+
         if(event.key === "Escape") {
             this.onKeyCellMode()
         } else if(event.key === "²") {
             this.onKeyAttributeMode()
-        } else if(this["onKey" + (event.shiftKey ? "Shift" : "") + event.key]) {
-            this["onKey" + (event.shiftKey ? "Shift" : "") + event.key](event)
+        } else if(this["onKey" + modifier + event.key]) {
+            this["onKey" + modifier + event.key](event)
         } else if(this.attributeMode) {
             this.onKeyAttribute(event)
         } else if(event.key.length === 1) {
@@ -547,6 +561,38 @@ MiEdit.MiOldStyle = class {
     }
 
     /**
+     * When the user uses the ctrl down key of the cursor keys.
+     *
+     * @private
+     */
+    onKeyCtrlArrowDown() {
+        const [curx, cury] = [this.cursor.x, this.cursor.y]
+        const [width, height] = [
+            this.cursor.indicatorWidth, this.cursor.indicatorHeight
+        ]
+
+        if(cury + height >= this.vdu.grid.rows) return
+
+        this.diagonalDirection = undefined
+
+        // Save the last row to later paste it.
+        const save = []
+        range(curx, curx + width).forEach(
+            x => save.push(this.vdu.get(x, cury + height))
+        )
+
+        this.rangeZone(true).forEach((x, y) => {
+            this.vdu.set(x, y + 1, this.vdu.get(x, y))
+        })
+
+        range(curx, curx + width).forEach(
+            x => this.vdu.set(x, cury, save[x - curx])
+        )
+
+        this.cursor.set(curx, cury + 1)
+    }
+
+    /**
      * When the user uses the shift down key of the cursor keys.
      *
      * @private
@@ -568,6 +614,38 @@ MiEdit.MiOldStyle = class {
         this.diagonalDirection = undefined
         this.cursor.setDimension()
         if(!this.cursor.isOnFirstRow()) this.cursor.up()
+    }
+
+    /**
+     * When the user uses the ctrl up key of the cursor keys.
+     *
+     * @private
+     */
+    onKeyCtrlArrowUp() {
+        const [curx, cury] = [this.cursor.x, this.cursor.y]
+        const [width, height] = [
+            this.cursor.indicatorWidth, this.cursor.indicatorHeight
+        ]
+
+        if(cury <= 1) return
+
+        this.diagonalDirection = undefined
+
+        // Save the first row to later paste it.
+        const save = []
+        range(curx, curx + width).forEach(
+            x => save.push(this.vdu.get(x, cury - 1))
+        )
+
+        this.rangeZone().forEach((x, y) => {
+            this.vdu.set(x, y - 1, this.vdu.get(x, y))
+        })
+
+        range(curx, curx + width).forEach(
+            x => this.vdu.set(x, cury + height - 1, save[x - curx])
+        )
+
+        this.cursor.set(curx, cury - 1)
     }
 
     /**
@@ -595,6 +673,38 @@ MiEdit.MiOldStyle = class {
     }
 
     /**
+     * When the user uses the ctrl right key of the cursor keys.
+     *
+     * @private
+     */
+    onKeyCtrlArrowRight() {
+        const [curx, cury] = [this.cursor.x, this.cursor.y]
+        const [width, height] = [
+            this.cursor.indicatorWidth, this.cursor.indicatorHeight
+        ]
+
+        if(curx + width >= this.vdu.grid.cols) return
+
+        this.diagonalDirection = undefined
+
+        // Save the last row to later paste it.
+        const save = []
+        range(cury, cury + height).forEach(
+            y => save.push(this.vdu.get(curx + width, y))
+        )
+
+        this.rangeZone(true).forEach((x, y) => {
+            this.vdu.set(x + 1 , y, this.vdu.get(x, y))
+        })
+
+        range(cury, cury + height).forEach(
+            y => this.vdu.set(curx, y, save[y - cury])
+        )
+
+        this.cursor.set(curx + 1, cury)
+    }
+
+    /**
      * When the user uses the shift right key of the cursor keys.
      *
      * @private
@@ -616,6 +726,38 @@ MiEdit.MiOldStyle = class {
         this.diagonalDirection = undefined
         this.cursor.setDimension()
         if(!this.cursor.isOnFirstCol()) this.cursor.left()
+    }
+
+    /**
+     * When the user uses the ctrl left key of the cursor keys.
+     *
+     * @private
+     */
+    onKeyCtrlArrowLeft() {
+        const [curx, cury] = [this.cursor.x, this.cursor.y]
+        const [width, height] = [
+            this.cursor.indicatorWidth, this.cursor.indicatorHeight
+        ]
+
+        if(curx <= 0) return
+
+        this.diagonalDirection = undefined
+
+        // Save the first column to later paste it.
+        const save = []
+        range(cury, cury + height).forEach(
+            y => save.push(this.vdu.get(curx - 1, y))
+        )
+
+        this.rangeZone().forEach((x, y) => {
+            this.vdu.set(x - 1, y, this.vdu.get(x, y))
+        })
+
+        range(cury, cury + height).forEach(
+            y => this.vdu.set(curx + width - 1, y, save[y - cury])
+        )
+
+        this.cursor.set(curx - 1, cury)
     }
 
     /**
