@@ -149,6 +149,24 @@ Minitel.CharCell = class extends Minitel.Cell {
     }
 
     /**
+     * Tells if the cell is the upper part of a character.
+     *
+     * @returns {boolean}
+     */
+    upperPart() {
+        return Minitel.Cell.upperPart(this.mult, this.part)
+    }
+
+    /**
+     * Tells if the cell is the root part of a character.
+     *
+     * @returns {boolean}
+     */
+    rootPart() {
+        return Minitel.Cell.rootPart(this.mult, this.part)
+    }
+
+    /**
      * Returns a copy of the CharCell.
      * @return {CharCell} a copy of the CharCell
      */
@@ -367,6 +385,24 @@ Minitel.DelimiterCell = class extends Minitel.Cell {
     }
 
     /**
+     * Tells if the cell is the upper part of a character.
+     *
+     * @returns {boolean}
+     */
+    upperPart() {
+        return Minitel.Cell.upperPart(this.mult, this.part)
+    }
+
+    /**
+     * Tells if the cell is the root part of a character.
+     *
+     * @returns {boolean}
+     */
+    rootPart() {
+        return Minitel.Cell.rootPart(this.mult, this.part)
+    }
+
+    /**
      * Returns a copy of the DelimiterCell.
      * @return {DelimiterCell} a copy of the DelimiterCell
      */
@@ -441,4 +477,28 @@ Minitel.Cell.fromString = function(image) {
     cell.fromString(image)
 
     return cell
+}
+
+/**
+ * Tells if the mult and part objects points to the upper part of a character.
+ *
+ * @param {Object} mult The mult object of a CharCell or DelimiterCell.
+ * @param {Object} part The part object of a CharCell or DelimiterCell.
+ * @returns {boolean}
+ */
+Minitel.Cell.upperPart = function(mult, part) {
+    return mult.height > 1 && part.y === 0
+}
+
+/**
+ * Tells if the mult and part objects points to the root part of a character.
+ *
+ * @param {Object} mult The mult object of a CharCell or DelimiterCell.
+ * @param {Object} part The part object of a CharCell or DelimiterCell.
+ * @returns {boolean}
+ */
+Minitel.Cell.rootPart = function(mult, part) {
+    return part.x === 0
+        && (   mult.height > 1 && part.y === 1
+            || mult.height === 1 && part.y === 0)
 }

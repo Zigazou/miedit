@@ -218,7 +218,9 @@ MiEdit.MiOldStyle = class {
 
         // Disable all form elements
         this.attributes.container.querySelectorAll(
-            '.class-character input, .class-mosaic input, .class-delimiter input'
+            '.class-character input, ' +
+            '.class-mosaic input, ' +
+            '.class-delimiter input'
         ).forEach(node => node.disabled = true)
 
         if(cell === undefined) return
@@ -554,7 +556,7 @@ MiEdit.MiOldStyle = class {
      *
      * @private
      */
-    onKeyArrowDown(event) {
+    onKeyArrowDown() {
         this.diagonalDirection = undefined
         this.cursor.setDimension()
         if(!this.cursor.isOnLastRow()) this.cursor.down()
@@ -597,7 +599,7 @@ MiEdit.MiOldStyle = class {
      *
      * @private
      */
-    onKeyShiftArrowDown(event) {
+    onKeyShiftArrowDown() {
         this.diagonalDirection = undefined
         this.cursor.setDimension(
             this.cursor.indicatorWidth,
@@ -694,7 +696,7 @@ MiEdit.MiOldStyle = class {
         )
 
         this.rangeZone(true).forEach((x, y) => {
-            this.vdu.set(x + 1 , y, this.vdu.get(x, y))
+            this.vdu.set(x + 1, y, this.vdu.get(x, y))
         })
 
         range(cury, cury + height).forEach(
@@ -782,11 +784,17 @@ MiEdit.MiOldStyle = class {
     onAttribute() {
     }
 
+    /**
+     * When the user changes the attribute mode.
+     */
     onAttributeMode() {
         const input = this.root.querySelector("input[name=attr-mode]:checked")
         this.attributeMode = input.value === "a"
     }
 
+    /**
+     * When the user changes the cell mode.
+     */
     onCellMode() {
         const input = this.root.querySelector("input[name=cell-mode]:checked")
         const modes = {
@@ -799,6 +807,11 @@ MiEdit.MiOldStyle = class {
         this.cellMode = input.value in modes ? modes[input.value] : "delimiter"
     }
 
+    /**
+     * When the user clicks on the canvas.
+     *
+     * @param {MouseEvent} event Event of mouse action.
+     */
     onMouseDown(event) {
         if(event.buttons !== 1) return
 
@@ -809,10 +822,17 @@ MiEdit.MiOldStyle = class {
             ),
             Math.floor(
                 this.vdu.grid.rows * event.layerY / event.target.scrollHeight
-            ),
+            )
         )
+
+        this.updateAttributes()
     }
 
+    /**
+     * When the user moves the mouse cursor over the canvas.
+     *
+     * @param {MouseEvent} event Event of the mouse action.
+     */
     onMouseMove(event) {
         if(event.buttons !== 1) return
 
@@ -822,12 +842,61 @@ MiEdit.MiOldStyle = class {
             ) - this.cursor.x + 1,
             Math.floor(
                 this.vdu.grid.rows * event.layerY / event.target.scrollHeight
-            ) - this.cursor.y + 1,
+            ) - this.cursor.y + 1
         )
 
         event.preventDefault()
     }
 
+    /**
+     * When the user clicks on the import button.
+     *
+     * @private
+     */
+    onShowOldstyleImport() {
+        const modal = document.querySelector(".oldstyle-import")
+        modal.classList.remove("hidden")
+    }
+
+    /**
+     * When the user is importing a Videotex stream in the Old Style Editor.
+     *
+     * @param {HTMLEvent} event Event that generated the call
+     * @param {mixed} param Parameters of the event
+     * @private
+     */
+    onOldstyleImportStream(event, param) {
+        const files = document.getElementById(param).files
+
+        if(files.length !== 1) return
+
+        const vdtFile = files[0]
+        const reader = new FileReader()
+
+        reader.onload = (event) => {
+            const bytes = new Int8Array(event.target.result)
+            this.emulator.directSend(bytes)
+        }
+
+        // Read the Videotex as an array buffer.
+        reader.readAsArrayBuffer(vdtFile)
+    }
+
+    /**
+     * When the user clicks on the close button of the Old Style Editor import
+     * modal window.
+     */
+    onOldstyleImportClose() {
+        const modal = document.querySelector(".oldstyle-import")
+
+        modal.classList.add("hidden")
+    }
+
+    /**
+     * Generates a string version of the content of the old style editor.
+     *
+     * @returns {string}
+     */
     toString() {
         return LZString.compressToBase64(this.vdu.vram.save())
                        .replace(new RegExp('\\+', 'g'), '.')

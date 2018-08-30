@@ -90,8 +90,20 @@ Minitel.oldstyleToStream = function(string) {
                 rowStream.push(0x0F)
                 rowStream.push([0x1B, cell.blink ? 0x48 : 0x49])
                 rowStream.push([0x1B, cell.invert ? 0x5D : 0x5C])
-                // TODO: double width
-                // TODO: double height
+
+                if(cell.rootPart()) {
+                    rowStream.push([
+                        0x1B,
+                        0x4C + cell.mult.height - 1 + (cell.mult.width - 1) * 2
+                    ])
+                } else {
+                    if(cell.upperPart()) {
+                        value = 0x09
+                    } else {
+                        if(cell.mult.width !== 1) value = 0x00
+                    }
+                }
+
                 // TODO: drcs
             } else if(cell instanceof Minitel.MosaicCell) {
                 // Raw values for mosaic are not the same as Videotex values.
@@ -111,10 +123,8 @@ Minitel.oldstyleToStream = function(string) {
                 rowStream.push(0x0F)
                 rowStream.push([0x1B, 0x50 + cell.bgColor])
                 rowStream.push([0x1B, cell.invert ? 0x5D : 0x5C])
-                rowStream.push([0x1B, cell.zoneUnderline ? 0x5A : 0x5B])
+                rowStream.push([0x1B, cell.zoneUnderline ? 0x5A : 0x59])
                 rowStream.push([0x1B, cell.mask ? 0x58 : 0x5F])
-                // TODO: double width
-                // TODO: double height
             }
 
             rowStream.push(value)

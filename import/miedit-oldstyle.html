@@ -11,15 +11,9 @@
         <button class="large" value="exit" data-call="onExitOldStyle">
           <img src="icon/miicons.svg#exit" /><br/>Ignore<br/>changes
         </button>
-      </div>
-
-      <div>
-        <h2>Undo</h2>
-        <button class="large" data-call="onUndo">
-          <img src="icon/miicons.svg#graphics-undo" /><br/>Undo
-        </button>
-        <button class="large" data-call="onRedo">
-          <img src="icon/miicons.svg#graphics-redo" /><br/>Redo
+        <button class="large" data-call="onShowOldstyleImport">
+          <img src="icon/miicons.svg#content-raw" /><br/>
+          Import<br/>stream
         </button>
       </div>
 
@@ -289,5 +283,38 @@
         </div>
       </div>
     </form>
+  </div>
+
+  <!-- Minitel Old Style Editor import -->
+  <div class="oldstyle-import modal hidden">
+    <div class="content">
+      <h1>Import in Old Style Editor</h1>
+      <form class="oldstyle-import-videotex">
+        <label for="ose-import-stream">Videotex file</label>
+        <input id="ose-import-stream" type="file"/>
+        <button value="edit"
+                data-call="onOldstyleImportStream"
+                data-param="ose-import-stream"
+        >Import stream</button>
+      </form>
+
+      <p>
+        <strong>Note:</strong>
+        <ul>
+          <li>
+            Any animation or displaying order from the source stream will be
+            lost in the Old Style Editor.
+          </li>
+          <li>
+            Any DRCS character creation will be lost. DRCS characters need to be
+            created outside of the Old Style Editor.
+          </li>
+        </ul>
+      </p>
+
+      <button class="modal-close" data-call="onOldstyleImportClose">
+        Close
+      </button>
+    </div>
   </div>
 </div>

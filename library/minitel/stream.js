@@ -177,27 +177,32 @@ Minitel.Stream = class {
         let char = 0x00
 
         const current = {
-            bg: undefined,
-            fg: undefined,
-            separated: undefined,
-            invert: undefined,
-            blink: undefined,
-            charset: undefined
+            bg: moveFirst ? 0x50 : undefined,
+            fg: moveFirst ? 0x47 : undefined,
+            separated: moveFirst ? 0x59 : undefined,
+            invert: moveFirst ? 0x5c : undefined,
+            blink: moveFirst ? 0x49 : undefined,
+            size: moveFirst ? 0x4c : undefined,
+            charset: moveFirst ? 0x0f : undefined
         }
 
         const next = {
             bg: moveFirst ? 0x50 : undefined,
             fg: moveFirst ? 0x47 : undefined,
-            separated: undefined,
-            invert: undefined,
-            blink: undefined,
-            charset: undefined
+            separated: moveFirst ? 0x59 : undefined,
+            invert: moveFirst ? 0x5c : undefined,
+            blink: moveFirst ? 0x49 : undefined,
+            size: moveFirst ? 0x4c : undefined,
+            charset: moveFirst ? 0x0f : undefined
         }
 
         const optimized = new Minitel.Stream()
 
         range(this.length).forEach(i => {
             const item = this.items[i]
+
+            // Ignores NUL characters.
+            if(item === 0x00) return
 
             if(item === 0x1b) {
                 // Found an Escape code sequence.
@@ -222,6 +227,9 @@ Minitel.Stream = class {
                 } else if(item === 0x49 || item === 0x48) {
                     // Enable/disable blinking.
                     next.blink = item
+                } else if(item >= 0x4c && item <= 0x4f) {
+                    // Change character size.
+                    next.size = item
                 }
 
                 // The Escape code sequence ends here.
@@ -261,7 +269,7 @@ Minitel.Stream = class {
                 }
 
                 // Watch every attribute.
-                ["charset", "bg", "fg", "separated", "invert", "blink"].forEach(
+                ["charset", "size", "bg", "fg", "separated", "invert", "blink"].forEach(
                     attr => {
                         if(next[attr] === undefined) return
                         if(current[attr] === next[attr]) return
