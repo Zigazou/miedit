@@ -358,62 +358,55 @@ MiEdit.MiOldStyle = class {
     }
 
     onKeyDiagonal(charCode) {
-        // 7, 9, 1 and 3 are the only keys that are allowed.
-        const directions = { 0x37: "NW", 0x39: "NE", 0x31: "SW", 0x33: "SE" }
+        // 1, 2, 3, 4, 6, 7, 8, and 9 are the only keys that are allowed.
+        const directions = {
+            0x37: "NW", 0x38: "N", 0x39: "NE",
+            0x34: "W", 0x36: "E",
+            0x31: "SW", 0x32: "S", 0x33: "SE"
+        }
         if(!(charCode in directions)) return
-        const chars = { NW: 0x5C, NE: 0x2F, SW: 0x2F, SE: 0x5C }
-
-        const fromDirections = {
-            NW: {
-                NW: { dx: -1, dy: -1 },
-                NE: { dx: 0, dy: -1 },
-                SW: { dx: -1, dy: 0 },
-                SE: { dx: 0, dy: 0 }
-            },
-            NE: {
-                NW: { dx: 0, dy: -1 },
-                NE: { dx: 1, dy: -1 },
-                SW: { dx: 0, dy: 0 },
-                SE: { dx: 1, dy: 0 }
-            },
-            SW: {
-                NW: { dx: -1, dy: 0 },
-                NE: { dx: 0, dy: 0 },
-                SW: { dx: -1, dy: 1 },
-                SE: { dx: 0, dy: 1 }
-            },
-            SE: {
-                NW: { dx: 0, dy: 0 },
-                NE: { dx: 1, dy: 0 },
-                SW: { dx: 0, dy: 1 },
-                SE: { dx: 1, dy: 1 }
-            }
+        const chars = {
+            NW: 0x5C, NNW: 0x7B, NNE: 0x7D, NE: 0x2F,
+            WWN: 0x7E, WWS: 0x5F, EEN: 0x7E, EES: 0x5F,
+            SW: 0x2F, SSW: 0x7B, SSE: 0x7D, SE: 0x5C
         }
 
         const fromNowhere = {
-            NW: { dx: 0, dy: 0 },
-            NE: { dx: 0, dy: 0 },
-            SW: { dx: 0, dy: 0 },
-            SE: { dx: 0, dy: 0 }
+            NW: [{ dx: 0, dy: 0, d: "NW" }],
+            N: [{ dx: 0, dy: 0, d: "NNW" }],
+            NE: [{ dx: 0, dy: 0, d: "NE" }],
+            W: [{ dx: 0, dy: 0, d: "WWN" }],
+            E: [{ dx: 0, dy: 0, d: "EES" }],
+            SW: [{ dx: 0, dy: 0, d: "SW" }],
+            S: [{ dx: 0, dy: 0, d: "SSE" }],
+            SE: [{ dx: 0, dy: 0, d: "SE" }]
         }
 
         const actions = this.diagonalDirection
-                      ? fromDirections[this.diagonalDirection]
+                      ? MiEdit.MiOldStyle.fromDirections[this.diagonalDirection]
                       : fromNowhere
-        const action = actions[directions[charCode]]
 
-        const x = this.cursor.x + action.dx
-        const y = this.cursor.y + action.dy
+        actions[directions[charCode]].some(action => {
+            const x = this.cursor.x + action.dx
+            const y = this.cursor.y + action.dy
 
-        if(x < 0 || x >= this.vdu.grid.cols) return
-        if(y < 1 || y >= this.vdu.grid.rows) return
+            if(x < 0 || x >= this.vdu.grid.cols) return false
+            if(y < 1 || y >= this.vdu.grid.rows) return false
 
-        const cell = new Minitel.CharCell()
-        cell.value = chars[directions[charCode]]
-        this.vdu.set(x, y, cell)
-        this.cursor.set(x, y)
+            const currentCell = this.vdu.get(x, y)
 
-        this.diagonalDirection = directions[charCode]
+            if(currentCell.value !== 0x20 && currentCell.value !== 0x40) {
+                return false
+            }
+
+            const cell = new Minitel.CharCell()
+            cell.value = chars[action.d]
+            this.vdu.set(x, y, cell)
+            this.cursor.set(x, y)
+            this.diagonalDirection = action.d
+
+            return true
+        })
     }
 
     onKeyMosaic(charCode) {
@@ -825,7 +818,9 @@ MiEdit.MiOldStyle = class {
             )
         )
 
-        this.updateAttributes()
+        this.updateAttributes(
+            this.vdu.get(this.cursor.x, this.cursor.y)
+        )
     }
 
     /**
@@ -902,5 +897,131 @@ MiEdit.MiOldStyle = class {
                        .replace(new RegExp('\\+', 'g'), '.')
                        .replace(new RegExp('/', 'g'), '_')
                        .replace(new RegExp('=', 'g'), '-')
+    }
+}
+
+/**
+ * Automaton giving actions to follow for diagonal drawing.
+ */
+MiEdit.MiOldStyle.fromDirections = {
+    NW: {
+        NW: [{ dx: -1, dy: -1, d: "NW" }],
+        N: [{ dx: -1, dy: -1, d: "NNE"}, { dx: 0, dy: -1, d: "NNW" }],
+        NE: [{ dx: 0, dy: -1, d: "NE" }],
+        W: [{ dx: -1, dy: -1, d: "WWS" }, { dx: -1, dy: 0, d: "WWN" }],
+        E: [{ dx: 0, dy: -1, d: "EES" }],
+        SW: [{ dx: -1, dy: 0, d: "SW" }],
+        S: [{ dx: -1, dy: 0, d: "SSE" }],
+        SE: [{ dx: 0, dy: 0, d: "SE" }]
+    },
+    NNW: {
+        NW: [{ dx: -1, dy: -1, d: "NW" }],
+        N: [{ dx: 0, dy: -1, d: "NNW"}],
+        NE: [{ dx: 0, dy: -1, d: "NE"}],
+        W: [{ dx: -1, dy: -1, d: "WWS"}, { dx: -1, dy:0, d: "WWN"}],
+        E: [{ dx: 0, dy: -1, d: "EES"}],
+        SW: [{ dx: -1, dy: 0, d: "SW"}],
+        S: [{ dx: 0, dy: 0, d: "SSW"}],
+        SE: [{ dx: 0, dy: 0, d: "SE" }]
+    },
+    NNE: {
+        NW: [{ dx: 0, dy: -1, d: "NW" }],
+        N: [{ dx: 0, dy: -1, d: "NNE"}],
+        NE: [{ dx: 1, dy: -1, d: "NE"}],
+        W: [{ dx: 0, dy: -1, d: "WWS"}],
+        E: [{ dx: 1, dy: -1, d: "EES"}, { dx: 1, dy: 0, d: "EEN"}],
+        SW: [{ dx: 0, dy: 0, d: "SW"}],
+        S: [{ dx: 0, dy: 0, d: "SSE"}],
+        SE: [{ dx: 1, dy: 0, d: "SE" }]
+    },
+    NE: {
+        NW: [{ dx: 0, dy: -1, d: "NW" }],
+        N: [{ dx: 1, dy: -1, d: "NNW"}, { dx: 0, dy: -1, d: "NNE"}],
+        NE: [{ dx: 1, dy: -1, d: "NE"}],
+        W: [{ dx: 0, dy: -1, d: "WWS"}],
+        E: [{ dx: 1, dy: -1, d: "EES"}, { dx: 1, dy: 0, d: "EEN"}],
+        SW: [{ dx: 0, dy: 0, d: "SW"}],
+        S: [{ dx: 1, dy: 0, d: "SSW"}],
+        SE: [{ dx: 1, dy: 0, d: "SE" }]
+    },
+    WWN: {
+        NW: [{ dx: -1, dy: -1, d: "NW" }],
+        N: [{ dx: -1, dy: -1, d: "NNE"}, { dx: 0, dy: -1, d: "NNW"}],
+        NE: [{ dx: 0, dy: -1, d: "NE"}],
+        W: [{ dx: -1, dy: 0, d: "WWN"}],
+        E: [{ dx: 0, dy: 0, d: "EEN"}],
+        SW: [{ dx: -1, dy: 0, d: "SW"}],
+        S: [{ dx: -1, dy: 0, d: "SSE"}],
+        SE: [{ dx: 0, dy: 0, d: "SE" }]
+    },
+    WWS: {
+        NW: [{ dx: -1, dy: 0, d: "NW" }],
+        N: [{ dx: -1, dy: 0, d: "NNE"}],
+        NE: [{ dx: 0, dy: 0, d: "NE"}],
+        W: [{ dx: -1, dy: 0, d: "WWS"}],
+        E: [{ dx: 0, dy: 0, d: "EES"}],
+        SW: [{ dx: -1, dy: 1, d: "SW"}],
+        S: [{ dx: -1, dy: 1, d: "SSE"}, { dx: 0, dy: 1, d: "SSW"}],
+        SE: [{ dx: 0, dy: 1, d: "SE" }]
+    },
+    EEN: {
+        NW: [{ dx: 0, dy: -1, d: "NW" }],
+        N: [{ dx: 0, dy: -1, d: "NNE"}, { dx: 1, dy: -1, d: "NNW"}],
+        NE: [{ dx: 1, dy: -1, d: "NE"}],
+        W: [{ dx: 0, dy: 0, d: "WWN"}],
+        E: [{ dx: 1, dy: 0, d: "EEN"}],
+        SW: [{ dx: 0, dy: 0, d: "SW"}],
+        S: [{ dx: 1, dy: 0, d: "SSW"}],
+        SE: [{ dx: 1, dy: 0, d: "SE" }]
+    },
+    EES: {
+        NW: [{ dx: 0, dy: 0, d: "NW" }],
+        N: [{ dx: 1, dy: 0, d: "NNW"}],
+        NE: [{ dx: 1, dy: 0, d: "NE"}],
+        W: [{ dx: 0, dy: 0, d: "WWS"}],
+        E: [{ dx: 1, dy: 0, d: "EES"}],
+        SW: [{ dx: 0, dy: 1, d: "SW"}],
+        S: [{ dx: 0, dy: 1, d: "SSE"}, { dx: 1, dy: 1, d: "SSW"}],
+        SE: [{ dx: 1, dy: 1, d: "SE" }]
+    },
+    SW: {
+        NW: [{ dx: -1, dy: 0, d: "NW" }],
+        N: [{ dx: -1, dy: 0, d: "NNE"}],
+        NE: [{ dx: 1, dy: 0, d: "NE"}],
+        W: [{ dx: -1, dy: 0, d: "WWS"}, { dx: -1, dy: 1, d: "WWN"}],
+        E: [{ dx: 0, dy: 1, d: "EEN"}],
+        SW: [{ dx: -1, dy: 1, d: "SW"}],
+        S: [{ dx: -1, dy: 1, d: "SSE"}, { dx: 0, dy: 1, d: "SSW"}],
+        SE: [{ dx: 0, dy: 1, d: "SE" }]
+    },
+    SSW: {
+        NW: [{ dx: -1, dy: 0, d: "NW" }],
+        N: [{ dx: 0, dy: 0, d: "NNW"}],
+        NE: [{ dx: 0, dy: 0, d: "NE"}],
+        W: [{ dx: -1, dy: 0, d: "WWS"}, { dx: -1, dy:1, d: "WWN"}],
+        E: [{ dx: 0, dy: 1, d: "EEN"}],
+        SW: [{ dx: -1, dy: 1, d: "SW"}],
+        S: [{ dx: 0, dy: 1, d: "SSW"}],
+        SE: [{ dx: 0, dy: 1, d: "SE" }]
+    },
+    SSE: {
+        NW: [{ dx: 0, dy: 0, d: "NW" }],
+        N: [{ dx: 0, dy: 0, d: "NNE"}],
+        NE: [{ dx: 1, dy: 0, d: "NE"}],
+        W: [{ dx: 0, dy: 1, d: "WWN"}],
+        E: [{ dx: 1, dy: 0, d: "EES"}, { dx: 1, dy: 1, d: "EEN"}],
+        SW: [{ dx: 0, dy: 1, d: "SW"}],
+        S: [{ dx: 0, dy: 1, d: "SSE"}],
+        SE: [{ dx: 1, dy: 1, d: "SE" }]
+    },
+    SE: {
+        NW: [{ dx: 0, dy: 0, d: "NW" }],
+        N: [{ dx: 1, dy: 0, d: "NNW"}],
+        NE: [{ dx: 1, dy: 0, d: "NE"}],
+        W: [{ dx: 0, dy: 1, d: "WWN"}],
+        E: [{ dx: 1, dy: 0, d: "EES"}, { dx: 1, dy: 1, d: "EEN"}],
+        SW: [{ dx: 0, dy: 1, d: "SW"}],
+        S: [{ dx: 1, dy: 1, d: "SSW"}, { dx: 0, dy: 1, d: "SSE"}],
+        SE: [{ dx: 1, dy: 1, d: "SE" }]
     }
 }
