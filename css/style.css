@@ -53,6 +53,24 @@ p { margin: 0.5em 0 0 0; }
 a { color: var(--color-4); }
 button { cursor: pointer; }
 
+kbd {
+    padding:0.1em 0.6em;
+    font-size: 80%;
+    font-family: sans-serif;
+    background-color: #f7f7f7;
+    color: #333;
+    border: 0.2em solid #ccc;
+    box-shadow: 0 0.2em 0 rgba(0, 0, 0, 0.2),0 0 0 0.3em #ffffff inset;
+    border-radius: 0.4em;
+    text-shadow: 0 0.2em 0 #fff;
+    display: inline-block;
+    margin: 0 0.1em;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+:focus { outline: 0.3em dashed var(--color-3); }
+
 hr {
     border: none;
     border-top: 0.1em solid var(--color-4);
@@ -61,6 +79,71 @@ hr {
 }
 
 .hidden { display: none; }
+
+.zone-container h1, .tidgets h2, .modal h1 {
+    margin: 0;
+    padding: 1em 0;
+    font-size: 100%;
+    background-color: var(--color-5);
+    color: white;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: bold;
+}
+
+.zone-control {
+    margin: 1rem 0 0 1rem;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.zone-control>div {
+    position: relative;
+    padding: 3rem 1rem 1rem 1rem;
+    margin: 0 1rem 1rem 0;
+    background-color: var(--color-3);
+}
+
+.zone-control>div, .zone-control a { color: white; }
+
+.zone-control>div.large { flex: 2; }
+
+.zone-control h2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    font-size: 1rem;
+    text-align: center;
+    font-weight: normal;
+    padding: 0.5rem 0;
+    margin: 0;
+    background-color: var(--color-4);
+}
+
+.zone-control h3 {
+    font-weight: normal;
+    font-size: 100%;
+    border-bottom: 0.1em solid white;
+}
+
+.zone-control h3:first-child { margin-top: 0; }
+
+.zone-control div>button {
+    border: none;
+    background-color: transparent;
+    color: white;
+    vertical-align: top;
+}
+
+.zone-control div>button:hover {
+    border-radius: 0.6em;
+    background-color: var(--color-4);
+}
+
+.zone-control form { text-align: left; }
+
+.zone-control button img { filter: invert(100%); }
 
 .miedit-control {
     position: fixed;
@@ -110,17 +193,6 @@ a>.jstree-icon {
 }
 
 .miedit-forms>h1 { display: inherit !important; }
-
-h1, .tidgets h2 {
-    margin: 0;
-    padding: 1em 0;
-    font-size: 100%;
-    background-color: var(--color-5);
-    color: white;
-    text-transform: uppercase;
-    text-align: center;
-    font-weight: bold;
-}
 
 .miedit-forms h2 {
     padding: 0;
@@ -360,60 +432,17 @@ select { height: 2.6em; }
 }
 
 /* Controls */
-.miedit-control-items {
-    margin: 1rem 0 0 1rem;
-    display: flex;
-    flex-flow: row wrap;
-}
 
-.miedit-control-items>div {
-    position: relative;
-    padding: 3rem 1rem 1rem 1rem;
-    margin: 0 1rem 1rem 0;
-    background-color: var(--color-3);
-}
 
-.miedit-control-items>div, .miedit-control-items a { color: white; }
-
-.miedit-control-items>div.large { flex: 2; }
-
-.miedit-control-items h2 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    font-size: 1rem;
-    text-align: center;
-    font-weight: normal;
-    padding: 0.5rem 0;
-    margin: 0;
-    background-color: var(--color-4);
-}
-
-.miedit-control div>button {
-    border: none;
-    background-color: transparent;
-    color: white;
-    vertical-align: top;
-}
-
-.miedit-control div>button:hover {
-    border-radius: 0.6em;
-    background-color: var(--color-4);
-}
-
-.miedit-control form { text-align: left; }
 .miedit-control label[for=speed-setting] {
     display: inline-block;
     width: 6em;
 }
 
-.miedit-control-items img { filter: invert(100%); }
-
 /* Recorder */
 .modal {
     position: fixed;
-    z-index: 1;
+    z-index: 2;
     width: 100%;
     height: 100%;
     background-color: rgba(20, 20, 20, 0.8);

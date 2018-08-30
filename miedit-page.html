@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="library/simple-ribbon/simple-ribbon.css" />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/minitel-mosaic.css" />
+    <link rel="stylesheet" href="css/miedit-oldstyle.css" />
   </head>
   <body>
     <div id="miedit">
@@ -31,11 +32,11 @@
       <import src="import/recorder.html"></import>
 
       <div class="mitree-container">
-        <div class="miedit-treeactions">
+        <div class="zone-container miedit-treeactions">
           <h1>Tidgets tree</h1>
           <div class="miedit-tree"></div>
         </div>
-        <div class="miedit-forms">
+        <div class="zone-container miedit-forms">
           <h1>Tidget’s settings</h1>
           <import src="import/tidget-form/move-locate.html"></import>
           <import src="import/tidget-form/content-string.html"></import>
@@ -43,6 +44,7 @@
           <import src="import/tidget-form/content-block.html"></import>
           <import src="import/tidget-form/content-box.html"></import>
           <import src="import/tidget-form/content-graphics.html"></import>
+          <import src="import/tidget-form/content-oldstyle.html"></import>
           <import src="import/tidget-form/form-smgraph.html"></import>
           <import src="import/tidget-form/content-group.html"></import>
           <import src="import/tidget-form/content-delay.html"></import>
@@ -73,6 +75,7 @@
         </div>
 
         <import src="import/miedit-mosaic.html"></import>
+        <import src="import/miedit-oldstyle.html"></import>
       </div>
     </div>
     <script src="library/generichelper/generichelper.js"></script>
@@ -93,10 +96,10 @@
     <script src="library/minitel/char-size.js"></script>
     <script src="library/minitel/elements.js"></script>
     <script src="library/minitel/graphics-to-stream.js"></script>
+    <script src="library/minitel/oldstyle-to-stream.js"></script>
     <script src="library/minitel/actions-to-stream.js"></script>
     <script src="library/minitel/ceefax-to-stream.js"></script>
     <script src="library/minitel/protocol.js"></script>
-    <script src="library/minitel/start-emulators.js"></script>
 
     <script src="library/drawing/circle.js"></script>
     <script src="library/drawing/filled-circle.js"></script>
@@ -124,6 +127,7 @@
     <script src="library/miedit/mitree.js"></script>
     <script src="library/miedit/mistorage.js"></script>
     <script src="library/miedit/mimosaic.js"></script>
+    <script src="library/miedit/mioldstyle.js"></script>
     <script src="library/miedit/midecompiler.js"></script>
     <script src="app/miedit-page.js"></script>
   </body>

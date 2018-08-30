@@ -1,0 +1,320 @@
+<div class="oldstyle-root hidden">
+  <div class="zone-container oldstyle-menu">
+    <h1>Old style editor</h1>
+
+    <div class="zone-control oldstyle-exit">
+      <div>
+        <h2 class="file">File</h2>
+        <button class="large" value="save" data-call="onSaveOldStyle">
+          <img src="icon/miicons.svg#save" /><br/>Save<br/>screen
+        </button>
+        <button class="large" value="exit" data-call="onExitOldStyle">
+          <img src="icon/miicons.svg#exit" /><br/>Ignore<br/>changes
+        </button>
+        <button class="large" data-call="onShowOldstyleImport">
+          <img src="icon/miicons.svg#content-raw" /><br/>
+          Import<br/>stream
+        </button>
+      </div>
+
+      <div>
+        <h2>Cell mode <kbd>Esc</kbd></h2>
+        <form data-change="onCellMode">
+          <div>
+            <input type="radio" id="character-mode" name="cell-mode" value="c"
+                   checked="true" />
+            <label for="character-mode">Character</label>
+          </div>
+          <div>
+            <input type="radio" id="mosaic-mode" name="cell-mode" value="m"/>
+            <label for="mosaic-mode">Mosaic</label>
+          </div>
+          <div>
+            <input type="radio" id="delimiter-mode" name="cell-mode" value="d"/>
+            <label for="delimiter-mode">Delimiter</label>
+          </div>
+          <div>
+            <input type="radio" id="diagonal-mode" name="cell-mode" value="g"/>
+            <label for="diagonal-mode">Diagonal</label>
+          </div>
+        </form>
+      </div>
+
+      <div>
+        <h2>Attribute mode <kbd>²</kbd></h2>
+        <form data-change="onAttributeMode">
+          <div>
+            <input type="radio" id="set-character" name="attr-mode" value="c"
+                   checked="true" />
+            <label for="set-character">Set character</label>
+          </div>
+          <div>
+            <input type="radio" id="set-attribute" name="attr-mode" value="a"/>
+            <label for="set-attribute">Set attribute</label>
+          </div>
+        </form>
+      </div>
+
+      <div>
+        <h2>Help</h2>
+        <div class="help-cursor-keys">
+          <h3>Cursor keys</h3>
+          <p>
+            <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> move the cursor.
+          </p>
+          <p>
+            <kbd>Shift</kbd> + <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd>
+            resize the zone.
+          </p>
+          <p>
+            <kbd>Ctrl</kbd> + <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd>
+            move the zone.
+          </p>
+          <p>
+            <kbd>Del→</kbd> reset cell.
+          </p>
+          <p>Any change will be applied to the whole zone.</p>
+
+          <h3>Switching</h3>
+          <p><kbd>Esc</kbd> change cell mode.</p>
+          <p><kbd>²</kbd> change attribute mode.</p>
+          <p>When in attribute mode, use keys given in the Attributes panel.</p>
+
+          <h3>Mosaic mode</h3>
+          <p>
+            <kbd>7</kbd><kbd>8</kbd>
+            <kbd>4</kbd><kbd>5</kbd>
+            <kbd>1</kbd><kbd>2</kbd>
+            change mosaic pixels.
+          </p>
+
+          <h3>Diagonal mode</h3>
+          <p>
+            <kbd>7</kbd><kbd>9</kbd> <kbd>1</kbd><kbd>3</kbd> draw diagonal
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="oldstyle-canvases">
+    <x-minitel data-speed="1200" data-color="true" tabindex="0">
+      <canvas class="minitel-screen" data-minitel="screen"></canvas>
+      <canvas class="minitel-cursor" data-minitel="cursor"></canvas>
+    </x-minitel>
+  </div>
+
+  <div class="zone-container oldstyle-attributes">
+    <h1>Attributes</h1>
+    <form data-change="onAttribute">
+      <div class="cell-type">
+        <div>
+          <input type="radio" id="type-character" name="cell-type" value="c"/>
+          <label for="type-character">Character</label>
+        </div>
+        <div>
+          <input type="radio" id="type-mosaic" name="cell-type" value="m"/>
+          <label for="type-mosaic">Mosaic</label>
+        </div>
+        <div>
+          <input type="radio" id="type-delimiter" name="cell-type" value="d"/>
+          <label for="type-delimiter">Delimiter</label>
+        </div>
+      </div>
+
+      <div class="cell-value">
+        <h2>Cell value</h2>
+        <input type="number" name="cell-value" value="0" min="0" max="255"/>
+      </div>
+
+      <div class="cell-attributes">
+        <h2>Foreground color</h2>
+        <div class="attr-foreground">
+          <div>
+            <input type="radio" id="attr-fg-black" name="attr-fg" value="0"/>
+            <label for="attr-fg-black">
+              <img src="icon/miicons.svg#color-fg-0" /><br/>
+              Black<br/>0%<br/><kbd>a</kbd>
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="attr-fg-blue" name="attr-fg" value="1"/>
+            <label for="attr-fg-blue">
+              <img src="icon/miicons.svg#color-fg-4" /><br/>
+              Blue<br/>40%<br/><kbd>z</kbd>
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="attr-fg-red" name="attr-fg" value="2"/>
+            <label for="attr-fg-red">
+              <img src="icon/miicons.svg#color-fg-1" /><br/>
+              Red<br/>50%<br/><kbd>e</kbd>
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="attr-fg-magenta" name="attr-fg" value="3"/>
+            <label for="attr-fg-magenta">
+              <img src="icon/miicons.svg#color-fg-5" /><br/>
+              Magenta<br/>60%<br/><kbd>r</kbd>
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="attr-fg-green" name="attr-fg" value="4"/>
+            <label for="attr-fg-green">
+              <img src="icon/miicons.svg#color-fg-2" /><br/>
+              Green<br/>70%<br/><kbd>t</kbd>
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="attr-fg-cyan" name="attr-fg" value="5"/>
+            <label for="attr-fg-cyan">
+              <img src="icon/miicons.svg#color-fg-6" /><br/>
+              Cyan<br/>80%<br/><kbd>y</kbd>
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="attr-fg-yellow" name="attr-fg" value="6"/>
+            <label for="attr-fg-yellow">
+              <img src="icon/miicons.svg#color-fg-3" /><br/>
+              Yellow<br/>90%<br/><kbd>u</kbd>
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="attr-fg-white" name="attr-fg" value="7"/>
+            <label for="attr-fg-white">
+              <img src="icon/miicons.svg#color-fg-7" /><br/>
+              White<br/>100%<br/><kbd>i</kbd>
+            </label>
+          </div>
+        </div>
+
+        <h2>Background color</h2>
+        <div class="attr-background class-mosaic class-delimiter">
+          <div>
+            <input type="radio" id="attr-bg-black" name="attr-bg" value="0"/>
+            <label for="attr-bg-black">
+              <img src="icon/miicons.svg#color-bg-0" /><br/>
+              Black<br/>0%<br/><kbd>q</kbd>
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="attr-bg-blue" name="attr-bg" value="1"/>
+            <label for="attr-bg-blue">
+              <img src="icon/miicons.svg#color-bg-4" /><br/>
+              Blue<br/>40%<br/><kbd>s</kbd>
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="attr-bg-red" name="attr-bg" value="2"/>
+            <label for="attr-bg-red">
+              <img src="icon/miicons.svg#color-bg-1" /><br/>
+              Red<br/>50%<br/><kbd>d</kbd>
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="attr-bg-magenta" name="attr-bg" value="3"/>
+            <label for="attr-bg-magenta">
+              <img src="icon/miicons.svg#color-bg-5" /><br/>
+              Magenta<br/>60%<br/><kbd>f</kbd>
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="attr-bg-green" name="attr-bg" value="4"/>
+            <label for="attr-bg-green">
+              <img src="icon/miicons.svg#color-bg-2" /><br/>
+              Green<br/>70%<br/><kbd>g</kbd>
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="attr-bg-cyan" name="attr-bg" value="5"/>
+            <label for="attr-bg-cyan">
+              <img src="icon/miicons.svg#color-bg-6" /><br/>
+              Cyan<br/>80%<br/><kbd>h</kbd>
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="attr-bg-yellow" name="attr-bg" value="6"/>
+            <label for="attr-bg-yellow">
+              <img src="icon/miicons.svg#color-bg-3" /><br/>
+              Yellow<br/>90%<br/><kbd>j</kbd>
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="attr-bg-white" name="attr-bg" value="7"/>
+            <label for="attr-bg-white">
+              <img src="icon/miicons.svg#color-bg-7" /><br/>
+              White<br/>100%<br/><kbd>k</kbd>
+            </label>
+          </div>
+        </div>
+
+        <h2>Other attributes</h2>
+        <div class="class-character class-mosaic">
+          <input type="checkbox" id="attr-blink" class="attr-blink"/>
+          <label for="attr-blink">Blink <kbd>w</kbd></label>
+        </div>
+        <div class="class-character class-delimiter">
+          <input type="checkbox" id="attr-invert" class="attr-invert"/>
+          <label for="attr-invert">Invert <kbd>x</kbd></label>
+        </div>
+        <div class="class-mosaic">
+          <input type="checkbox" id="attr-separated" class="attr-separated"/>
+          <label for="attr-separated">Separated <kbd>c</kbd></label>
+        </div>
+        <div class="class-delimiter">
+          <input type="checkbox" id="attr-underline" class="attr-underline"/>
+          <label for="attr-underline">Underline <kbd>v</kbd></label>
+        </div>
+        <div class="class-delimiter">
+          <input type="checkbox" id="attr-mask" class="attr-mask"/>
+          <label for="attr-mask">Mask <kbd>b</kbd></label>
+        </div>
+        <div class="class-character class-delimiter">
+          <input type="checkbox" id="attr-double-width" class="attr-double-width"/>
+          <label for="attr-double-width">Double width</label>
+        </div>
+        <div class="class-character class-delimiter">
+          <input type="checkbox" id="attr-double-height" class="attr-double-height"/>
+          <label for="attr-double-height">Double height</label>
+        </div>
+        <div class="class-character class-mosaic">
+          <input type="checkbox" id="attr-drcs" class="attr-drcs"/>
+          <label for="attr-drcs">DRCS <kbd>n</kbd></label>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Minitel Old Style Editor import -->
+  <div class="oldstyle-import modal hidden">
+    <div class="content">
+      <h1>Import in Old Style Editor</h1>
+      <form class="oldstyle-import-videotex">
+        <label for="ose-import-stream">Videotex file</label>
+        <input id="ose-import-stream" type="file"/>
+        <button value="edit"
+                data-call="onOldstyleImportStream"
+                data-param="ose-import-stream"
+        >Import stream</button>
+      </form>
+
+      <p>
+        <strong>Note:</strong>
+        <ul>
+          <li>
+            Any animation or displaying order from the source stream will be
+            lost in the Old Style Editor.
+          </li>
+          <li>
+            Any DRCS character creation will be lost. DRCS characters need to be
+            created outside of the Old Style Editor.
+          </li>
+        </ul>
+      </p>
+
+      <button class="modal-close" data-call="onOldstyleImportClose">
+        Close
+      </button>
+    </div>
+  </div>
+</div>

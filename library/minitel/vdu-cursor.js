@@ -31,36 +31,42 @@ Minitel.VDUCursor = class {
 
         /**
          * The text grid.
+         *
          * @member {Minitel.TextGrid}
          */
         this.grid = grid
 
         /**
          * The char size.
+         *
          * @member {Minitel.CharSize}
          */
         this.char = char
 
         /**
          * X position.
+         *
          * @member {int}
          */
         this.x = 0
 
         /**
          * Y position.
+         *
          * @member {int}
          */
         this.y = 0
 
         /**
          * Cursor visibility.
+         *
          * @member {boolean}
          */
         this.visible = false
 
         /**
          * Cursor color.
+         *
          * @member {string}
          * @private
          */
@@ -68,12 +74,14 @@ Minitel.VDUCursor = class {
 
         /**
          * Canvas on which to draw cursor.
+         *
          * @member {HTMLCanvasElement}
          */
         this.canvas = cancur
 
         /**
-         * Previous state
+         * Previous state.
+         *
          * @member {string}
          * @private
          */
@@ -81,10 +89,27 @@ Minitel.VDUCursor = class {
 
         /**
          * The indicator helps locating the cursor when developping or editing.
+         *
          * @member {boolean}
          * @private
          */
         this.indicator = false
+
+        /**
+         * Indicator width in characters.
+         *
+         * @member {number}
+         * @readonly
+         */
+        this.indicatorWidth = 1
+
+        /**
+         * Indicator height in characters.
+         *
+         * @member {number}
+         * @readonly
+         */
+        this.indicatorHeight = 1
 
         /**
          * Timer ID of the screen refresh timer.
@@ -111,6 +136,33 @@ Minitel.VDUCursor = class {
     }
 
     /**
+     * Set indicator dimension.
+     *
+     * @param {number?} width New indicator width (1 by default).
+     * @param {number?} height New indicator height (1 by default).
+     */
+    setDimension(width, height) {
+        // Make sure width is valid.
+        if(width === undefined || width < 1) {
+            width = 1
+        } else if(this.x + width >= this.grid.cols) {
+            width = this.grid.cols - this.x
+        }
+
+        // Make sure height is valid.
+        if(height === undefined || height < 1) {
+            height = 1
+        } else if(this.y + height >= this.grid.rows) {
+            height = this.grid.rows - this.y
+        }
+
+        this.indicatorWidth = width
+        this.indicatorHeight = height
+
+        return this
+    }
+
+    /**
      * Set cursor position.
      * This method does not check that coordinates are in rage of the text grid.
      * @param {int} x X position.
@@ -119,6 +171,8 @@ Minitel.VDUCursor = class {
     set(x, y) {
         this.x = x
         this.y = y
+
+        this.setDimension(this.indicatorWidth, this.indicatorHeight)
 
         return this
     }
@@ -349,6 +403,8 @@ Minitel.VDUCursor = class {
              + String(this.color) + "-"
              + String(this.visible) + "-"
              + String(this.indicator) + "-"
+             + String(this.indicatorWidth) + "-"
+             + String(this.indicatorHeight) + "-"
              + String(this.getBlink())
     }
 
@@ -391,14 +447,14 @@ Minitel.VDUCursor = class {
             ctx.moveTo(0, this.y * this.char.height)
             ctx.lineTo(1000, this.y * this.char.height)
 
-            ctx.moveTo(0, (this.y + 1) * this.char.height)
-            ctx.lineTo(1000, (this.y + 1) * this.char.height)
+            ctx.moveTo(0, (this.y + this.indicatorHeight) * this.char.height)
+            ctx.lineTo(1000, (this.y + this.indicatorHeight) * this.char.height)
 
             ctx.moveTo(this.x * this.char.width, 0)
             ctx.lineTo(this.x * this.char.width, 1000)
 
-            ctx.moveTo((this.x + 1) * this.char.width, 0)
-            ctx.lineTo((this.x + 1) * this.char.width, 1000)
+            ctx.moveTo((this.x + this.indicatorWidth) * this.char.width, 0)
+            ctx.lineTo((this.x + this.indicatorWidth) * this.char.width, 1000)
 
             ctx.stroke()
         }

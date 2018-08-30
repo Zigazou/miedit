@@ -36,6 +36,7 @@ Minitel.convertCeefaxRow = function(row) {
     let bg = 0
     let hold = false
     let held = 0x20
+    let gfxstate = []
 
     // Each line in Teletext starts with default attributes
     destination.push([0x1b, 0x47, 0x1b, 0x50, 0x0f])
@@ -51,8 +52,8 @@ Minitel.convertCeefaxRow = function(row) {
 
         switch(c) {
             // Set text mode and color
-            case 0x01: case 0x02: case 0x03: case 0x04: case 0x05: case 0x06:
-            case 0x07:
+            case 0x00: case 0x01: case 0x02: case 0x03: case 0x04: case 0x05:
+            case 0x06: case 0x07:
                 gfx = false
                 fg = c
                 control.push(0x0f)
@@ -69,6 +70,7 @@ Minitel.convertCeefaxRow = function(row) {
             // Set graphics mode and color
             case 0x10: case 0x11: case 0x12: case 0x13: case 0x14: case 0x15:
             case 0x16: case 0x17:
+                if(!gfx) gfxstate.forEach(code => control.push(code))
                 gfx = true
                 fg = c - 0x10
                 control.push(0x0e)
@@ -82,13 +84,15 @@ Minitel.convertCeefaxRow = function(row) {
             // Set continuous graphics
             case 0x19:
                 sep = false
-                control.push(0x1b, 0x59)
+                if(gfx) control.push(0x1b, 0x59)
+                gfxstate.push(0x1b, 0x59)
                 break
 
             // Set separated graphics
             case 0x1a:
                 sep = true
-                control.push(0x1b, 0x5a)
+                if(gfx) control.push(0x1b, 0x5a)
+                gfxstate.push(0x1b, 0x5a)
                 break
 
             // Set black background
@@ -117,7 +121,7 @@ Minitel.convertCeefaxRow = function(row) {
 
         // Handles attributes
         if(c < 0x20) {
-            if(hold || held !== 0x20) {
+            if(hold) {
                 if(c === 0x1d || c === 0x1c) {
                     // Swap colors must be applied before held character
                     destination.push(control)
@@ -130,11 +134,12 @@ Minitel.convertCeefaxRow = function(row) {
             } else {
                 // Apply attributes before space
                 destination.push(control)
-                destination.push(0x20)
+                if(c === 0x1f) {
+                    destination.push(held)
+                } else {
+                    destination.push(0x20)
+                }
             }
-
-            if(!hold) held = 0x20
-
             continue
         }
 
@@ -147,20 +152,19 @@ Minitel.convertCeefaxRow = function(row) {
         // In graphics mode capital letters are still characters
         if(c >= 0x40 && c <= 0x5f) {
             destination.push([0x0f, c, 0x0e])
-            if(hold && c & 0x20) held = c
             continue
         }
 
         // Convert Teletext mosaic chars to Minitel mosaic chars
         if(c >= 0x60) {
             destination.push(c - 0x20)
-            if(hold && c & 0x20) held = c - 0x20
+            held = c - 0x20
             continue
         }
 
         // Everything else is copied as is
         destination.push(c)
-        if(hold && c & 0x20) held = c
+        held = c
     }
 
     return destination.optimizeRow().trimRow()

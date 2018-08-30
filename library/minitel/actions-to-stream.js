@@ -192,6 +192,24 @@ Minitel.actions["content-graphics"] = function(stream, data, offsetX, offsetY) {
 }
 
 /**
+ * Handles "content-oldstyle" actions. Sends videotex code.
+ * @function
+ */
+Minitel.actions["content-oldstyle"] = function(stream, data) {
+    if(data.value === undefined) return
+
+    const uncompressed = LZString.decompressFromBase64(
+        data.value.replace(new RegExp('\\.', 'g'), '+')
+                  .replace(new RegExp('_', 'g'), '/')
+                  .replace(new RegExp('-', 'g'), '=')
+    )
+
+    // The value contains a compressed string which is converted to a Minitel
+    // stream by a more complex function.
+    stream.push(Minitel.oldstyleToStream(uncompressed))
+}
+
+/**
  * Handles "content-ceefax" actions. Sends a mosaic drawing.
  * @function
  */

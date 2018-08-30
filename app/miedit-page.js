@@ -55,6 +55,14 @@ MiEdit.MiEditPage = class {
         this.inputGraphics = undefined
 
         /**
+         * The HTML input field holding a text value representing an old style
+         * drawing.
+         * @member {HTMLElement=}
+         * @private
+         */
+        this.inputOldStyle = undefined
+
+        /**
          * The tidgets accordion.
          * @member {AriaAccordion}
          * @private
@@ -97,9 +105,11 @@ MiEdit.MiEditPage = class {
         container.find(".miedit-control").map((i, o) => o.autocallback(this))
         container.find(".miedit-recorder").map((i, o) => o.autocallback(this))
         container.find(".content-graphics").map((i, o) => o.autocallback(this))
+        container.find(".content-oldstyle").map((i, o) => o.autocallback(this))
         container.find(".drcs-black-white").map((i, o) => o.autocallback(this))
         container.find(".drcs-actions").map((i, o) => o.autocallback(this))
         container.find(".mosaic-exit").map((i, o) => o.autocallback(this))
+        container.find(".oldstyle-exit").map((i, o) => o.autocallback(this))
 
         /**
          * A Minitel.Emulator widget handling the emulation part and stream sent
@@ -107,7 +117,9 @@ MiEdit.MiEditPage = class {
          * @member {Minitel.Emulator}
          * @private
          */
-        this.miscreen = Minitel.startEmulators()[0]
+        this.miscreen = new Minitel.Emulator(
+            container[0].querySelector(".emulator-container x-minitel")
+        )
 
         const events = [
             "value_changed.mitree",
@@ -123,6 +135,16 @@ MiEdit.MiEditPage = class {
         this.mitree.treeWidget.on(events.join(" "), event => {
             this.onRunFast(event)
         })
+
+        const oldstyleRoot = document.getElementsByClassName("oldstyle-root")[0]
+
+        /**
+         * An old style editor which will be hidden/revealed when the user needs
+         * it.
+         * @member {MiEdit.MiOldStyle}
+         * @private
+         */
+        this.oldstyle = new MiEdit.MiOldStyle(oldstyleRoot)
     }
 
     /**
@@ -392,6 +414,21 @@ MiEdit.MiEditPage = class {
     }
 
     /**
+     * When the user clicks on the edit button of a currently selected old style
+     * editor. This then shows the old style editor.
+     * @param {HTMLEvent} event Event that generated the call
+     * @param {mixed} param Parameters of the event
+     * @private
+     */
+    onEditOldStyle(event, param) {
+        // Retrieve the encoded value of the mosaic drawing
+        this.inputOldStyle = document.getElementById(param)
+
+        // Sends it to the old style editor
+        this.oldstyle.enable(this.inputOldStyle.value)
+    }
+
+    /**
      * When the user clicks on the import BW image button.
      * @param {HTMLEvent} event Event that generated the call
      * @param {mixed} param Parameters of the event
@@ -455,6 +492,24 @@ MiEdit.MiEditPage = class {
     }
 
     /**
+     * When the user clicks on the save button of the old style editor form.
+     * @param {HTMLEvent} event Event that generated the call
+     * @param {mixed} param Parameters of the event
+     * @private
+     */
+    onSaveOldStyle() {
+        // Converts the old style drawing to an encoded string placed in the
+        // input field of the mosaic editor form
+        this.inputOldStyle.value = this.oldstyle.toString()
+
+        // Signals that the input field has been modified
+        this.inputOldStyle.dispatchEvent(new Event("input"))
+
+        // Hides the old style editor
+        this.oldstyle.disable()
+    }
+
+    /**
      * When the user clicks on the exit button of the mosaic editor form.
      * @param {HTMLEvent} event Event that generated the call
      * @param {mixed} param Parameters of the event
@@ -463,6 +518,17 @@ MiEdit.MiEditPage = class {
     onExitGraphics() {
         // Forgets every change and hides the mosaic editor
         this.graphics.root.classList.add("hidden")
+    }
+
+    /**
+     * When the user clicks on the exit button of the old style editor form.
+     * @param {HTMLEvent} event Event that generated the call
+     * @param {mixed} param Parameters of the event
+     * @private
+     */
+    onExitOldStyle() {
+        // Forgets every change and hides the old style editor
+        this.oldstyle.disable()
     }
 
     /**

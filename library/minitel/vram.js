@@ -3,13 +3,13 @@
  * @file vram
  * @author Frédéric BISSON <zigazou@free.fr>
  * @version 1.0
- * 
+ *
  * VRAM simulates video memory for the VDU class.
  */
 
 /**
  * @namespace Minitel
- */ 
+ */
 var Minitel = Minitel || {}
 
 /**
@@ -144,5 +144,45 @@ Minitel.VRAM = class {
         })
 
         return string
+    }
+
+    load(screen) {
+        if(screen === null || screen === undefined) return
+
+        const sizes = { C: 11, M: 8, D: 10 }
+        let offset = 0
+
+        range(1, this.grid.rows).forEach(y => {
+            range(0, this.grid.cols).forEach(x => {
+                const cellType = screen.substr(offset, 1)
+
+                if(!(cellType in sizes)) {
+                    throw new SyntaxError(
+                        "Unknown cell type " + cellType + " @" + offset
+                    )
+                }
+
+                this.set(
+                    x, y,
+                    Minitel.Cell.fromString(
+                        screen.substr(offset, sizes[cellType])
+                    )
+                )
+
+                offset += sizes[cellType]
+            })
+        })
+    }
+
+    save() {
+        let save = ""
+
+        range(1, this.grid.rows).forEach(y => {
+            range(0, this.grid.cols).forEach(x => {
+                save += this.memory[y][x].toString()
+            })
+        })
+
+        return save
     }
 }
