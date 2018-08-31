@@ -255,6 +255,7 @@ Minitel.Stream = class {
 
                 // Look for an attribute change.
                 for(let attr in next) {
+                    if(!next.hasOwnProperty(attr)) continue
                     if(next[attr] === undefined
                        || next[attr] === current[attr]) {
                         continue
@@ -269,7 +270,15 @@ Minitel.Stream = class {
                 }
 
                 // Watch every attribute.
-                ["charset", "size", "bg", "fg", "separated", "invert", "blink"].forEach(
+                [
+                    "charset",
+                    "size",
+                    "bg",
+                    "fg",
+                    "separated",
+                    "invert",
+                    "blink"
+                ].forEach(
                     attr => {
                         if(next[attr] === undefined) return
                         if(current[attr] === next[attr]) return

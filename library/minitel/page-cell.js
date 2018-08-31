@@ -57,7 +57,8 @@ Minitel.Cell = class {
      * @param {string} image String to parse.
      * @abstract
      */
-    fromString(image) {
+    fromString() {
+        this.value = 0x20
     }
 }
 
@@ -499,6 +500,6 @@ Minitel.Cell.upperPart = function(mult, part) {
  */
 Minitel.Cell.rootPart = function(mult, part) {
     return part.x === 0
-        && (   mult.height > 1 && part.y === 1
-            || mult.height === 1 && part.y === 0)
+        && (mult.height > 1 && part.y === 1 ||
+            mult.height === 1 && part.y === 0)
 }
