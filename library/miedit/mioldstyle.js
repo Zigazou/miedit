@@ -92,12 +92,18 @@ MiEdit.MiOldStyle = class {
         this.cellMode = "character"
 
         /**
-         * Direction of diagonal drawing.
+         * Current parameters diagonal drawing.
          *
-         * @member {string} "NW", "NE", "SW", "SE" or undefined
+         * @member {string?} "NW", "NE", "SW", "SE" or undefined
+         * @member {number}
+         * @member {number}
          * @private
          */
-        this.diagonalDirection = undefined
+        this.diagonal = {
+            direction: undefined,
+            width: 1,
+            height: 1
+        }
 
         /**
          * Direct access to attributes form elements.
@@ -121,6 +127,15 @@ MiEdit.MiOldStyle = class {
             doubleHeight: container.querySelector(".attr-double-height"),
             drcs: container.querySelector(".attr-drcs")
         }
+    }
+
+    /**
+     * Resets diagonal parameters.
+     */
+    resetDiagonal() {
+        this.diagonal.direction = undefined
+        this.diagonal.width = 1
+        this.diagonal.height = 1
     }
 
     /**
@@ -358,6 +373,18 @@ MiEdit.MiOldStyle = class {
     }
 
     onKeyDiagonal(charCode) {
+        const keySizes = {
+            0x2d: { width: 1, height: 1 }, // '-' normal size
+            0x2a: { width: 2, height: 1 }, // '*' double width
+            0x2b: { width: 1, height: 2 }  // '+' double height
+        }
+
+        if(charCode in keySizes) {
+            this.diagonal.width = keySizes[charCode].width
+            this.diagonal.height = keySizes[charCode].height
+            return
+        }
+
         // 1, 2, 3, 4, 6, 7, 8, and 9 are the only keys that are allowed.
         const directions = {
             0x37: "NW", 0x38: "N", 0x39: "NE",
@@ -382,13 +409,13 @@ MiEdit.MiOldStyle = class {
             SE: [{ dx: 0, dy: 0, d: "SE" }]
         }
 
-        const actions = this.diagonalDirection
-                      ? MiEdit.MiOldStyle.fromDirections[this.diagonalDirection]
-                      : fromNowhere
+        const actions = this.diagonal.direction
+                    ? MiEdit.MiOldStyle.fromDirections[this.diagonal.direction]
+                    : fromNowhere
 
         actions[directions[charCode]].some(action => {
-            const x = this.cursor.x + action.dx
-            const y = this.cursor.y + action.dy
+            const x = this.cursor.x + action.dx * this.diagonal.width
+            const y = this.cursor.y + action.dy * this.diagonal.height
 
             if(x < 0 || x >= this.vdu.grid.cols) return false
             if(y < 1 || y >= this.vdu.grid.rows) return false
@@ -399,11 +426,27 @@ MiEdit.MiOldStyle = class {
                 return false
             }
 
-            const cell = new Minitel.CharCell()
-            cell.value = chars[action.d]
-            this.vdu.set(x, y, cell)
+            const setCell = (partx, party) => {
+                const cell = new Minitel.CharCell()
+                cell.value = chars[action.d]
+                cell.mult.width = this.diagonal.width
+                cell.mult.height = this.diagonal.height
+                cell.part.x = partx
+                cell.part.y = party
+                this.vdu.set(x + partx, y + party, cell)
+            }
+
+            if(this.diagonal.width > 1) {
+                // Double width
+                range(this.diagonal.width).forEach(partx => setCell(partx, 0))
+            } else {
+                // Double height or normal size
+                range(this.diagonal.height).forEach(party => setCell(0, party))
+            }
+
             this.cursor.set(x, y)
-            this.diagonalDirection = action.d
+
+            this.diagonal.direction = action.d
 
             return true
         })
@@ -550,7 +593,7 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyArrowDown() {
-        this.diagonalDirection = undefined
+        this.resetDiagonal()
         this.cursor.setDimension()
         if(!this.cursor.isOnLastRow()) this.cursor.down()
     }
@@ -568,7 +611,7 @@ MiEdit.MiOldStyle = class {
 
         if(cury + height >= this.vdu.grid.rows) return
 
-        this.diagonalDirection = undefined
+        this.resetDiagonal()
 
         // Save the last row to later paste it.
         const save = []
@@ -593,7 +636,7 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyShiftArrowDown() {
-        this.diagonalDirection = undefined
+        this.resetDiagonal()
         this.cursor.setDimension(
             this.cursor.indicatorWidth,
             this.cursor.indicatorHeight + 1
@@ -606,7 +649,7 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyArrowUp() {
-        this.diagonalDirection = undefined
+        this.resetDiagonal()
         this.cursor.setDimension()
         if(!this.cursor.isOnFirstRow()) this.cursor.up()
     }
@@ -624,7 +667,7 @@ MiEdit.MiOldStyle = class {
 
         if(cury <= 1) return
 
-        this.diagonalDirection = undefined
+        this.resetDiagonal()
 
         // Save the first row to later paste it.
         const save = []
@@ -649,7 +692,7 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyShiftArrowUp() {
-        this.diagonalDirection = undefined
+        this.resetDiagonal()
         this.cursor.setDimension(
             this.cursor.indicatorWidth,
             this.cursor.indicatorHeight - 1
@@ -662,7 +705,7 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyArrowRight() {
-        this.diagonalDirection = undefined
+        this.resetDiagonal()
         this.cursor.setDimension()
         if(!this.cursor.isOnLastCol()) this.cursor.right()
     }
@@ -680,7 +723,7 @@ MiEdit.MiOldStyle = class {
 
         if(curx + width >= this.vdu.grid.cols) return
 
-        this.diagonalDirection = undefined
+        this.resetDiagonal()
 
         // Save the last row to later paste it.
         const save = []
@@ -705,7 +748,7 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyShiftArrowRight() {
-        this.diagonalDirection = undefined
+        this.resetDiagonal()
         this.cursor.setDimension(
             this.cursor.indicatorWidth + 1,
             this.cursor.indicatorHeight
@@ -718,7 +761,7 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyArrowLeft() {
-        this.diagonalDirection = undefined
+        this.resetDiagonal()
         this.cursor.setDimension()
         if(!this.cursor.isOnFirstCol()) this.cursor.left()
     }
@@ -736,7 +779,7 @@ MiEdit.MiOldStyle = class {
 
         if(curx <= 0) return
 
-        this.diagonalDirection = undefined
+        this.resetDiagonal()
 
         // Save the first column to later paste it.
         const save = []
@@ -761,7 +804,7 @@ MiEdit.MiOldStyle = class {
      * @private
      */
     onKeyShiftArrowLeft() {
-        this.diagonalDirection = undefined
+        this.resetDiagonal()
         this.cursor.setDimension(
             this.cursor.indicatorWidth - 1,
             this.cursor.indicatorHeight
