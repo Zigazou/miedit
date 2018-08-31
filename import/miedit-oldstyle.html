@@ -64,37 +64,46 @@
             </p>
             <p>
               <kbd>Shift</kbd> + <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd>
-              resize the zone.
+              resize the selection.
             </p>
             <p>
               <kbd>Ctrl</kbd> + <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd>
-              move the zone.
+              move the selection.
             </p>
             <p>
               <kbd>Del→</kbd> reset cell.
             </p>
-            <p>Any change will be applied to the whole zone.</p>
+            <p>Any change will be applied to the whole selection.</p>
   
             <h3>Switching</h3>
             <p><kbd>Esc</kbd> change cell mode.</p>
             <p><kbd>²</kbd> change attribute mode.</p>
-            <p>When in attribute mode, use keys given in the Attributes panel.</p>
+            <p>
+              When in attribute mode, use keys given in the Attributes panel.
+            </p>
   
             <h3>Mosaic mode</h3>
             <p>
-              <kbd>7</kbd><kbd>8</kbd>
-              <kbd>4</kbd><kbd>5</kbd>
-              <kbd>1</kbd><kbd>2</kbd>
-              change mosaic pixels.
+              <kbd>7</kbd><kbd>8</kbd><kbd class="unused">9</kbd><br/>
+              <kbd>4</kbd><kbd>5</kbd><kbd class="unused">6</kbd>
+              change mosaic pixels.<br/>
+              <kbd>1</kbd><kbd>2</kbd><kbd class="unused">3</kbd>
             </p>
+            <p>Attribute keys are available while in this mode.</p>
   
             <h3>Diagonal mode</h3>
             <p>
-              <kbd>7</kbd><kbd>8</kbd><kbd>9</kbd>
-              <kbd>4</kbd><kbd>6</kbd>
+              <kbd>7</kbd><kbd>8</kbd><kbd>9</kbd><br/>
+              <kbd>4</kbd><kbd class="unused">5</kbd><kbd>6</kbd>
+              draw diagonal<br/>
               <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>
-              draw diagonal
             </p>
+            <p>
+              <kbd>*</kbd> use double width<br/>
+              <kbd>+</kbd> use double height<br/>
+              <kbd>-</kbd> use normal size<br/>
+            </p>
+            <p>Attribute keys are available while in this mode.</p>
           </div>
         </div>
       </div>
@@ -137,14 +146,14 @@
               <input type="radio" id="attr-fg-black" name="attr-fg" value="0"/>
               <label for="attr-fg-black">
                 <img src="icon/miicons.svg#color-fg-0" /><br/>
-                Black<br/>0%<br/><kbd>a</kbd>
+                Black<br/>0%<br/><kbd>q</kbd>
               </label>
             </div>
             <div>
               <input type="radio" id="attr-fg-blue" name="attr-fg" value="1"/>
               <label for="attr-fg-blue">
                 <img src="icon/miicons.svg#color-fg-4" /><br/>
-                Blue<br/>40%<br/><kbd>z</kbd>
+                Blue<br/>40%<br/><kbd>w</kbd>
               </label>
             </div>
             <div>
@@ -197,7 +206,7 @@
               <input type="radio" id="attr-bg-black" name="attr-bg" value="0"/>
               <label for="attr-bg-black">
                 <img src="icon/miicons.svg#color-bg-0" /><br/>
-                Black<br/>0%<br/><kbd>q</kbd>
+                Black<br/>0%<br/><kbd>a</kbd>
               </label>
             </div>
             <div>
@@ -254,7 +263,7 @@
           <h2>Other attributes</h2>
           <div class="class-character class-mosaic">
             <input type="checkbox" id="attr-blink" class="attr-blink"/>
-            <label for="attr-blink">Blink <kbd>w</kbd></label>
+            <label for="attr-blink">Blink <kbd>z</kbd></label>
           </div>
           <div class="class-character class-delimiter">
             <input type="checkbox" id="attr-invert" class="attr-invert"/>
@@ -272,17 +281,19 @@
             <input type="checkbox" id="attr-mask" class="attr-mask"/>
             <label for="attr-mask">Mask <kbd>b</kbd></label>
           </div>
-          <div class="class-character class-delimiter">
-            <input type="checkbox" id="attr-double-width" class="attr-double-width"/>
-            <label for="attr-double-width">Double width</label>
-          </div>
-          <div class="class-character class-delimiter">
-            <input type="checkbox" id="attr-double-height" class="attr-double-height"/>
-            <label for="attr-double-height">Double height</label>
-          </div>
           <div class="class-character class-mosaic">
             <input type="checkbox" id="attr-drcs" class="attr-drcs"/>
             <label for="attr-drcs">DRCS <kbd>n</kbd></label>
+          </div>
+          <div class="class-character class-delimiter">
+            <input type="checkbox" id="attr-double-width"
+                   class="attr-double-width"/>
+            <label for="attr-double-width">Double width <kbd>m</kbd></label>
+          </div>
+          <div class="class-character class-delimiter">
+            <input type="checkbox" id="attr-double-height"
+                   class="attr-double-height"/>
+            <label for="attr-double-height">Double height <kbd>,</kbd></label>
           </div>
         </div>
       </form>

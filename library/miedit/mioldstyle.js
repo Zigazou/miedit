@@ -32,14 +32,20 @@ MiEdit.MiOldStyle = class {
         this.root = root
 
         /**
+         * The emulator tag.
+         *
+         * @member {HTMLElement}
+         * @private
+         */
+        this.xminitel = this.root.querySelector("x-minitel")
+
+        /**
          * The old style editor emulator.
          *
          * @member {Minitel.Emulator}
          * @private
          */
-        this.emulator = new Minitel.Emulator(
-            this.root.querySelector("x-minitel")
-        )
+        this.emulator = new Minitel.Emulator(this.xminitel)
 
         /**
          * The old style editor cursor.
@@ -61,15 +67,15 @@ MiEdit.MiOldStyle = class {
         // Connect every callback.
         this.root.autocallback(this)
 
-        this.root.querySelector("x-minitel").addEventListener(
+        this.xminitel.addEventListener(
             "keydown", event => this.onKeypress(event)
         )
 
-        this.root.querySelector("x-minitel .minitel-screen").addEventListener(
+        this.xminitel.querySelector(".minitel-screen").addEventListener(
             "mousedown", event => this.onMouseDown(event)
         )
 
-        this.root.querySelector("x-minitel .minitel-screen").addEventListener(
+        this.xminitel.querySelector(".minitel-screen").addEventListener(
             "mousemove", event => this.onMouseMove(event)
         )
 
@@ -290,7 +296,7 @@ MiEdit.MiOldStyle = class {
     }
 
     /**
-     * When a key is pressed.
+     * When a key is pressed. Dispatch the event to the corresponding callbacks.
      *
      * @param {HTMLEvent} event Key event.
      */
@@ -298,13 +304,19 @@ MiEdit.MiOldStyle = class {
         const modifier = (event.shiftKey ? "Shift" : "")
                        + (event.ctrlKey ? "Ctrl" : "")
 
-        if(event.key === "Escape") {
+        if(event.code === "Escape") {
             this.onKeyCellMode()
-        } else if(event.key === "²") {
+        } else if(event.code === "Backquote") {
             this.onKeyAttributeMode()
         } else if(this["onKey" + modifier + event.key]) {
             this["onKey" + modifier + event.key](event)
         } else if(this.attributeMode) {
+            this.onKeyAttribute(event)
+        } else if(this.cellMode === "diagonal") {
+            this.onKeyDiagonal(event.code)
+            this.onKeyAttribute(event)
+        } else if(this.cellMode === "mosaic") {
+            this.onKeyMosaic(event.code)
             this.onKeyAttribute(event)
         } else if(event.key.length === 1) {
             const charCode = event.key in Minitel.rawChars
@@ -313,12 +325,9 @@ MiEdit.MiOldStyle = class {
 
             if(this.cellMode === "character") {
                 this.onKeyCharacter(charCode)
-            } else if(this.cellMode === "mosaic") {
-                this.onKeyMosaic(charCode)
             } else if(this.cellMode === "delimiter") {
                 this.onKeyDelimiter(charCode)
-            } else if(this.cellMode === "diagonal") {
-                this.onKeyDiagonal(charCode)
+                this.onKeyAttribute(event)
             }
         } else {
             // The key is not handled by our editor, give it to the browser.
@@ -332,6 +341,12 @@ MiEdit.MiOldStyle = class {
         )
     }
 
+    /**
+     * When the user press a key while in character cell mode.
+     *
+     * @param {number} charCode The KeyboardEvent charCode value.
+     * @private
+     */
     onKeyCharacter(charCode) {
         this.rangeZone().forEach((x, y) => {
             // Change the charcode on the current character cell.
@@ -372,26 +387,32 @@ MiEdit.MiOldStyle = class {
         }
     }
 
-    onKeyDiagonal(charCode) {
+    /**
+     * When the user press a key while in diagonal mode.
+     *
+     * @param {string} eventCode The KeyboardEvent code value.
+     * @private
+     */
+    onKeyDiagonal(eventCode) {
         const keySizes = {
-            0x2d: { width: 1, height: 1 }, // '-' normal size
-            0x2a: { width: 2, height: 1 }, // '*' double width
-            0x2b: { width: 1, height: 2 }  // '+' double height
+            NumpadSubtract: { width: 1, height: 1 }, // normal size
+            NumpadMultiply: { width: 2, height: 1 }, // double width
+            NumpadAdd: { width: 1, height: 2 }       // double height
         }
 
-        if(charCode in keySizes) {
-            this.diagonal.width = keySizes[charCode].width
-            this.diagonal.height = keySizes[charCode].height
+        if(eventCode in keySizes) {
+            this.diagonal.width = keySizes[eventCode].width
+            this.diagonal.height = keySizes[eventCode].height
             return
         }
 
         // 1, 2, 3, 4, 6, 7, 8, and 9 are the only keys that are allowed.
         const directions = {
-            0x37: "NW", 0x38: "N", 0x39: "NE",
-            0x34: "W", 0x36: "E",
-            0x31: "SW", 0x32: "S", 0x33: "SE"
+            Numpad7: "NW", Numpad8: "N", Numpad9: "NE",
+            Numpad4: "W", Numpad6: "E",
+            Numpad1: "SW", Numpad2: "S", Numpad3: "SE"
         }
-        if(!(charCode in directions)) return
+        if(!(eventCode in directions)) return
         const chars = {
             NW: 0x5C, NNW: 0x7B, NNE: 0x7D, NE: 0x2F,
             WWN: 0x7E, WWS: 0x5F, EEN: 0x7E, EES: 0x5F,
@@ -413,48 +434,100 @@ MiEdit.MiOldStyle = class {
                     ? MiEdit.MiOldStyle.fromDirections[this.diagonal.direction]
                     : fromNowhere
 
-        actions[directions[charCode]].some(action => {
-            const x = this.cursor.x + action.dx * this.diagonal.width
-            const y = this.cursor.y + action.dy * this.diagonal.height
+        // Find the best action to do.
+        actions[directions[eventCode]].some(action => {
+            // Calculate the start of the drawing.
+            const start = MiEdit.MiOldStyle.offsetStart(
+                action.dx,
+                action.dy,
+                this.diagonal.width,
+                this.diagonal.height,
+                directions[eventCode]
+            )
+
+            const x = this.cursor.x + start.dx
+            const y = this.cursor.y + start.dy
 
             if(x < 0 || x >= this.vdu.grid.cols) return false
             if(y < 1 || y >= this.vdu.grid.rows) return false
 
             const currentCell = this.vdu.get(x, y)
 
-            if(currentCell.value !== 0x20 && currentCell.value !== 0x40) {
-                return false
+            // Do not write horizontal or vertical line on existing drawing.
+            if(["N", "S", "W", "E"].indexOf(directions[eventCode]) >= 0) {
+                const empty = currentCell.value === 0x20 &&
+                              currentCell instanceof Minitel.CharCell
+                           || currentCell.value === 0x40 &&
+                              currentCell instanceof Minitel.MosaicCell
+
+                if(!empty) return false
             }
 
+            // Function for filling VDU cell.
             const setCell = (partx, party) => {
                 const cell = new Minitel.CharCell()
                 cell.value = chars[action.d]
-                cell.mult.width = this.diagonal.width
-                cell.mult.height = this.diagonal.height
+
+
+                // Do not resize width of vertical line.
+                cell.mult.width = cell.value !== 0x7B && cell.value !== 0x7D
+                                ? this.diagonal.width
+                                : 1
+
+                // Do not resize height of horizontal line.
+                cell.mult.height = cell.value !== 0x7E && cell.value !== 0x5F
+                                 ? this.diagonal.height
+                                 : 1
+
                 cell.part.x = partx
                 cell.part.y = party
                 this.vdu.set(x + partx, y + party, cell)
             }
 
-            if(this.diagonal.width > 1) {
+            if(this.diagonal.width > 1 &&
+                ["N", "S"].indexOf(directions[eventCode]) < 0
+            ) {
                 // Double width
                 range(this.diagonal.width).forEach(partx => setCell(partx, 0))
-            } else {
+            } else if(this.diagonal.height > 1 &&
+                ["W", "E"].indexOf(directions[eventCode]) < 0
+            ) {
                 // Double height or normal size
                 range(this.diagonal.height).forEach(party => setCell(0, party))
+            } else {
+                setCell(0, 0)
             }
 
-            this.cursor.set(x, y)
+            // Move the cursor to the end of the drawing.
+            const end = MiEdit.MiOldStyle.offsetEnd(
+                action.dx,
+                action.dy,
+                this.diagonal.width,
+                this.diagonal.height,
+                directions[eventCode]
+            )
 
+            this.cursor.set(this.cursor.x + end.dx, this.cursor.y + end.dy)
+
+            // Keep track of the direction for the next drawing.
             this.diagonal.direction = action.d
 
             return true
         })
     }
 
-    onKeyMosaic(charCode) {
+    /**
+     * When the user press a key while in mosaic mode.
+     *
+     * @param {string} eventCode The KeyboardEvent code value.
+     * @private
+     */
+    onKeyMosaic(eventCode) {
         // 1, 2, 4, 5, 7 and 8 are the only keys that are allowed.
-        const bit = [0x37, 0x38, 0x34, 0x35, 0x31, 0x32].indexOf(charCode)
+        const bit = [
+            "Numpad7", "Numpad8", "Numpad4", "Numpad5", "Numpad1", "Numpad2"
+        ].indexOf(eventCode)
+
         if(bit === -1) return
 
         this.rangeZone().forEach((x, y) => {
@@ -484,6 +557,11 @@ MiEdit.MiOldStyle = class {
         })
     }
 
+    /**
+     * When the user press a key in delimiter mode.
+     *
+     * @private
+     */
     onKeyDelimiter() {
         this.rangeZone().forEach((x, y) => {
             const currentCell = this.vdu.get(x, y)
@@ -505,33 +583,45 @@ MiEdit.MiOldStyle = class {
         })
     }
 
+    /**
+     * When the user press an attribute key.
+     *
+     * @param {KeyboardEvent} event The event containing the key code.
+     * @private
+     */
     onKeyAttribute(event) {
         this.rangeZone().forEach((x, y) => {
             const cell = this.vdu.get(x, y)
 
             // Foreground color.
-            const indexFG = "aetuzryi".indexOf(event.key)
+            const foregroundKeys = [
+                "KeyQ", "KeyE", "KeyT", "KeyU", "KeyW", "KeyR", "KeyY", "KeyI"
+            ]
+            const indexFG = foregroundKeys.indexOf(event.code)
             if(indexFG >= 0) cell.fgColor = indexFG
 
             // Background color.
+            const backgroundKeys = [
+                "KeyA", "KeyD", "KeyG", "KeyJ", "KeyS", "KeyF", "KeyH", "KeyK"
+            ]
             if(!(cell instanceof Minitel.CharCell)) {
-                const indexBG = "qdgjsfhk".indexOf(event.key)
+                const indexBG = backgroundKeys.indexOf(event.code)
                 if(indexBG >= 0) cell.bgColor = indexBG
             }
 
             // Blinking.
-            if(!(cell instanceof Minitel.MosaicCell)) {
-                if(event.key === "w") cell.blink = !cell.blink
+            if(!(cell instanceof Minitel.DelimiterCell)) {
+                if(event.code === "KeyZ") cell.blink = !cell.blink
             }
 
             // Invert.
             if(!(cell instanceof Minitel.MosaicCell)) {
-                if(event.key === "x") cell.invert = !cell.invert
+                if(event.code === "KeyX") cell.invert = !cell.invert
             }
 
             // Separated.
             if(cell instanceof Minitel.MosaicCell) {
-                if(event.key === "c") {
+                if(event.code === "KeyC") {
                     cell.separated = !cell.separated
                     cell.value = cell.value ^ 0x40
                 }
@@ -539,17 +629,19 @@ MiEdit.MiOldStyle = class {
 
             // Underline.
             if(cell instanceof Minitel.DelimiterCell) {
-                if(event.key === "v") cell.zoneUnderline = !cell.zoneUnderline
+                if(event.code === "KeyV") {
+                    cell.zoneUnderline = !cell.zoneUnderline
+                }
             }
 
             // Mask.
             if(cell instanceof Minitel.DelimiterCell) {
-                if(event.key === "b") cell.mask = !cell.mask
+                if(event.code === "KeyB") cell.mask = !cell.mask
             }
 
             // Underline.
             if(cell instanceof Minitel.DelimiterCell) {
-                if(event.key === "n") cell.drcs = !cell.drcs
+                if(event.code === "KeyN") cell.drcs = !cell.drcs
             }
 
             this.vdu.set(x, y, cell)
@@ -579,6 +671,11 @@ MiEdit.MiOldStyle = class {
         this.attributeMode = !this.attributeMode
     }
 
+    /**
+     * When the user press the delete key.
+     *
+     * @private
+     */
     onKeyDelete() {
         this.rangeZone().forEach((x, y) => {
             const cell = new Minitel.MosaicCell()
@@ -851,6 +948,12 @@ MiEdit.MiOldStyle = class {
     onMouseDown(event) {
         if(event.buttons !== 1) return
 
+        // Do not reset cursor position when entering the Minitel emulator.
+        if(document.activeElement !== this.xminitel) {
+            this.xminitel.focus()
+            return
+        }
+
         this.cursor.setDimension()
         this.cursor.set(
             Math.floor(
@@ -944,7 +1047,12 @@ MiEdit.MiOldStyle = class {
 }
 
 /**
- * Automaton giving actions to follow for diagonal drawing.
+ * Automaton giving actions to follow for diagonal drawing. The offset dx and
+ * dy are meant for normal size drawing, they must be adjusted when using double
+ * width or double height line drawing with MiEdit.MiOldStyle.offsetStart and
+ * MiEdit.MiOldStyle.offsetStart functions.
+ *
+ * @member {object}
  */
 MiEdit.MiOldStyle.fromDirections = {
     NW: {
@@ -961,7 +1069,7 @@ MiEdit.MiOldStyle.fromDirections = {
         NW: [{ dx: -1, dy: -1, d: "NW" }],
         N: [{ dx: 0, dy: -1, d: "NNW"}],
         NE: [{ dx: 0, dy: -1, d: "NE"}],
-        W: [{ dx: -1, dy: -1, d: "WWS"}, { dx: -1, dy:0, d: "WWN"}],
+        W: [{ dx: -1, dy: -1, d: "WWS"}, { dx: -1, dy: 0, d: "WWN"}],
         E: [{ dx: 0, dy: -1, d: "EES"}],
         SW: [{ dx: -1, dy: 0, d: "SW"}],
         S: [{ dx: 0, dy: 0, d: "SSW"}],
@@ -1067,4 +1175,70 @@ MiEdit.MiOldStyle.fromDirections = {
         S: [{ dx: 1, dy: 1, d: "SSW"}, { dx: 0, dy: 1, d: "SSE"}],
         SE: [{ dx: 1, dy: 1, d: "SE" }]
     }
+}
+
+/**
+ * Calculate the start offset for the next diagonal drawing.
+ *
+ * @param {number} dx Delta X (-1, 0, 1).
+ * @param {number} dy Delta Y (-1, 0, 1).
+ * @param {number} width Width multiplier (1, 2).
+ * @param {number} height Height multiplier (1, 2).
+ * @param {string} direction Direction.
+ * @returns {object} An object with corrected dx and dy.
+ */
+MiEdit.MiOldStyle.offsetStart = function(dx, dy, width, height, direction) {
+    // No need to adjust if doubling height of horizontal line.
+    if(height === 2 && (direction === "W" || direction === "E")) {
+        return { dx: dx, dy: dy }
+    }
+
+    // No need to adjust if doubling width of vertical line.
+    if(width === 2 && (direction === "N" || direction === "S")) {
+        return { dx: dx, dy: dy }
+    }
+
+    if(width === 2 && direction.indexOf("W") >= 0) {
+        return { dx: dx - 1, dy: dy }
+    }
+
+    if(height === 2 && direction.indexOf("N") >= 0) {
+        return { dx: dx, dy: dy - 1 }
+    }
+
+    return { dx: dx, dy: dy }
+}
+
+/**
+ * Calculate the end offset for the next diagonal drawing.
+ *
+ * @param {number} dx Delta X (-1, 0, 1).
+ * @param {number} dy Delta Y (-1, 0, 1).
+ * @param {number} width Width multiplier (1, 2).
+ * @param {number} height Height multiplier (1, 2).
+ * @param {string} direction Direction.
+ * @returns {object} An object with corrected dx and dy.
+ */
+MiEdit.MiOldStyle.offsetEnd = function(dx, dy, width, height, direction) {
+    // No need to adjust if doubling height of horizontal line.
+    if(height === 2 && (direction === "W" || direction === "E")) {
+        return { dx: dx, dy: dy }
+    }
+
+    // No need to adjust if doubling width of vertical line.
+    if(width === 2 && (direction === "N" || direction === "S")) {
+        return { dx: dx, dy: dy }
+    }
+
+    if(width === 2) {
+        if(direction.indexOf("W") >= 0) return { dx: dx - 1, dy: dy }
+        return { dx: dx + 1, dy: dy }
+    }
+
+    if(height === 2) {
+        if(direction.indexOf("N") >= 0) return { dx: dx, dy: dy - 1 }
+        return { dx: dx, dy: dy + 1 }
+    }
+
+    return { dx: dx, dy: dy }
 }

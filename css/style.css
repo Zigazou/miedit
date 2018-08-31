@@ -56,7 +56,7 @@ button { cursor: pointer; }
 kbd {
     padding:0.1em 0.6em;
     font-size: 80%;
-    font-family: sans-serif;
+    font-family: mono;
     background-color: #f7f7f7;
     color: #333;
     border: 0.2em solid #ccc;
@@ -68,6 +68,8 @@ kbd {
     line-height: 1.4;
     white-space: nowrap;
 }
+
+kbd.unused { color: transparent; }
 
 :focus { outline: 0.3em dashed var(--color-3); }
 
