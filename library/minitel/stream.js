@@ -239,7 +239,10 @@ Minitel.Stream = class {
                 if(item === 0x0e || item === 0x0f) {
                     // Select G0 or G1 character set.
                     next.charset = item
-                    if(current.charset !== item) current.separated = undefined
+                    if(current.charset !== item) {
+                        current.size = 0x4c
+                        current.separated = 0x59
+                    }
                 } else {
                     // Flush any repeated character.
                     if(count > 0) {
@@ -273,21 +276,26 @@ Minitel.Stream = class {
                 [
                     "charset",
                     "size",
+                    "invert",
                     "bg",
                     "fg",
                     "separated",
-                    "invert",
                     "blink"
                 ].forEach(
                     attr => {
                         if(next[attr] === undefined) return
                         if(current[attr] === next[attr]) return
 
+                        // Ignore changing foreground color if a space character
+                        // is output.
+                        if(attr === "fg" && item === 0x20) {
+                            if(current.charset === 0x0e) return
+                            if(current.invert === 0x5c) return
+                        }
+
                         if(attr !== "charset") optimized.push(0x1b)
                         optimized.push(next[attr])
-
                         current[attr] = next[attr]
-
                         next[attr] = undefined
                     }
                 )
