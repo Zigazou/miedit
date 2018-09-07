@@ -146,14 +146,29 @@ Minitel.VRAM = class {
         return string
     }
 
-    load(screen) {
+    /**
+     * Load VRAM from a string.
+     *
+     * @param {string} screen The string from which to extract data.
+     * @param {number?} col Starting column
+     * @param {number?} row Starting row
+     * @param {number?} width Width in characters
+     * @param {number?} height Height in characters
+     */
+    load(screen, col, row, width, height) {
         if(screen === null || screen === undefined) return
 
         const sizes = { C: 11, M: 8, D: 10 }
         let offset = 0
 
-        range(1, this.grid.rows).forEach(y => {
-            range(0, this.grid.cols).forEach(x => {
+        // Handles optional values
+        col = col || 0
+        row = row || 1
+        width = width || this.grid.cols
+        height = height || (this.grid.rows - row)
+
+        range(row, row + height).forEach(y => {
+            range(col, col + width).forEach(x => {
                 const cellType = screen.substr(offset, 1)
 
                 if(!(cellType in sizes)) {
@@ -162,23 +177,39 @@ Minitel.VRAM = class {
                     )
                 }
 
-                this.set(
-                    x, y,
-                    Minitel.Cell.fromString(
-                        screen.substr(offset, sizes[cellType])
+                if(x < this.grid.cols && y < this.grid.rows) {
+                    this.set(
+                        x, y,
+                        Minitel.Cell.fromString(
+                            screen.substr(offset, sizes[cellType])
+                        )
                     )
-                )
+                }
 
                 offset += sizes[cellType]
             })
         })
     }
 
-    save() {
+    /**
+     * Save the VRAM into a string.
+     *
+     * @param {number?} col Starting column
+     * @param {number?} row Starting row
+     * @param {number?} width Width in characters
+     * @param {number?} height Height in characters
+     */
+    save(col, row, width, height) {
         let save = ""
 
-        range(1, this.grid.rows).forEach(y => {
-            range(0, this.grid.cols).forEach(x => {
+        // Handles optional values
+        col = col || 0
+        row = row || 1
+        width = width || this.grid.cols
+        height = height || (this.grid.rows - row)
+
+        range(row, row + height).forEach(y => {
+            range(col, col + width).forEach(x => {
                 save += this.memory[y][x].toString()
             })
         })

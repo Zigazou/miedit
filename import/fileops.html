@@ -1,0 +1,40 @@
+<!-- Minitel Page Editor file operations -->
+<div class="miedit-fileops modal hidden">
+  <div class="content">
+    <h1>File operations</h1>
+    <div>
+      <h2>Load, import</h2>
+      <a class="button" href="miedit-manage.html">
+        <img src="icon/miicons.svg#file-save" /><br/>Local<br/>load
+      </a>
+      <button data-call="onImport">
+        <img src="icon/miicons.svg#file-import" /><br/>Import<br/>tree
+      </button>
+      <form>
+        <label for="vdt-load-file">Videotex file</label>
+        <input id="vdt-load-file" type="file"/>
+        <button value="edit"
+          data-call="onImportVideotex"
+          data-param="vdt-load-file"
+        >Import Videotex</button>
+      </form>
+    </div>
+
+    <div>
+      <h2>Save, export</h2>
+      <button data-call="onSave">
+        <img src="icon/miicons.svg#file-save" /><br/>Local<br/>Save
+      </button>
+
+      <button data-call="onExport">
+        <img src="icon/miicons.svg#file-export" /><br/>Export<br/>tree
+      </button>
+
+      <p><a href="#" id="link-download-vdt"></a></p>
+      <p><a href="#" id="link-view-vdt" target="_blank"></a></p>
+      <p><a href="#" id="link-real-vdt" target="_blank"></a></p>
+    </div>
+
+    <button class="modal-close" data-call="onFileopsClose">Close</button>
+  </div>
+</div>

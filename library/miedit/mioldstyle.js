@@ -71,6 +71,14 @@ MiEdit.MiOldStyle = class {
             "keydown", event => this.onKeypress(event)
         )
 
+        this.xminitel.addEventListener(
+            "paste", event => this.onPaste(event)
+        )
+
+        this.xminitel.addEventListener(
+            "copy", event => this.onCopy(event)
+        )
+
         this.xminitel.querySelector(".minitel-screen").addEventListener(
             "mousedown", event => this.onMouseDown(event)
         )
@@ -310,6 +318,8 @@ MiEdit.MiOldStyle = class {
             this.onKeyAttributeMode()
         } else if(this["onKey" + modifier + event.key]) {
             this["onKey" + modifier + event.key](event)
+        } else if(event.ctrlKey) {
+            return
         } else if(this.attributeMode) {
             this.onKeyAttribute(event)
         } else if(this.cellMode === "diagonal") {
@@ -1031,6 +1041,46 @@ MiEdit.MiOldStyle = class {
         const modal = document.querySelector(".oldstyle-import")
 
         modal.classList.add("hidden")
+    }
+
+    onCopy(event) {
+        event.preventDefault()
+
+        const vram = {
+            type: "minitel-vram",
+            width: this.cursor.indicatorWidth,
+            height: this.cursor.indicatorHeight,
+            vram: this.vdu.vram.save(
+                this.cursor.x,
+                this.cursor.y,
+                this.cursor.indicatorWidth,
+                this.cursor.indicatorHeight
+            )
+        }
+
+        event.clipboardData.setData('text/plain', JSON.stringify(vram))
+        event.clipboardData.setData('application/json', JSON.stringify(vram))
+    }
+
+    onPaste(event) {
+        event.preventDefault()
+        event.stopPropagation()
+
+        const clipboard = event.clipboardData.getData('application/json')
+
+        if(clipboard === "") return
+
+        const vram = JSON.parse(clipboard)
+
+        this.vdu.vram.load(
+            vram.vram,
+            this.cursor.x,
+            this.cursor.y,
+            vram.width,
+            vram.height
+        )
+
+        this.vdu.redraw()
     }
 
     /**

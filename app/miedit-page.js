@@ -104,6 +104,7 @@ MiEdit.MiEditPage = class {
         this.tidgets.root.autocallback(this)
         container.find(".miedit-control").map((i, o) => o.autocallback(this))
         container.find(".miedit-recorder").map((i, o) => o.autocallback(this))
+        container.find(".miedit-fileops").map((i, o) => o.autocallback(this))
         container.find(".content-graphics").map((i, o) => o.autocallback(this))
         container.find(".content-oldstyle").map((i, o) => o.autocallback(this))
         container.find(".drcs-black-white").map((i, o) => o.autocallback(this))
@@ -211,12 +212,10 @@ MiEdit.MiEditPage = class {
     }
 
     /**
-     * When the user clicks on the compile button.
-     * @param {HTMLEvent} event Event that generated the call
-     * @param {mixed} param Parameters of the event
+     * Generate links to download various usage of videotex stream.
      * @private
      */
-    onCompile() {
+    compile() {
         // Retrieves the DOM elements of the links we will change
         const dlLink = document.getElementById("link-download-vdt")
         const vwLink = document.getElementById("link-view-vdt")
@@ -226,12 +225,6 @@ MiEdit.MiEditPage = class {
         const actions = MiEdit.mieditActions(this.mitree.serialize())
         const bytes = Minitel.actionsToStream(actions, 0, 0).toArray()
         const vdt = String.fromCharCode.apply(null, bytes)
-
-        // Create a textual date so the user will know something has changed
-        const time = new Date()
-        const timeString = ("0" + time.getHours()).slice(-2)   + ":"
-                         + ("0" + time.getMinutes()).slice(-2) + ":"
-                         + ("0" + time.getSeconds()).slice(-2)
 
         // Compress the Videotex stream to Base64 format but modifies it so that
         // the generated can be included in a URL
@@ -244,17 +237,15 @@ MiEdit.MiEditPage = class {
         dlLink.href = "data:text/plain;charset=ascii,"
                     + encodeURIComponent(vdt)
         dlLink.setAttribute("download", this.pageName + ".vdt")
-        dlLink.innerHTML = "Download VDT [" + timeString + "]"
+        dlLink.innerHTML = "Download Videotex stream"
 
         // Create the View VDT link
-        vwLink.href = "minitel-viewer.html"
-                    + "?cstream=" + compressed
-        vwLink.innerHTML = "View VDT [" + timeString + "]"
+        vwLink.href = "minitel-viewer.html?cstream=" + compressed
+        vwLink.innerHTML = "View Videotex in fullscreen emulator"
 
         // Create the View VDT link
-        rlLink.href = "minitel-real-viewer.html"
-                    + "?cstream=" + compressed
-        rlLink.innerHTML = "Real view VDT [" + timeString + "]"
+        rlLink.href = "minitel-real-viewer.html?cstream=" + compressed
+        rlLink.innerHTML = "View Videotex on a Minitel screen"
     }
 
     /**
@@ -377,6 +368,29 @@ MiEdit.MiEditPage = class {
 
         modal.classList.add("hidden")
         modal.querySelector(".recorder-result").innerHTML = ""
+    }
+
+    /**
+     * When the user clicks on the record animationbutton.
+     * @param {HTMLEvent} event Event that generated the call
+     * @param {mixed} param Parameters of the event
+     * @private
+     */
+    onFileopsOpen() {
+        const modal = document.querySelector(".miedit-fileops")
+        this.compile()
+
+        modal.classList.remove("hidden")
+    }
+
+    /**
+     * When the user clicks on the close button of the file operations modal
+     * window.
+     */
+    onFileopsClose() {
+        const modal = document.querySelector(".miedit-fileops")
+
+        modal.classList.add("hidden")
     }
 
     /**

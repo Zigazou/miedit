@@ -51,7 +51,16 @@ body {
 
 p { margin: 0.5em 0 0 0; }
 a { color: var(--color-4); }
-button { cursor: pointer; }
+button, .button {
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+}
+
+.button {
+    font-size: 90%;
+    padding: 0 0.5em;
+}
 
 kbd {
     padding:0.1em 0.6em;
@@ -131,7 +140,8 @@ hr {
 
 .zone-control h3:first-child { margin-top: 0; }
 
-.zone-control div>button {
+.zone-control div>button, .modal .content div>button, .button {
+    display: inline-block;
     border: none;
     background-color: transparent;
     color: white;
@@ -143,9 +153,16 @@ hr {
     background-color: var(--color-4);
 }
 
+.modal .content div>button:hover, .button:hover {
+    border-radius: 0.6em;
+    background-color: var(--color-3);
+}
+
 .zone-control form { text-align: left; }
 
-.zone-control button img { filter: invert(100%); }
+.zone-control button img, .modal button img, .button img {
+    filter: invert(100%);
+}
 
 .miedit-control {
     position: fixed;
@@ -441,7 +458,7 @@ select { height: 2.6em; }
     width: 6em;
 }
 
-/* Recorder */
+/* Modal */
 .modal {
     position: fixed;
     z-index: 2;
@@ -471,7 +488,16 @@ select { height: 2.6em; }
     padding: 1em;
 }
 
-.modal .content form, .modal p { margin: 1em 1rem; }
+.modal h2 {
+    font-size: 100%;
+    border-bottom: 0.1em solid var(--color-2);
+}
+
+.modal a {
+    color: white;
+}
+
+.modal .content>div { margin: 1em 1rem; }
 .miedit-recorder progress { float: right; }
 
 .miedit-recorder .recorder-result {
