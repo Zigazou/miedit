@@ -1,0 +1,23 @@
+/* The following declarations are mandatory for resizable blocks */
+x-resizable {
+    display: block;
+    overflow: hidden;
+}
+
+x-resizable-ruler {
+    display: block;
+    min-height: 0.5em;
+    cursor: row-resize;
+}
+
+.x-resizable-block { overflow-y: scroll; }
+
+/* Cosmetic styling */
+x-resizable-ruler {
+    border-top: 0.1em solid white;
+    border-bottom: 0.1em solid black;
+    text-align: center;
+    background-color: #DDDDDD;
+}
+
+x-resizable-ruler::before { content: "═"; }

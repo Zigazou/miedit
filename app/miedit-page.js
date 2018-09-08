@@ -694,7 +694,8 @@ MiEdit.MiEditPage["drcs-shift-right"] = function(base) {
 
 importHTML.install()
           .then(inputNumberButton.install)
-          .then(() =>
+          .then(() => {
+                ResizableBlock.init()
                 new MiEdit.MiEditPage($("#miedit"), queryParameters("page"))
-          )
+          })
           .catch(reason => console.error(reason))

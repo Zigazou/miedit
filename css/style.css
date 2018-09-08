@@ -188,22 +188,15 @@ a>.jstree-icon {
 }
 
 .miedit-treeactions {
-    position: fixed;
-    bottom: 0;
-    left: var(--emulator-width);
-    width: calc(calc(100% - var(--emulator-width)) / 2);
-    height: calc(100% - var(--properties-height));
-    overflow-y: scroll;
     background-color: var(--color-2);
 }
 
-.miedit-forms {
+.miedit-tree-forms {
     position: fixed;
     top: 0;
     left: var(--emulator-width);
     width: calc(calc(100% - var(--emulator-width)) / 2);
-    height: var(--properties-height);
-    overflow-y: scroll;
+    height: 100%;
 }
 
 .miedit-forms>* {

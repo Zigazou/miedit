@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="library/jstree/dist/themes/default/style.css"/>
     <link rel="stylesheet" href="library/input-number-button/style.css"/>
     <link rel="stylesheet" href="library/simple-ribbon/simple-ribbon.css" />
+    <link rel="stylesheet" href="library/resizable-block/resizable-block.css" />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/minitel-mosaic.css" />
     <link rel="stylesheet" href="css/miedit-oldstyle.css" />
@@ -33,47 +34,49 @@
       <import src="import/fileops.html"></import>
 
       <div class="mitree-container">
-        <div class="zone-container miedit-treeactions">
-          <h1>Tidgets tree</h1>
-          <div class="miedit-tree"></div>
-        </div>
-        <div class="zone-container miedit-forms">
-          <h1>Tidget’s settings</h1>
-          <import src="import/tidget-form/move-locate.html"></import>
-          <import src="import/tidget-form/content-string.html"></import>
-          <import src="import/tidget-form/content-ceefax.html"></import>
-          <import src="import/tidget-form/content-block.html"></import>
-          <import src="import/tidget-form/content-box.html"></import>
-          <import src="import/tidget-form/content-graphics.html"></import>
-          <import src="import/tidget-form/content-oldstyle.html"></import>
-          <import src="import/tidget-form/form-smgraph.html"></import>
-          <import src="import/tidget-form/content-group.html"></import>
-          <import src="import/tidget-form/content-delay.html"></import>
-          <import src="import/tidget-form/content-g0.html"></import>
-          <import src="import/tidget-form/content-g1.html"></import>
-          <import src="import/tidget-form/content-raw.html"></import>
-          <import src="import/tidget-form/drcs-create.html"></import>
-          <import src="import/tidget-form/drcs-advanced-char.html"></import>
-          <import src="import/tidget-form/drcs-advanced-def.html"></import>
-          <import src="import/tidget-form/drcs-advanced-start.html"></import>
-          <import src="import/tidget-form/drcs-advanced-end.html"></import>
-          <import src="import/tidget-form/drcs-black-white.html"></import>
-          <import src="import/tidget-form/effect-double-height.html"></import>
-          <import src="import/tidget-form/effect-normal-size.html"></import>
-          <import src="import/tidget-form/effect-double-width.html"></import>
-          <import src="import/tidget-form/effect-double-size.html"></import>
-          <import src="import/tidget-form/effect-blink-on.html"></import>
-          <import src="import/tidget-form/effect-blink-off.html"></import>
-          <import src="import/tidget-form/effect-underline-on.html"></import>
-          <import src="import/tidget-form/effect-underline-off.html"></import>
-          <import src="import/tidget-form/effect-invert-on.html"></import>
-          <import src="import/tidget-form/effect-invert-off.html"></import>
-          <import src="import/tidget-form/mask-zone-on.html"></import>
-          <import src="import/tidget-form/mask-zone-off.html"></import>
-          <import src="import/tidget-form/mask-global-on.html"></import>
-          <import src="import/tidget-form/mask-global-off.html"></import>
-          <import src="import/tidget-form/empty.html"></import>
-        </div>
+        <x-resizable data-sizes="0.2,0.8" class="miedit-tree-forms">
+          <div class="zone-container miedit-forms">
+            <h1>Tidget’s settings</h1>
+            <import src="import/tidget-form/move-locate.html"></import>
+            <import src="import/tidget-form/content-string.html"></import>
+            <import src="import/tidget-form/content-ceefax.html"></import>
+            <import src="import/tidget-form/content-block.html"></import>
+            <import src="import/tidget-form/content-box.html"></import>
+            <import src="import/tidget-form/content-graphics.html"></import>
+            <import src="import/tidget-form/content-oldstyle.html"></import>
+            <import src="import/tidget-form/form-smgraph.html"></import>
+            <import src="import/tidget-form/content-group.html"></import>
+            <import src="import/tidget-form/content-delay.html"></import>
+            <import src="import/tidget-form/content-g0.html"></import>
+            <import src="import/tidget-form/content-g1.html"></import>
+            <import src="import/tidget-form/content-raw.html"></import>
+            <import src="import/tidget-form/drcs-create.html"></import>
+            <import src="import/tidget-form/drcs-advanced-char.html"></import>
+            <import src="import/tidget-form/drcs-advanced-def.html"></import>
+            <import src="import/tidget-form/drcs-advanced-start.html"></import>
+            <import src="import/tidget-form/drcs-advanced-end.html"></import>
+            <import src="import/tidget-form/drcs-black-white.html"></import>
+            <import src="import/tidget-form/effect-double-height.html"></import>
+            <import src="import/tidget-form/effect-normal-size.html"></import>
+            <import src="import/tidget-form/effect-double-width.html"></import>
+            <import src="import/tidget-form/effect-double-size.html"></import>
+            <import src="import/tidget-form/effect-blink-on.html"></import>
+            <import src="import/tidget-form/effect-blink-off.html"></import>
+            <import src="import/tidget-form/effect-underline-on.html"></import>
+            <import src="import/tidget-form/effect-underline-off.html"></import>
+            <import src="import/tidget-form/effect-invert-on.html"></import>
+            <import src="import/tidget-form/effect-invert-off.html"></import>
+            <import src="import/tidget-form/mask-zone-on.html"></import>
+            <import src="import/tidget-form/mask-zone-off.html"></import>
+            <import src="import/tidget-form/mask-global-on.html"></import>
+            <import src="import/tidget-form/mask-global-off.html"></import>
+            <import src="import/tidget-form/empty.html"></import>
+          </div>
+          <div class="zone-container miedit-treeactions">
+            <h1>Tidgets tree</h1>
+            <div class="miedit-tree"></div>
+          </div>
+        </x-resizable>
 
         <import src="import/miedit-mosaic.html"></import>
         <import src="import/miedit-oldstyle.html"></import>
@@ -90,6 +93,7 @@
     <script src="library/lz-string/lz-string.js"></script>
     <script src="library/settings-suite/settings-suite.js"></script>
     <script src="library/gif-minitel/gif-minitel.js"></script>
+    <script src="library/resizable-block/resizable-block.js"></script>
 
     <script src="library/minitel/constant.js"></script>
     <script src="library/minitel/stream.js"></script>
