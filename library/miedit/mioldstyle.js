@@ -654,6 +654,20 @@ MiEdit.MiOldStyle = class {
                 if(event.code === "KeyN") cell.drcs = !cell.drcs
             }
 
+            // Double width.
+            if(!(cell instanceof Minitel.MosaicCell)) {
+                if(event.code === "KeyM") {
+                    cell.mult.width = cell.mult.width === 1 ? 2 : 1
+                }
+            }
+
+            // Double height.
+            if(!(cell instanceof Minitel.MosaicCell)) {
+                if(event.code === "Comma") {
+                    cell.mult.height = cell.mult.height === 1 ? 2 : 1
+                }
+            }
+
             this.vdu.set(x, y, cell)
         })
     }

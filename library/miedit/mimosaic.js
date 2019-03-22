@@ -372,7 +372,21 @@ MiEdit.MiMosaic = class {
      * @param {mixed} param Parameters of the event
      */
     onImportEditTf(event) {
-        this.memory = Minitel.drawCeefax(event.target[0].value)
+        const ceefax = Minitel.drawCeefax(event.target[0].value)
+
+        ceefax.forEach((row, y) => {
+            row.forEach((cell, x) => {
+                this.memory.setPoint(
+                    x, y,
+                    cell.color,
+                    0,
+                    cell.separated,
+                    false,
+                    1
+                )
+            })
+        })
+
         this.drawPoints()
     }
 
