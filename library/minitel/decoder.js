@@ -351,7 +351,7 @@ Minitel.Decoder = class extends Minitel.Protocol {
 
         if(clearRange === "endofscreen") {
             // Clear from the current cursor position till the end of the screen
-            this.vdu.cursorToEndOfScreen((x, y) => {
+            this.vdu.cursor.cursorToEndOfScreen((x, y) => {
                 this.vdu.set(x, y, new Minitel.MosaicCell())
             })
 
